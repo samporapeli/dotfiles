@@ -30,5 +30,5 @@ export EDITOR=$VISUAL
 # Set vim mode for zsh
 bindkey -v
 # Include aliases dotfile
-source .aliases
+source ~/.aliases
 
