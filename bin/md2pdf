@@ -1,0 +1,6 @@
+#!/bin/sh
+# Based on https://blog.scottlowe.org/2018/09/27/a-markdown-to-pdf-workflow-on-linux/
+# The make workflow described would also be beautiful
+
+pandoc --from=markdown_mmd --to=html -s $1 | wkhtmltopdf -s A4 - $1.pdf
+
