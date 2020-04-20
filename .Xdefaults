@@ -39,8 +39,8 @@
 
 URxvt*depth: 32
 URxvt*font: xft:Ubuntu Mono derivative Powerline:pixelsize=12:antialias=true
-URxvt*boldFont: xft:UbuntuMono-B:pixelsize=12:antialias=true
-URxvt*italicFont: xft:UbuntuMono-RI:pixelsize=12:antialias=true
+URxvt*boldFont: xft:Ubuntu Mono derivative Powerline Bold:pixelsize=12:antialias=true
+URxvt*italicFont: xft:Ubuntu Mono derivative Powerline Italic:pixelsize=12:antialias=true
 URxvt*letterSpace: -1
 URxvt*scrollBar: false
 
