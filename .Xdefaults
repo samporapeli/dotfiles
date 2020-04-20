@@ -1,9 +1,10 @@
 # Based on https://opensource.com/article/19/10/why-use-rxvt-terminal
 # Colors from terminal.sexy
+
 ! special
-*.foreground:   #c5c8c6
-*.background:   [90]#1d1f21
-*.cursorColor:  #c5c8c6
+URxvt*.foreground:   #c5c8c6
+URxvt*.background:   [90]#1d1f21
+URxvt.cursorColor:  #c5c8c6
 
 ! black
 *.color0:       #282a2e
