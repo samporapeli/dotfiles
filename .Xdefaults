@@ -1,35 +1,46 @@
 # Based on https://opensource.com/article/19/10/why-use-rxvt-terminal
-! solarized theme
-! foreground/background
-! black
-URxvt.color0  : #000000
-URxvt.color8  : #555555
-! red
-URxvt.color1  : #AA0000
-URxvt.color9  : #FF5555
-! green
-URxvt.color2  : #00AA00
-URxvt.color10 : #55FF55
-! yellow
-URxvt.color3  : #AB4400
-URxvt.color11 : #FFFF44
-! blue
-URxvt.color4  : #34B0F3
-URxvt.color12 : #3FC9D8
-! magenta
-URxvt.color5  : #AA00AA
-URxvt.color13 : #FF55FF
-! cyan
-URxvt.color6  : #00AAAA
-URxvt.color14 : #55FFFF
-! white
-URxvt.color7  : #AAAAAA
-URxvt.color15 : #FFFFFF
+# Colors from terminal.sexy
+! special
+*.foreground:   #c5c8c6
+*.background:   [90]#1d1f21
+*.cursorColor:  #c5c8c6
 
-URxvt*background: [75]#000000
+! black
+*.color0:       #282a2e
+*.color8:       #373b41
+
+! red
+*.color1:       #a54242
+*.color9:       #cc6666
+
+! green
+*.color2:       #8c9440
+*.color10:      #b5bd68
+
+! yellow
+*.color3:       #de935f
+*.color11:      #f0c674
+
+! blue
+*.color4:       #5f819d
+*.color12:      #81a2be
+
+! magenta
+*.color5:       #85678f
+*.color13:      #b294bb
+
+! cyan
+*.color6:       #5e8d87
+*.color14:      #8abeb7
+
+! white
+*.color7:       #707880
+*.color15:      #c5c8c6
+
 URxvt*depth: 32
-URxvt*foreground: #FFFFFF
 URxvt*font: xft:Ubuntu Mono derivative Powerline:pixelsize=12:antialias=true
 URxvt*boldFont: xft:UbuntuMono-B:pixelsize=12:antialias=true
 URxvt*italicFont: xft:UbuntuMono-RI:pixelsize=12:antialias=true
 URxvt*letterSpace: -1
+URxvt*scrollBar: false
+
