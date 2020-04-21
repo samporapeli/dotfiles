@@ -1,47 +1,49 @@
 # Based on https://opensource.com/article/19/10/why-use-rxvt-terminal
 # Colors from terminal.sexy
 
+# Colors added by change_colors tool
 ! special
-URxvt*.foreground:   #c5c8c6
-URxvt*.background:   [90]#1d1f21
-URxvt.cursorColor:  #c5c8c6
+URxvt*.foreground:   #f8f8f2
+URxvt*.background: [90]#272822
+URxvt*.cursorColor:  #f8f8f2
 
 ! black
-*.color0:       #282a2e
-*.color8:       #373b41
+*.color0:       #272822
+*.color8:       #75715e
 
 ! red
-*.color1:       #a54242
-*.color9:       #cc6666
+*.color1:       #f92672
+*.color9:       #f92672
 
 ! green
-*.color2:       #8c9440
-*.color10:      #b5bd68
+*.color2:       #a6e22e
+*.color10:      #a6e22e
 
 ! yellow
-*.color3:       #de935f
-*.color11:      #f0c674
+*.color3:       #f4bf75
+*.color11:      #f4bf75
 
 ! blue
-*.color4:       #5f819d
-*.color12:      #81a2be
+*.color4:       #66d9ef
+*.color12:      #66d9ef
 
 ! magenta
-*.color5:       #85678f
-*.color13:      #b294bb
+*.color5:       #ae81ff
+*.color13:      #ae81ff
 
 ! cyan
-*.color6:       #5e8d87
-*.color14:      #8abeb7
+*.color6:       #a1efe4
+*.color14:      #a1efe4
 
 ! white
-*.color7:       #707880
-*.color15:      #c5c8c6
+*.color7:       #f8f8f2
+*.color15:      #f9f8f5
+
 
 URxvt*depth: 32
 URxvt*font: xft:Ubuntu Mono derivative Powerline:pixelsize=12:antialias=true
-URxvt*boldFont: xft:UbuntuMono-B:pixelsize=12:antialias=true
-URxvt*italicFont: xft:UbuntuMono-RI:pixelsize=12:antialias=true
+URxvt*boldFont: xft:Ubuntu Mono derivative Powerline Bold:pixelsize=12:antialias=true
+URxvt*italicFont: xft:Ubuntu Mono derivative Powerline Italic:pixelsize=12:antialias=true
 URxvt*letterSpace: -1
 URxvt*scrollBar: false
 

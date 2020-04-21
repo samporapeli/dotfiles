@@ -1,2 +1,3 @@
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME/"
+alias power-suspend="sudo systemctl suspend"
 alias config-i3="vim ~/.config/i3/config"
