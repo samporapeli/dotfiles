@@ -1,0 +1,9 @@
+#!/bin/bash
+
+issue=$(cat /etc/issue)
+if [[ $issue == *"Ubuntu"* || $issue == *"Debian"* ]]; then
+    sudo apt update && sudo apt upgrade
+fi
+if [[ $issue == *"Arch Linux"* || $issue == *"Manjaro"* ]]; then
+    sudo pacman -Syu
+fi
