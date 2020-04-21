@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+from datetime import datetime
+from shutil import copyfile
+
+home_dir = os.path.expanduser("~")
+
+if "--help" in sys.argv or "-h" in sys.argv:
+    print("This tool changes the color definitions in ~/.Xdefaults. " +
+          "It needs a template in ~/.Xdefaults.template to work. " +
+          "If no arguments are given, this tool will try to use colors from  ~/.Xcolors. " +
+          "Otherwise it uses the arguments as input colors."
+         )
+    sys.exit(0)
+if len(sys.argv) == 1:
+    try:
+        path = os.path.join(home_dir, ".Xcolors") 
+        with open(path, "r") as file:
+            colors = file.readlines()
+    except FileNotFoundError:
+        print(f"File {path} not found. See {sys.argv[0]} --help for usage.") 
+        sys.exit(-1)
+else:
+    colors = sys.argv[1:]
+
+# Backup the old file
+timestamp = str(datetime.now()).replace(" ", "_")
+backup_dir = os.path.join(home_dir, ".Xdefaults_backup")
+target = os.path.join(backup_dir, "Xdefaults." + timestamp + ".bak")
+print("Backing up current file to " + target)
+if not os.path.isdir(backup_dir):
+    os.mkdir(backup_dir)
+copyfile(os.path.join(home_dir, ".Xdefaults"), target)
+try:
+    with open(os.path.join(home_dir, ".Xdefaults.template"), "r") as file:
+        template = file.readlines()
+except:
+    print("Error when opening ~/.Xdefaults.template")
+    sys.exit(-1)
+comment = "# Colors added by change_colors tool\n"
+xdefaults = "".join(template).replace("# {{colors}}", comment +  " ".join(colors))
+xdefaults = xdefaults.replace("*.foreground:", "URxvt*.foreground:")
+xdefaults = xdefaults.replace("*.background:   ", "URxvt*.background: [90]")
+xdefaults = xdefaults.replace("*.cursorColor:", "URxvt*.cursorColor:")
+print("Writing new .Xdefaults file...")
+with open(os.path.join(home_dir, ".Xdefaults"), "w") as file:
+    file.write(xdefaults)
+print("Done!")
