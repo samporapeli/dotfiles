@@ -42,8 +42,8 @@ URxvt*.cursorColor:  #f8f8f2
 
 URxvt*depth: 32
 URxvt*font: xft:Ubuntu Mono derivative Powerline:pixelsize=12:antialias=true
-URxvt*boldFont: xft:Ubuntu Mono derivative Powerline Bold:pixelsize=12:antialias=true
-URxvt*italicFont: xft:Ubuntu Mono derivative Powerline Italic:pixelsize=12:antialias=true
+URxvt*boldFont: xft:Ubuntu Mono:pixelsize=12:antialias=true:Bold
+URxvt*italicFont: xft:Ubuntu Mono derivative Powerline Italic:pixelsize=12:antialias=true:Italic
 URxvt*letterSpace: -1
 URxvt*scrollBar: false
 
