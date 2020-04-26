@@ -1,0 +1,3 @@
+#!/bin/bash
+
+curl --form "Tiedosto=@$1" --form "Viesti=Sent from upload tool" https://samporapeli.fi/yhteydenotto/
