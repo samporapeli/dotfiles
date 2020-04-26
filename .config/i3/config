@@ -50,7 +50,9 @@ bindcode control+$alt+45 exec urxvt
 bindcode $mod+24 kill
 
 # start dmenu (a program launcher) (alt + space)
-bindcode $alt+65 exec dmenu_run
+# bindcode $alt+65 exec dmenu_run
+# start rofi instead
+bindcode $alt+65 exec rofi -show combi
 
 # change focus - just as it should work in vim with dvorak
 bindcode $mod+44 focus left
