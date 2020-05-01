@@ -1,0 +1,7 @@
+picom -bCG --no-fading-openclose --config /dev/null &
+while true; do
+    feh --recursive --randomize --bg-fill ~/Pictures/wallpapers/ &
+    sleep $((60*20))
+done &  
+setxkbmap se -variant svdvorak -option caps:swapescape
+
