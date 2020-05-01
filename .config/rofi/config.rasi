@@ -1,6 +1,6 @@
 configuration {
     modi: "window,drun,ssh,combi";
     theme: "Monokai";
-    font: "Ubuntu Mono derivative Powerline 12";
+    font: "Noto 12";
     combi-modi: "window,drun,ssh";
 }

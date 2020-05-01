@@ -45,7 +45,7 @@ modules-left = i3
 modules-center = date
 modules-right = memory cpu temperature 
 
-font-0 = Ubuntu:pixelsize=10
+font-0 = "Noto:pixelsize=11:style=Bold;0"
 
 [bar/example]
 ;monitor = ${env:MONITOR:HDMI-1}
