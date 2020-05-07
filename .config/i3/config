@@ -187,10 +187,12 @@ exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 # gap configuration
 # disable title bars
-for_window [class=".*"] border pixel 1
+for_window [class=".*"] border pixel 3
 # actual gaps
 gaps inner 20
 
 # colors
 client.focused   #f92672 #272822 #f8f8f2 #f92672 #f92672
-client.unfocused #f4bf75 #272822 #f8f8f2 #f4bf75 #f4bf75
+client.focused_inactive #66d9ef #272822 #f8f8f2 #66d9ef #66d9ef
+client.unfocused #66d9ef #272822 #f8f8f2 #66d9ef #66d9ef
+
