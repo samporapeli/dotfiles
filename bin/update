@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Update oh-my-zsh, if it is installed
+if command -v zsh &> /dev/null && test -d ~/.oh-my-zsh; then
+    omz-update
+fi
+
+# Update packages
 issue=$(cat /etc/*-release)
 if [[ $issue == *"debian"* ]]; then
     sudo apt update && sudo apt upgrade
