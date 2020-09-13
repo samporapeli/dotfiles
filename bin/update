@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Update oh-my-zsh, if it is installed
-if command -v zsh &> /dev/null && test -d ~/.oh-my-zsh; then
-    omz-update
-fi
-
 # Update packages
 issue=$(cat /etc/*-release)
 if [[ $issue == *"debian"* ]]; then
@@ -12,4 +7,9 @@ if [[ $issue == *"debian"* ]]; then
 fi
 if [[ $issue == *"arch"* ]]; then
     sudo pacman -Syu
+fi
+
+# Update oh-my-zsh, if it is installed
+if command -v zsh &> /dev/null && test -d ~/.oh-my-zsh; then
+    omz-update
 fi
