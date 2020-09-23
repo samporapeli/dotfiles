@@ -7,3 +7,9 @@
 [submodule ".vim/pack/sampo/start/emmet-vim"]
 	path = .vim/pack/sampo/start/emmet-vim
 	url = git@github.com:mattn/emmet-vim.git
+[submodule ".vim/pack/sampo/start/vim-latex"]
+	path = .vim/pack/sampo/start/vim-latex
+	url = git@github.com:vim-latex/vim-latex.git
+[submodule ".vim/pack/sampo/start/vimtex"]
+	path = .vim/pack/sampo/start/vimtex
+	url = git@github.com:lervag/vimtex.git

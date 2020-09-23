@@ -53,3 +53,6 @@ set timeoutlen=1000 ttimeoutlen=0
 
 " Fix missing symbols
 let g:airline_powerline_fonts = 1
+
+" vimtex config
+let g:tex_flavor = "latex"
