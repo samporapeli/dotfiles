@@ -13,3 +13,6 @@
 [submodule ".vim/pack/sampo/start/vimtex"]
 	path = .vim/pack/sampo/start/vimtex
 	url = git@github.com:lervag/vimtex.git
+[submodule ".vim/pack/sampo/start/auto-pairs"]
+	path = .vim/pack/sampo/start/auto-pairs
+	url = git@github.com:jiangmiao/auto-pairs.git
