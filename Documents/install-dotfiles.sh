@@ -26,7 +26,7 @@ function install_dotfiles() {
                 sudo apt-get -y install zsh
             fi
         fi
-        echo Installing of oh-my-zsh (https://ohmyz.sh)
+        echo 'Installing of oh-my-zsh (https://ohmyz.sh)'
         echo After oh-my-zsh installation you must exit the zsh shell, e. g. by typing exit and pressing enter.
         echo -n "Install? (remember to exit) [Y/n] "
         read OH_MY_ZSH
