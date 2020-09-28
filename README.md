@@ -22,8 +22,5 @@ This might be a good idea if you only want some parts of the configuration.
 2. In repository directory, load git submodules: `git submodule init && git submodule update`
 3. Copy/link files from repository to needed locations in home directory.
 
-#### Notes
-TODO: git submodules could use https instead of ssh as clone protocol, that would enable `git submodule update` without setting up keys with GitHub.
-
 ## How I manage my vim plugins 
 Vim 8 introduced native package management, and that is what I use. [Here](https://shapeshed.com/vim-packages/) you can find a good tutorial on how to set it up with `git submodule`. I currently use the path [~/.vim/pack/sampo/start](.vim/pack/sampo/start) for all plugins.
