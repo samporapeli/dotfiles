@@ -2,5 +2,14 @@
 # Based on https://blog.scottlowe.org/2018/09/27/a-markdown-to-pdf-workflow-on-linux/
 # The make workflow described would also be beautiful
 
-pandoc --from=markdown_mmd --to=html -s $1 | wkhtmltopdf -s A4 - $1.pdf
+if [ ! -n "$1" ] || [ "$1" = "-h" ]; then
+    echo Usage: $0 MARKDOWN_FILE [CSS_FILE]
+    exit
+fi
+if [ -n $2 ]; then
+    CSS_FILE=$2
+else
+    CSS_FILE=$HOME/.config/pandoc.css
+fi
+pandoc --from=markdown_mmd --to=html -s $1 -c $(pwd)/$CSS_FILE | wkhtmltopdf -s A4 - $1.pdf
 
