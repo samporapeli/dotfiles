@@ -14,3 +14,8 @@ fi
 if command_exists zsh && test -d ~/.oh-my-zsh; then
     omz-update
 fi
+
+# Update vim plugins
+if command_exists vim-plugin; then
+    vim-plugin update
+fi
