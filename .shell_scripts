@@ -1,7 +1,22 @@
 #!/bin/bash
 
+function command_exists() {
+    command -v $1 &> /dev/null
+}
+
 function dotfiles() {
-    DOTFILES_COMMAND=$(cat $HOME/.dotfiles-command.txt | envsubst)
+    DOTFILES_COMMAND_URL="https://raw.githubusercontent.com/samporapeli/dotfiles/master/.dotfiles-command.txt"
+    DOTFILES_COMMAND_PATH="$HOME/.dotfiles-command.txt"
+    if test -f "$DOTFILES_COMMAND_PATH"; then
+        DOTFILES_COMMAND=$(cat "$DOTFILES_COMMAND_PATH" | envsubst)
+    elif command_exists "curl"; then
+        DOTFILES_COMMAND=$(curl -s "$DOTFILES_COMMAND_URL" | envsubst)
+    elif command_exists "wget"; then
+        DOTFILES_COMMAND=$(wget -qO - "$DOTFILES_COMMAND_URL" | envsubst)
+    else
+        echo "dotfiles-command.txt not available"
+        exit 1
+    fi
     $DOTFILES_COMMAND $@
 }
 
