@@ -56,3 +56,4 @@ let g:airline_powerline_fonts = 1
 
 " vimtex config
 let g:tex_flavor = "latex"
+nnoremap <F5> :VimtexCompile<CR>
