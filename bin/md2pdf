@@ -6,10 +6,10 @@ if [ ! -n "$1" ] || [ "$1" = "-h" ]; then
     echo Usage: $0 MARKDOWN_FILE [CSS_FILE]
     exit
 fi
-if [ -n $2 ]; then
-    CSS_FILE=$2
+if [ ! "$2" = "" ]; then
+    CSS_FILE="$(pwd)/$2"
 else
-    CSS_FILE=$HOME/.config/pandoc.css
+    CSS_FILE="$HOME/.config/pandoc.css"
 fi
-pandoc --from=markdown_mmd --to=html -s $1 -c $(pwd)/$CSS_FILE | wkhtmltopdf -s A4 - $1.pdf
+pandoc --from=markdown_mmd --to=html -s "$1" -c "$CSS_FILE" | wkhtmltopdf -s A4 - "$1.pdf"
 
