@@ -1,0 +1,34 @@
+#!/bin/bash
+
+function dotfiles() {
+    DOTFILES_COMMAND=$(cat $HOME/.dotfiles-command.txt | envsubst)
+    $DOTFILES_COMMAND $@
+}
+
+function lowercase() {
+    echo $1 | tr '[:upper:]' '[:lower:]'
+}
+
+function y_n_dialog() {
+    # First parameter should be the default option (y or n)
+    if [ "$1" = "y" ]; then
+        echo -n "[Y/n] "
+    elif [ "$1" = "n" ]; then
+        echo -n "[y/N] "
+    else
+        echo -n "[y/n] "
+    fi
+    read ANSWER
+    ANSWER="$(lowercase $ANSWER)"
+    if [ "$ANSWER" = "n" ] || { [ "$ANSWER" = "" ] && [ "$1" = "n" ]; }; then
+        # non-zero return value means error, and e. g. command false returns value 1
+        return 1
+    elif [ "$ANSWER" = "y" ] || { [ "$ANSWER" = "" ] && [ "$1" = "y" ]; }; then
+        # zero return value means successful
+        return 0
+    else
+        echo -n "Please answer 'y' or 'n': "
+        y_n_dialog $1
+    fi
+}
+
