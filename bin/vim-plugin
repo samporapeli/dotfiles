@@ -19,7 +19,7 @@ elif [ "$1" = "update" ]; then
     echo "Updating repositories..."
     dotfiles submodule update
     echo "Updating helptags..."
-    vim -u NONE -c "helptags .vim/pack" -c q    
+    vim -u NONE -c "helptags ALL" -c q    
     exit 0
 else
     echo "USAGE: $0 add https://git.service/user/package | remove package"
