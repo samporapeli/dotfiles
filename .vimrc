@@ -47,6 +47,9 @@ set expandtab
 set tabstop=4 shiftwidth=4
 "set smarttab
 
+" Make :W save (I hit this accidentally as ':' is produced with Shift key
+command W w
+
 " as vim-airline is used, the delay after pressing esc in insert mode is
 " especially annoying
 set timeoutlen=1000 ttimeoutlen=0
