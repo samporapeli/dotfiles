@@ -10,3 +10,6 @@
 [submodule ".vim/pack/sampo/start/auto-pairs"]
 	path = .vim/pack/sampo/start/auto-pairs
 	url = https://github.com/jiangmiao/auto-pairs.git
+[submodule ".vim/pack/sampo/start/vim-surround"]
+	path = .vim/pack/sampo/start/vim-surround
+	url = https://github.com/tpope/vim-surround.git
