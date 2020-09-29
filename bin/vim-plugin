@@ -15,6 +15,12 @@ elif [ "$1" = "remove" ] || [ "$1" = "delete" ]; then
     dotfiles submodule deinit -f $PLUGIN_LOCATION/$2
     rm -rfI $HOME/.dotfiles/modules/.vim/pack/sampo/start/$2
     dotfiles rm -f $PLUGIN_LOCATION/$2
+elif [ "$1" = "update" ]; then
+    echo "Updating repositories..."
+    dotfiles submodule update
+    echo "Updating helptags..."
+    vim -u NONE -c "helptags .vim/pack" -c q    
+    exit 0
 else
     echo "USAGE: $0 add https://git.service/user/package | remove package"
     exit 1
