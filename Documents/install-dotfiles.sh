@@ -1,6 +1,16 @@
 #!/bin/bash
 
 function install_dotfiles() {
+    # Get the necessary functions used
+    if command -v curl &> /dev/null; then
+        source <(curl -s https://raw.githubusercontent.com/samporapeli/dotfiles/master/.shell_scripts)
+    elif command -v wget /dev/null; then
+        source <(wget -qO - https://raw.githubusercontent.com/samporapeli/dotfiles/master/.shell_scripts)
+    else
+        echo "You must have curl or wget installed to complete installation."
+        exit 1
+    fi
+
     GIT_PATH="samporapeli/dotfiles.git"
 
     echo Do you want to replace current dotfiles, just clone the repository for viewing or do nothing?
@@ -34,9 +44,6 @@ function install_dotfiles() {
             sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
         fi
         if [ "$INSTALL_TYPE" = "replace" ]; then
-            function dotfiles () {
-                /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME/ $@
-            }
             echo ".dotfiles" >> .gitignore
             dotfiles clone --bare $GIT_PREFIX$GIT_PATH $HOME/.dotfiles
             dotfiles config --local status.showUntrackedFiles no
