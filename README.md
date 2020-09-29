@@ -22,5 +22,17 @@ This might be a good idea if you only want some parts of the configuration.
 2. In repository directory, load git submodules: `git submodule init && git submodule update`
 3. Copy/link files from repository to needed locations in home directory.
 
-## How I manage my vim plugins 
+## How I manage vim plugins 
 Vim 8 introduced native package management, and that is what I use. [Here](https://shapeshed.com/vim-packages/) you can find a good tutorial on how to set it up with `git submodule`. I currently use the path [~/.vim/pack/sampo/start](.vim/pack/sampo/start) for all plugins.
+
+However, I created a small tool that automates some steps during adding, deleting and updating plugins. It is located in [~/bin/vim-plugin](./bin/vim-plugin). Should I just use some actual vim plugin manager? Probably, but I couldn't resist writing this.
+
+Basic usage (with example plugin):
+```bash
+# Add a new plugin
+vim-plugin add https://github.com/vim-airline/vim-airline.git
+# Update all installed plugins and generate helptags
+vim-plugin update
+# Delete a plugin
+vim-plugin delete vim-airline
+```
