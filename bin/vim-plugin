@@ -4,12 +4,16 @@ PLUGIN_LOCATION=$HOME/.vim/pack/sampo/start
 source $HOME/.shell_scripts
 cd $PLUGIN_LOCATION
 
+function generate_helptags() {
+    vim -c "helptags ALL" -c q    
+}
+
 if [ "$1" = "add" ]; then
     echo Adding submodule...
     dotfiles submodule add $2
     dotfiles submodule update
     echo Generating helptags...
-    vim -u NONE -c "helptags $PLUGIN_LOCATION" -c q
+    generate_helptags
 elif [ "$1" = "remove" ] || [ "$1" = "delete" ]; then
     echo Deleting submodule...
     dotfiles submodule deinit -f $PLUGIN_LOCATION/$2
@@ -19,7 +23,7 @@ elif [ "$1" = "update" ]; then
     echo "Updating repositories..."
     dotfiles submodule update
     echo "Updating helptags..."
-    vim -c "helptags ALL" -c q    
+    generate_helptags
     exit 0
 else
     echo "USAGE: $0 add https://git.service/user/package | remove package"
