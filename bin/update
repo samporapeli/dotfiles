@@ -1,15 +1,16 @@
 #!/bin/bash
 
+source "$HOME/.shell_scripts"
+
 # Update packages
-issue=$(cat /etc/*-release)
-if [[ $issue == *"debian"* ]]; then
+if command_exists apt; then
     sudo apt update && sudo apt upgrade
 fi
-if [[ $issue == *"arch"* ]]; then
+if command_exists pacman; then
     sudo pacman -Syu
 fi
 
 # Update oh-my-zsh, if it is installed
-if command -v zsh &> /dev/null && test -d ~/.oh-my-zsh; then
+if command_exists zsh && test -d ~/.oh-my-zsh; then
     omz-update
 fi
