@@ -54,7 +54,7 @@ function install_dotfiles() {
                 dotfiles checkout -f master
                 echo Downloading git submodules...
                 dotfiles submodule init
-                dotfiles submodule update
+                bash -c "$HOME/bin/vim-plugin update" 
             else
                 echo Aborting...
                 exit
