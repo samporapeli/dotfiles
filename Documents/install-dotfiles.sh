@@ -18,38 +18,31 @@ function install_dotfiles() {
     read INSTALL_TYPE
 
     if [ "$INSTALL_TYPE" = "replace" ] || [ "$INSTALL_TYPE" = "clone" ]; then
-        echo -n "Clone repository over ssh? [Y/n] "
-        read USE_SSH
-        if [ "$USE_SSH" = "y" ] || [ "$USE_SSH" = "" ]; then
+        echo -n "Clone repository over ssh? "
+        if y_n_dialog y; then
             GIT_PREFIX="git@github.com:"
-        elif [ "$USE_SSH" = "n" ]; then
-            GIT_PREFIX="https://github.com/"
         else
-            echo Invalid input, exiting
-            exit
+            GIT_PREFIX="https://github.com/"
         fi
-        if command -v apt-get &> /dev/null && ! command -v zsh &> /dev/null; then
-            echo -n "Install zsh? [Y/n] "
-            read INSTALL_ZSH
-            if [ "$INSTALL_ZSH" = "" ] || [ "$INSTALL_ZSH" = "y" ]; then
+        if command_exists apt-get && ! command_exists zsh; then
+            echo -n "Install zsh? "
+            if y_n_dialog y; then
                 echo Using apt-get to install zsh...
                 sudo apt-get -y install zsh
             fi
         fi
         echo 'Installing of oh-my-zsh (https://ohmyz.sh)'
         echo After oh-my-zsh installation you must exit the zsh shell, e. g. by typing exit and pressing enter.
-        echo -n "Install? (remember to exit) [Y/n] "
-        read OH_MY_ZSH
-        if [ "$OH_MY_ZSH" = "" ] || [ "$OH_MY_ZSH" = "y" ]; then
+        echo -n "Install oh-my-zsh? (remember to exit) "
+        if y_n_dialog y; then
             sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
         fi
         if [ "$INSTALL_TYPE" = "replace" ]; then
             echo ".dotfiles" >> .gitignore
             dotfiles clone --bare $GIT_PREFIX$GIT_PATH $HOME/.dotfiles
             dotfiles config --local status.showUntrackedFiles no
-            echo -n "Destroy previous configuration? This cannot be undone. [y/N] "
-            read DESTROY_CONFIRMATION
-            if [ "$DESTROY_CONFIRMATION" = "y" ]; then
+            echo -n "Destroy previous configuration? This cannot be undone. "
+            if y_n_dialog n; then
                 echo Copying files...
                 dotfiles checkout -f master
                 echo Downloading git submodules...
