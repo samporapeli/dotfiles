@@ -1,4 +1,4 @@
-alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME/"
+alias dotfiles="$(cat $HOME/.dotfiles-command.txt)"
 alias power-suspend="sudo systemctl suspend"
 alias config-i3="vim ~/.config/i3/config"
 alias svdvorak="setxkbmap se -variant svdvorak -option caps:swapescape"
