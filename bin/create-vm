@@ -8,8 +8,8 @@ else
 fi
 
 uvt-kvm create "$VM_NAME" &&
-uvt-kvm wait "$1" &&
-ssh -o "StrictHostKeyChecking=no" ubuntu@$(uvt-kvm ip "$1")
+uvt-kvm wait "$VM_NAME" &&
+ssh -o "StrictHostKeyChecking=no" ubuntu@$(uvt-kvm ip "$VM_NAME")
 echo -n "Destroy virtual machine $VM_NAME? "
 if y_n_dialog; then
     uvt-kvm destroy "$VM_NAME"
