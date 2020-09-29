@@ -1,0 +1,30 @@
+#!/bin/bash
+
+PLUGIN_LOCATION=$HOME/.vim/pack/sampo/start
+source $HOME/.shell_scripts
+cd $PLUGIN_LOCATION
+
+if [ "$1" = "add" ]; then
+    echo Adding submodule...
+    dotfiles submodule add $2
+    dotfiles submodule update
+    echo Generating helptags...
+    vim -u NONE -c "helptags $PLUGIN_LOCATION" -c q
+elif [ "$1" = "remove" ] || [ "$1" = "delete" ]; then
+    echo Deleting submodule...
+    dotfiles submodule deinit -f $PLUGIN_LOCATION/$2
+    rm -rfI $HOME/.dotfiles/modules/.vim/pack/sampo/start/$2
+    dotfiles rm -f $PLUGIN_LOCATION/$2
+else
+    echo "USAGE: $0 add https://git.service/user/package | remove package"
+    exit 1
+fi
+# Commit and publish plugin addition
+echo -n "Commit change? "
+if y_n_dialog; then
+    dotfiles commit $PLUGIN_LOCATION $HOME/.gitmodules
+    echo -n "Push commit? "
+    if y_n_dialog; then
+        dotfiles push
+    fi
+fi
