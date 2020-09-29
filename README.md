@@ -36,3 +36,17 @@ vim-plugin update
 # Delete a plugin
 vim-plugin delete vim-airline
 ```
+
+## Custom "apps"
+### Aliases
+[~/.aliases](./.aliases)
+### [~/bin](./bin/)
+This is the place for most of my custom scripts. Some are so simple that they could as well be aliases, while some are a bit more complicated. This is added to `$PATH`, so it is super easy to create new executables.
+### [~/.shell_scripts](./.shell_scripts)
+Some useful functions that can be used in other scripts.
+
+## Arch Linux
+This repository contains some configuration files related to my second computer running Arch Linux and i3wm.
+
+## Misc
+Configuration files to make programs work in certain (read: right :grin:) way, like .latexmkrc to use PDF as default format.
