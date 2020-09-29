@@ -1,0 +1,16 @@
+#!/bin/bash
+
+source $HOME/.shell_scripts
+if [ "$1" = "" ]; then
+    VM_NAME="ubuntu-vm"
+else
+    VM_NAME="$1"
+fi
+
+uvt-kvm create "$VM_NAME" &&
+uvt-kvm wait "$1" &&
+ssh -o "StrictHostKeyChecking=no" ubuntu@$(uvt-kvm ip "$1")
+echo -n "Destroy virtual machine $VM_NAME? "
+if y_n_dialog; then
+    uvt-kvm destroy "$VM_NAME"
+fi
