@@ -1,0 +1,10 @@
+git
+tmux
+screen
+vim
+curl
+wget
+bat
+pandoc
+wkhtmltopdf
+zsh

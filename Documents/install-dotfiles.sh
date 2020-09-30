@@ -18,11 +18,34 @@ function install_dotfiles() {
     read INSTALL_TYPE
 
     if [ "$INSTALL_TYPE" = "replace" ] || [ "$INSTALL_TYPE" = "clone" ]; then
+        if ! command_exists git; then
+            echo "Git must be installed"
+            if command_exists apt-get; then
+                echo "Installing git using apt-get..."
+                sudo apt-get install git
+            else
+                echo "Please install git manually before running this installation script."
+                echo "Aborting..."
+                exit 1
+            fi
+        fi
         echo -n "Clone repository over ssh? "
         if y_n_dialog y; then
             GIT_PREFIX="git@github.com:"
         else
             GIT_PREFIX="https://github.com/"
+        fi
+        if command_exists apt-get; then
+            echo -n "Install some useful packages (list: https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/useful_packages_apt.txt) "
+            if y_n_dialog y; then
+                if command_exists curl; then
+                    sudo apt-get install "$(curl -s https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/useful_packages_apt.txt | tr '\n' ' ')"
+                elif command_exists wget; then
+                    sudo apt-get install "$(wget -qO - https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/useful_packages_apt.txt | tr '\n' ' ')"
+                else
+                    echo "curl or wget required, skipping..."
+                fi
+            fi
         fi
         if command_exists apt-get && ! command_exists zsh; then
             echo -n "Install zsh? "
