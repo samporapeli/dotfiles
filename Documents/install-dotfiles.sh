@@ -22,6 +22,7 @@ function install_dotfiles() {
             echo "Git must be installed"
             if command_exists apt-get; then
                 echo "Installing git using apt-get..."
+                sudo apt-get update
                 sudo apt-get install git
             else
                 echo "Please install git manually before running this installation script."
@@ -38,10 +39,11 @@ function install_dotfiles() {
         if command_exists apt-get; then
             echo -n "Install some useful packages (list: https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/useful_packages_apt.txt) "
             if y_n_dialog y; then
+                sudo apt-get update
                 if command_exists curl; then
-                    sudo apt-get install "$(curl -s https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/useful_packages_apt.txt | tr '\n' ' ')"
+                    sudo apt-get install $(curl -s https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/useful_packages_apt.txt | tr '\n' ' ')
                 elif command_exists wget; then
-                    sudo apt-get install "$(wget -qO - https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/useful_packages_apt.txt | tr '\n' ' ')"
+                    sudo apt-get install $(wget -qO - https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/useful_packages_apt.txt | tr '\n' ' ')
                 else
                     echo "curl or wget required, skipping..."
                 fi
@@ -51,6 +53,7 @@ function install_dotfiles() {
             echo -n "Install zsh? "
             if y_n_dialog y; then
                 echo Using apt-get to install zsh...
+                sudo apt-get update
                 sudo apt-get -y install zsh
             fi
         fi
