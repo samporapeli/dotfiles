@@ -4,22 +4,6 @@ function command_exists() {
     command -v $1 &> /dev/null
 }
 
-function dotfiles() {
-    DOTFILES_COMMAND_URL="https://raw.githubusercontent.com/samporapeli/dotfiles/master/.dotfiles-command.txt"
-    DOTFILES_COMMAND_PATH="$HOME/.dotfiles-command.txt"
-    if test -f "$DOTFILES_COMMAND_PATH"; then
-        DOTFILES_COMMAND=$(cat "$DOTFILES_COMMAND_PATH" | envsubst)
-    elif command_exists "curl"; then
-        DOTFILES_COMMAND=$(curl -s "$DOTFILES_COMMAND_URL" | envsubst)
-    elif command_exists "wget"; then
-        DOTFILES_COMMAND=$(wget -qO - "$DOTFILES_COMMAND_URL" | envsubst)
-    else
-        echo "dotfiles-command.txt not available"
-        exit 1
-    fi
-    $DOTFILES_COMMAND $@
-}
-
 function lowercase() {
     echo $1 | tr '[:upper:]' '[:lower:]'
 }
@@ -45,5 +29,41 @@ function y_n_dialog() {
         echo -n "Please answer 'y' or 'n': "
         y_n_dialog $1
     fi
+}
+
+function install_packages() {
+    if command_exists apt-get; then
+        sudo apt-get update
+        sudo apt-get -y install $@
+    elif command_exists pkg; then
+        pkg update
+        yes | pkg install $@
+    fi
+}
+
+function dotfiles() {
+    if ! command_exists envsubst; then
+        echo "gettext-base must be installed"
+        echo -n "Install now? "
+        if y_n_dialog y; then
+            install_packages gettext-base
+        else
+            echo "Please install gettext-base manually and try again."
+            exit 1
+        fi
+    fi
+    DOTFILES_COMMAND_URL="https://raw.githubusercontent.com/samporapeli/dotfiles/master/.dotfiles-command.txt"
+    DOTFILES_COMMAND_PATH="$HOME/.dotfiles-command.txt"
+    if test -f "$DOTFILES_COMMAND_PATH"; then
+        DOTFILES_COMMAND=$(cat "$DOTFILES_COMMAND_PATH" | envsubst)
+    elif command_exists "curl"; then
+        DOTFILES_COMMAND=$(curl -s "$DOTFILES_COMMAND_URL" | envsubst)
+    elif command_exists "wget"; then
+        DOTFILES_COMMAND=$(wget -qO - "$DOTFILES_COMMAND_URL" | envsubst)
+    else
+        echo "dotfiles-command.txt not available"
+        exit 1
+    fi
+    $DOTFILES_COMMAND $@
 }
 
