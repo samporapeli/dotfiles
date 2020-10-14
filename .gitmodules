@@ -13,3 +13,9 @@
 [submodule ".vim/pack/sampo/start/vim-surround"]
 	path = .vim/pack/sampo/start/vim-surround
 	url = https://github.com/tpope/vim-surround.git
+[submodule ".vim/pack/sampo/start/detectindent"]
+	path = .vim/pack/sampo/start/detectindent
+	url = https://github.com/ciaranm/detectindent.git
+[submodule ".vim/pack/sampo/start/vim-repeat"]
+	path = .vim/pack/sampo/start/vim-repeat
+	url = https://github.com/tpope/vim-repeat.git
