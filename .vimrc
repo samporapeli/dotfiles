@@ -23,8 +23,10 @@ nmap Q <Nop>
 " Mouse support
 set mouse+=a
 
-" Search while typing
+" Search while typing + smart case matching
 set incsearch
+set ignorecase
+set smartcase
 
 " Do not use arrow keys :)
 " normal mode
