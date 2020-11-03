@@ -1,0 +1,9 @@
+[user]
+	email = 35733458+samporapeli@users.noreply.github.com
+	name = Sampo Rapeli
+[core]
+	editor = vim
+[help]
+	autocorrect = 8
+[init]
+	defaultBranch = main
