@@ -1,0 +1,28 @@
+#! /bin/sh
+
+# start necessary processes
+# keybindings
+sxhkd &
+# compositor
+picom &
+
+# workspaces
+bspc monitor -d I II III IV V VI VII VIII IX X
+
+# gaps & borders
+bspc config border_width         8
+bspc config window_gap          18
+
+# colors
+bspc config normal_border_color  '#cfcbd0'
+bspc config active_border_color  '#8551e4'
+bspc config focused_border_color  '#8551e3'
+
+# windows
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+# window rules
+bspc rule -a 'plasmashell' state=floating layer=above focus=off sticky=on border=off center=off
+bspc rule -a Gimp state=floating follow=on

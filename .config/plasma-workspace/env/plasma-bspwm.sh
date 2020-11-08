@@ -1,0 +1,1 @@
+/home/srapeli/bin/plasma-bspwm.sh
