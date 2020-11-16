@@ -45,6 +45,9 @@ This is the place for most of my custom scripts. Some are so simple that they co
 ### [~/.shell_scripts](./.shell_scripts)
 Some useful functions that can be used in other scripts.
 
+## Plasma + [bspwm](https://github.com/baskerville/bspwm)
+Plasma but bspwm instead of kwin. `picom` as a compositor.
+
 ## Arch Linux
 This repository contains some configuration files related to my second computer running Arch Linux and i3wm.
 
