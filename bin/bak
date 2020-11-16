@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Quick tool for making a timestamped copy of a file
+
+ORIGINAL_PATH=$1
+
+if [ -z "$ORIGINAL_PATH" ]; then
+    echo "No path given"
+    exit 1
+fi
+
+if [[ ! -f "$ORIGINAL_PATH" ]] && [[ ! -d "$ORIGINAL_PATH" ]]; then
+    echo "Path not found"
+    exit 1
+fi
+
+TIMESTAMP="$(date -I)_$(date '+%H%M%S')"
+BACKUP_PATH="$ORIGINAL_PATH.$TIMESTAMP.bak"
+cp -r "$ORIGINAL_PATH" "$BACKUP_PATH"
+echo "Copied $ORIGINAL_PATH to $BACKUP_PATH"
