@@ -1,0 +1,11 @@
+#!/bin/bash
+
+KITTY_CONFIG_DIR="$HOME/.config/kitty"
+TOGGLE_STATUS_FILE="$KITTY_CONFIG_DIR/toggle_status.txt"
+
+# toggle light/dark value in file
+TOGGLED_VALUE=$(<"$TOGGLE_STATUS_FILE" sed -e 's/dark/light/g' -e t -e 's/light/dark/g')
+echo "$TOGGLED_VALUE" > "$TOGGLE_STATUS_FILE"
+
+# Make kitty load new config
+kitty @ set-colors --all "$KITTY_CONFIG_DIR/$(<$TOGGLE_STATUS_FILE)" &> /dev/null
