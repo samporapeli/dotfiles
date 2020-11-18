@@ -24,8 +24,9 @@ plugins=(git zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
-# Custom binaries
+# Custom binaries and scripts
 export PATH=$PATH:~/bin
+source .shell_scripts
 
 # Set editor
 export VISUAL=vim
@@ -34,6 +35,11 @@ export EDITOR=$VISUAL
 bindkey -v
 # Include aliases dotfile
 source ~/.aliases
+
+# Alias bat to batcat, if bat is not already defined
+if ! command_exists bat; then
+    alias bat=batcat
+fi
 
 # Load nvm
 #export NVM_DIR="$HOME/.nvm"
