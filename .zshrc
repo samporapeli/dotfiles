@@ -40,6 +40,8 @@ source ~/.aliases
 if ! command_exists bat; then
     alias bat=batcat
 fi
+# bat theme
+export BAT_THEME=ansi-dark
 
 # Load nvm
 #export NVM_DIR="$HOME/.nvm"
