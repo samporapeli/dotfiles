@@ -26,7 +26,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Custom binaries and scripts
 export PATH=$PATH:~/bin
-source .shell_scripts
+source ~/.shell_scripts
 
 # Set editor
 export VISUAL=vim
