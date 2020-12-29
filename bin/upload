@@ -1,3 +1,21 @@
 #!/bin/bash
 
-curl --form "Tiedosto=@$1" --form "Viesti=Sent from upload tool" https://samporapeli.fi/yhteydenotto/
+# Send a POST request to upload endpoint.
+# If an argument is given, it is the path to the file to be uploaded.
+# If no argument is given, script checks STDIN and uploads result as a message.
+
+CURL_ENDPOINT='https://samporapeli.fi/yhteydenotto/'
+
+if [ -z "$1" ]; then
+    TEXT_MESSAGE="$(cat)"
+    FILE_PATH=""
+else
+    TEXT_MESSAGE="Sent from upload tool"
+    FILE_PATH="$1"
+fi
+
+if [ -z "$FILE_PATH" ]; then
+    curl --form "Viesti=$TEXT_MESSAGE" "$CURL_ENDPOINT"
+else
+    curl --form "Viesti=$TEXT_MESSAGE" --form "Tiedosto=@$FILE_PATH" "$CURL_ENDPOINT"
+fi
