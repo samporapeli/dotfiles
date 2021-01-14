@@ -19,3 +19,6 @@
 [submodule ".vim/pack/sampo/start/vim-repeat"]
 	path = .vim/pack/sampo/start/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
+[submodule ".vim/pack/sampo/start/nerdtree"]
+	path = .vim/pack/sampo/start/nerdtree
+	url = https://github.com/preservim/nerdtree.git
