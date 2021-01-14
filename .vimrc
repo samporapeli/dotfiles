@@ -48,6 +48,7 @@ set autoindent
 set expandtab
 set tabstop=4 shiftwidth=4
 "set smarttab
+set shiftround
 
 " Make :W save (I often hit this accidentally as ':' is produced with Shift key)
 command W w
