@@ -62,6 +62,9 @@ set timeoutlen=1000 ttimeoutlen=0
 " Fix missing symbols
 let g:airline_powerline_fonts = 1
 
+" emmet-vim
+let g:user_emmet_leader_key=','
+
 " vimtex config
 let g:tex_flavor = "latex"
 nnoremap <F5> :VimtexCompile<CR>
