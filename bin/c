@@ -1,0 +1,9 @@
+#!/bin/bash
+# Compile and run programs written in C programming language
+
+BASENAME=$(echo $1 | rev | cut -f 2- -d '.' | rev)
+
+echo "Compiling $1 to executable $BASENAME..."
+gcc -g -Wall -std=c99 -o $BASENAME $1 &&
+    echo "Running ./$BASENAME..." && echo &&
+    "./$BASENAME"
