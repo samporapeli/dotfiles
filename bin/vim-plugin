@@ -21,6 +21,7 @@ elif [ "$1" = "remove" ] || [ "$1" = "delete" ]; then
     dotfiles rm -f $PLUGIN_LOCATION/$2
 elif [ "$1" = "update" ]; then
     echo "Updating repositories..."
+    dotfiles submodule init
     dotfiles submodule update
     echo "Updating helptags..."
     generate_helptags

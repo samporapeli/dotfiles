@@ -2,6 +2,9 @@
 
 source "$HOME/.shell_scripts"
 
+echo Updating dotfile repository...
+dotfiles pull
+
 # Update packages
 if command_exists apt; then
     sudo apt update && sudo apt upgrade
