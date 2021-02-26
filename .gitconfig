@@ -7,3 +7,5 @@
 	autocorrect = 8
 [init]
 	defaultBranch = main
+[pull]
+    rebase = false
