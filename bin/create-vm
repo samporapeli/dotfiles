@@ -7,7 +7,7 @@ else
     VM_NAME="$1"
 fi
 
-uvt-kvm create "$VM_NAME" &&
+uvt-kvm create --memory 4096 "$VM_NAME" &&
 uvt-kvm wait "$VM_NAME" &&
 ssh -o "StrictHostKeyChecking=no" ubuntu@$(uvt-kvm ip "$VM_NAME")
 echo -n "Destroy virtual machine $VM_NAME? "
