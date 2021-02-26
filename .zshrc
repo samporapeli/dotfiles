@@ -36,6 +36,11 @@ bindkey -v
 # Include aliases dotfile
 source ~/.aliases
 
+# Alias code to codium, if code is not defined
+if ! command_exists code; then
+    alias code=codium
+fi
+
 # Alias bat to batcat, if bat is not already defined
 if ! command_exists bat; then
     alias bat=batcat
