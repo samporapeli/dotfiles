@@ -22,3 +22,6 @@
 [submodule ".vim/pack/sampo/start/nerdtree"]
 	path = .vim/pack/sampo/start/nerdtree
 	url = https://github.com/preservim/nerdtree.git
+[submodule ".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
+	path = .oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
