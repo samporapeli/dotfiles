@@ -1,0 +1,14 @@
+{
+    "workbench.colorTheme": "Solarized Light",
+    "keyboard.dispatch": "keyCode",
+    "editor.wordWrap": "on",
+    "latex-workshop.view.pdf.viewer": "tab",
+    "window.zoomLevel": 0,
+    "cSpell.userWords": [
+        "textcites"
+    ],
+    "vim.vimrc.enable": true,
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}
