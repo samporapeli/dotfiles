@@ -1,0 +1,7 @@
+texlive-bibtexextra
+texlive-core
+texlive-fontsextra
+texlive-formatsextra
+texlive-langextra
+texlive-science
+biber
