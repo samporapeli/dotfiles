@@ -92,7 +92,7 @@ bindcode $mod+39 layout stacking
 bindcode $mod+25 layout tabbed
 bindcode $mod+26 layout toggle split
 
-# toggle tiling / floating (alt + space)
+# toggle tiling / floating (mod + shift + space)
 bindcode $mod+shift+65 floating toggle
 
 # change focus between tiling / floating windows (mod + space)
