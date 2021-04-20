@@ -25,7 +25,7 @@ plugins=(git zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 
 # Custom binaries and scripts
-export PATH=$PATH:~/bin
+export PATH=$PATH:~/bin:~/.local/bin
 source ~/.shell_scripts
 
 # Set editor
