@@ -29,8 +29,18 @@ export PATH=$PATH:~/bin
 source ~/.shell_scripts
 
 # Set editor
-export VISUAL=vim
-export EDITOR=$VISUAL
+if command_exists nvim; then
+    export VISUAL=nvim
+elif command_exists vim; then
+    export VISUAL=vim
+elif command_exists nano; then
+    export VISUAL=nano
+fi
+if [ -z ${VISUAL+x} ]; then
+    echo '$VISUAL is not set'
+else
+    export EDITOR=$VISUAL
+fi
 # Set vim mode for zsh
 bindkey -v
 # Include aliases dotfile
