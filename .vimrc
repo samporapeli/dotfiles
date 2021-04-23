@@ -82,5 +82,5 @@ function! ToggleBackground()
         echom "background is set to dark"
     endif
 endfunction
-call ToggleBackground()
+:silent call ToggleBackground()
 nnoremap <F12> :call ToggleBackground()<CR>
