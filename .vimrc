@@ -68,3 +68,19 @@ let g:user_emmet_leader_key=','
 " vimtex config
 let g:tex_flavor = "latex"
 nnoremap <F5> :VimtexCompile<CR>
+
+" background
+let t:is_light = 0
+function! ToggleBackground()
+    if t:is_light == 0
+        set background=light
+        let t:is_light = 1
+        echom "background is set to light"
+    else
+        set background=dark
+        let t:is_light = 0
+        echom "background is set to dark"
+    endif
+endfunction
+call ToggleBackground()
+nnoremap <F12> :call ToggleBackground()<CR>
