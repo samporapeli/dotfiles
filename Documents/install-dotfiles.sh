@@ -3,9 +3,9 @@
 function install_dotfiles() {
     # Get the necessary functions used
     if command -v curl &> /dev/null; then
-        source <(curl -s https://raw.githubusercontent.com/samporapeli/dotfiles/master/.shell_scripts)
+        source <(curl -s https://raw.githubusercontent.com/samporapeli/dotfiles/main/.shell_scripts)
     elif command -v wget /dev/null; then
-        source <(wget -qO - https://raw.githubusercontent.com/samporapeli/dotfiles/master/.shell_scripts)
+        source <(wget -qO - https://raw.githubusercontent.com/samporapeli/dotfiles/main/.shell_scripts)
     else
         echo "You must have curl or wget installed to complete installation."
         exit 1
@@ -35,12 +35,12 @@ function install_dotfiles() {
             GIT_PREFIX="https://github.com/"
         fi
         if command_exists apt-get; then
-            echo -n "Install some useful packages (list: https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/useful_packages_apt.txt) "
+            echo -n "Install some useful packages (list: https://raw.githubusercontent.com/samporapeli/dotfiles/main/Documents/useful_packages_apt.txt) "
             if y_n_dialog y; then
                 if command_exists curl; then
-                    install_packages  $(curl -s https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/useful_packages_apt.txt | tr '\n' ' ')
+                    install_packages  $(curl -s https://raw.githubusercontent.com/samporapeli/dotfiles/main/Documents/useful_packages_apt.txt | tr '\n' ' ')
                 elif command_exists wget; then
-                    install_packages $(wget -qO - https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/useful_packages_apt.txt | tr '\n' ' ')
+                    install_packages $(wget -qO - https://raw.githubusercontent.com/samporapeli/dotfiles/main/Documents/useful_packages_apt.txt | tr '\n' ' ')
                 else
                     echo "curl or wget required, skipping..."
                 fi
@@ -56,7 +56,7 @@ function install_dotfiles() {
         echo After oh-my-zsh installation you must exit the zsh shell, e. g. by typing exit and pressing enter.
         echo -n "Install oh-my-zsh? (remember to exit) "
         if y_n_dialog y; then
-            sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+            sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/main/tools/install.sh)"
         fi
         if [ "$INSTALL_TYPE" = "replace" ]; then
             echo ".dotfiles" >> .gitignore
@@ -65,7 +65,7 @@ function install_dotfiles() {
             echo -n "Destroy previous configuration? This cannot be undone. "
             if y_n_dialog n; then
                 echo Copying files...
-                dotfiles checkout -f master
+                dotfiles checkout -f main
                 echo Downloading git submodules...
                 dotfiles submodule init
                 bash -c "$HOME/bin/vim-plugin update" 
