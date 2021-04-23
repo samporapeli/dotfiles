@@ -37,7 +37,7 @@ vim-plugin update
 vim-plugin delete vim-airline
 ```
 
-## [https://github.com/nvm-sh/nvm](Node Version Manager)
+## [Node Version Manager](https://github.com/nvm-sh/nvm)
 Install or update nvm: `install-nvm`
 
 As loading nvm in .zshrc increases shell startup time, I decided to load nvm manually when needed: `. load-nvm` (or `source load-nvm`)
