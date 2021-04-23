@@ -14,7 +14,7 @@ If you select 'clone', it just clones this repository. With 'replace' it creates
 
 #### Notes
 * The "`curl -sL https://url/script.sh | bash`" way does not currently work with the install script as it's interactive. However, `bash -c "$(curl -sL sampo.website/install-dotfiles.sh)"` will work.
-* The actual file location is [https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/install-dotfiles.sh](https://raw.githubusercontent.com/samporapeli/dotfiles/master/Documents/install-dotfiles.sh) and [sampo.website](https://sampo.website) has a redirect to that location.
+* The actual file location is [https://raw.githubusercontent.com/samporapeli/dotfiles/main/Documents/install-dotfiles.sh](https://raw.githubusercontent.com/samporapeli/dotfiles/main/Documents/install-dotfiles.sh) and [sampo.website](https://sampo.website) has a redirect to that location.
 
 ### Manually
 This might be a good idea if you only want some parts of the configuration.
@@ -37,7 +37,7 @@ vim-plugin update
 vim-plugin delete vim-airline
 ```
 
-## nvm ([https://github.com/nvm-sh/nvm](Node Version Manager))
+## [https://github.com/nvm-sh/nvm](Node Version Manager)
 Install or update nvm: `install-nvm`
 
 As loading nvm in .zshrc increases shell startup time, I decided to load nvm manually when needed: `. load-nvm` (or `source load-nvm`)
