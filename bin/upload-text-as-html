@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+textfile2html.py "$1"
+upload "$1.html"
