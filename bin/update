@@ -2,9 +2,6 @@
 
 source "$HOME/.shell_scripts"
 
-echo Updating dotfile repository...
-dotfiles pull
-
 # Update packages
 if command_exists apt; then
     sudo apt update && sudo apt upgrade
@@ -12,6 +9,9 @@ fi
 if command_exists pacman; then
     sudo pacman -Syu
 fi
+
+echo Updating dotfile repository...
+dotfiles pull
 
 # Update oh-my-zsh, if it is installed
 if command_exists zsh && test -d ~/.oh-my-zsh; then
