@@ -56,5 +56,8 @@ Plasma but bspwm instead of kwin. `picom` as a compositor.
 ## Arch Linux
 This repository contains some configuration files related to my second computer running Arch Linux and i3wm.
 
+## Windows
+There is Windows specific configuration in [.windows-config](./.windows-config/) directory, currently only configuration file for Windows Terminal.
+
 ## Misc
 Configuration files to make programs work in certain (read: right :grin:) way, like .latexmkrc to use PDF as default format.
