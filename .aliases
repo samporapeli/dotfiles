@@ -5,3 +5,4 @@ alias svdvorak="setxkbmap se -variant svdvorak -option caps:swapescape"
 alias dot="dotfiles"
 alias e=$VISUAL
 alias py="python3"
+alias qn="quicknote"

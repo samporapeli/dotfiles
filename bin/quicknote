@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# quicknote or qn for short
+# tool for quickly creating notes with reasonable filenames
+
+DATESTAMP=$(date --iso-8601)
+
+QN_DELIM=$QN_DELIM
+if [[ ! -n "$QN_DELIM" ]]; then
+    QN_DELIM='_'
+fi
+
+if [[ "$1" = '--help' ]] || [[ "$1" == '-h' ]]; then
+    echo -e 'USAGE:'
+    echo -e '\t# show this help'
+    echo -e '\tqn --help'
+    echo -e '\t# open "'"$DATESTAMP$QN_DELIM" 'note.txt" in VISUAL editor'
+    echo -e '\tqn note.txt\t'
+    echo
+    echo -e 'CONFIG (env variables):\n\t'
+    echo -e '\tVISUAL (which editor to use)'
+    echo -e '\tQN_DIR (where notes are saved)'
+    echo -e '\tQN_DELIM (delimiter string between timestamp and name)'
+    exit 0
+fi
+
+if [[ ! -n "$VISUAL" ]]; then
+    echo 'VISUAL not set, try "export VISUAL=vim"'
+    exit 1
+fi
+
+if [[ -n "$QN_DIR" ]]; then
+    cd "$QN_DIR" || exit 1
+fi
+
+"$VISUAL" "$DATESTAMP$QN_DELIM$1"
