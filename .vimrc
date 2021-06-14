@@ -87,3 +87,6 @@ nnoremap <F12> :call ToggleBackground()<CR>
 
 " disable 'Press ENTER or type command to continue' when remote editing
 :let g:netrw_silent=1
+
+" syntax highlighting in markdown code blocks
+let g:markdown_fenced_languages = ['sh', 'bash=sh', 'python', 'html', 'javascript']
