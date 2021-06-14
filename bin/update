@@ -15,7 +15,7 @@ dotfiles pull
 
 # Update oh-my-zsh, if it is installed
 if command_exists zsh && test -d ~/.oh-my-zsh; then
-    omz-update
+    yes | omz-update
 fi
 
 # Update vim plugins
