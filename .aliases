@@ -6,3 +6,5 @@ alias dot="dotfiles"
 alias e=$VISUAL
 alias py="python3"
 alias qn="quicknote"
+alias qnl="quicknote --latest"
+alias qna="quicknote --all"

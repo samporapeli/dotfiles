@@ -16,6 +16,10 @@ if [[ "$1" = '--help' ]] || [[ "$1" == '-h' ]]; then
     echo -e '\tqn --help'
     echo -e '\t# open "'"$DATESTAMP$QN_DELIM" 'note.txt" in VISUAL editor'
     echo -e '\tqn note.txt\t'
+    echo -e '\t# open latest note that has "note" in filename'
+    echo -e '\tqn --latest note'
+    echo -e '\t# open all notes that have "note" in filename'
+    echo -e '\tqn --all note'
     echo
     echo -e 'CONFIG (env variables):\n\t'
     echo -e '\tVISUAL (which editor to use)'
@@ -33,4 +37,17 @@ if [[ -n "$QN_DIR" ]]; then
     cd "$QN_DIR" || exit 1
 fi
 
-"$VISUAL" "$DATESTAMP$QN_DELIM$1"
+if [[ "$1" = '--latest' ]] || [[ "$1" = '--all' ]]; then
+    SELECTED=()
+    mapfile -t SELECTED < <(ls -ct1 ./*$2*)
+    if [[ "$1" = '--latest' ]]; then
+        SELECTED=("${SELECTED[0]}")
+    fi
+    if [[ "${SELECTED[*]}" = '' ]]; then
+        echo "No notes found including \"$2\""
+        exit
+    fi
+    "$VISUAL" '-p' ${SELECTED[*]}
+else
+    "$VISUAL" "$DATESTAMP$QN_DELIM$1"
+fi
