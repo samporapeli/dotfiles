@@ -61,3 +61,8 @@ export BAT_THEME=ansi-dark
 # Load nvm
 #export NVM_DIR="$HOME/.nvm"
 #[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# device specific configuration
+if test -f $HOME/.device.profile; then
+    source $HOME/.device.profile
+fi
