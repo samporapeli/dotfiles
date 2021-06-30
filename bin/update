@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/bin/zsh
 
-source "$HOME/.shell_scripts"
+. "$HOME/.shell_scripts"
+. "$HOME/.zshrc"
 
 # Update packages
 if command_exists apt; then
@@ -18,7 +19,11 @@ if command_exists zsh && test -d ~/.oh-my-zsh; then
     yes | omz-update
 fi
 
-# Update vim plugins
+# Update antigen plugins
+echo 'Updating antigen plugins...'
+antigen update
+
+# Update vim plugins (and antigen and other possible submodules)
 if command_exists vim-plugin; then
     vim-plugin update
 fi
