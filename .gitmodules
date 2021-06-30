@@ -1,3 +1,6 @@
+[submodule ".antigen"]
+	path = .antigen
+	url = https://github.com/zsh-users/antigen.git
 [submodule ".vim/pack/sampo/start/vim-airline"]
 	path = .vim/pack/sampo/start/vim-airline
 	url = https://github.com/vim-airline/vim-airline.git

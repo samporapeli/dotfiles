@@ -1,5 +1,11 @@
 # Prompt
 . $HOME/.prompt.zsh
+
+# antigen plugin manager
+. $HOME/.antigen/bin/antigen.zsh
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen apply
+
 # Custom binaries and scripts
 export PATH=$PATH:~/bin:~/.local/bin
 source ~/.shell_scripts
