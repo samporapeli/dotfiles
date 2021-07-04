@@ -1,3 +1,7 @@
+# Completion and autocd
+. "$HOME/.completion.zsh"
+setopt autocd
+
 # Prompt
 . "$HOME/.prompt.zsh"
 
