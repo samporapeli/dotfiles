@@ -22,6 +22,8 @@ fi
 # Update antigen plugins
 echo 'Updating antigen plugins...'
 antigen update
+## this should update any added plugins
+zsh -i -c exit
 
 # Update vim plugins (and antigen and other possible submodules)
 if command_exists vim-plugin; then
