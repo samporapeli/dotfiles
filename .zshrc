@@ -1,6 +1,9 @@
 # Prompt
 . "$HOME/.prompt.zsh"
 
+# Set vim mode for zsh
+bindkey -v
+
 # antigen plugin manager
 . "$HOME/.antigen/bin/antigen.zsh"
 antigen init "$HOME/.config/antigenrc"
@@ -8,18 +11,25 @@ antigen init "$HOME/.config/antigenrc"
 # use Ctrl-P to accept suggestion
 bindkey '^P' autosuggest-accept
 
-# history and zsh-history-substring-search config
-# https://zsh.sourceforge.io/Doc/Release/Options.html
+# history and browsing history config
+# https://zsh.sourceforge.io/Doc/Release/Options.html#History
+# https://github.com/ohmyzsh/ohmyzsh/issues/1720#issuecomment-286366959
 HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
 setopt HIST_IGNORE_DUPS
 setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt INC_APPEND_HISTORY
 
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "$terminfo[kcuu1]" up-line-or-beginning-search
+bindkey "$terminfo[kcud1]" down-line-or-beginning-search
+bindkey -M vicmd 'k' up-line-or-beginning-search
+bindkey -M vicmd 'j' down-line-or-beginning-search
 
 # Custom binaries and scripts
 export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
@@ -38,8 +48,7 @@ if [ -z ${VISUAL+x} ]; then
 else
     export EDITOR=$VISUAL
 fi
-# Set vim mode for zsh
-bindkey -v
+
 # Include aliases dotfile
 . "$HOME/.aliases"
 
