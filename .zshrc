@@ -3,10 +3,7 @@
 
 # antigen plugin manager
 . "$HOME/.antigen/bin/antigen.zsh"
-antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle zsh-users/zsh-history-substring-search
-antigen bundle zsh-users/zsh-autosuggestions
-antigen apply
+antigen init "$HOME/.config/antigenrc"
 
 # use Ctrl-P to accept suggestion
 bindkey '^P' autosuggest-accept
