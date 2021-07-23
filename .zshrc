@@ -5,6 +5,9 @@ setopt autocd
 # Prompt
 . "$HOME/.prompt.zsh"
 
+# Make commenting with '#' work
+setopt interactivecomments
+
 # Set vim mode for zsh
 bindkey -v
 
