@@ -1,32 +1,46 @@
-export ZSH="$HOME/.oh-my-zsh"
+# Completion and autocd
+. "$HOME/.completion.zsh"
+setopt autocd
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="af-magic"
+# Prompt
+. "$HOME/.prompt.zsh"
 
-# Do not ask to update
-DISABLE_AUTO_UPDATE="true"
+# Make commenting with '#' work
+setopt interactivecomments
 
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
+# Set vim mode for zsh
+bindkey -v
 
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+# antigen plugin manager
+. "$HOME/.antigen/bin/antigen.zsh"
+antigen init "$HOME/.config/antigenrc"
 
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting)
+# use Ctrl-P to accept suggestion
+bindkey '^P' autosuggest-accept
 
-source $ZSH/oh-my-zsh.sh
+# history and browsing history config
+# https://zsh.sourceforge.io/Doc/Release/Options.html#History
+# https://github.com/ohmyzsh/ohmyzsh/issues/1720#issuecomment-286366959
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+setopt HIST_IGNORE_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt INC_APPEND_HISTORY
+
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "$terminfo[kcuu1]" up-line-or-beginning-search
+bindkey "$terminfo[kcud1]" down-line-or-beginning-search
+bindkey -M vicmd 'k' up-line-or-beginning-search
+bindkey -M vicmd 'j' down-line-or-beginning-search
 
 # Custom binaries and scripts
-export PATH=$PATH:~/bin:~/.local/bin
-source ~/.shell_scripts
+export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
+. "$HOME/.shell_scripts"
 
 # Set editor
 if command_exists nvim; then
@@ -41,10 +55,9 @@ if [ -z ${VISUAL+x} ]; then
 else
     export EDITOR=$VISUAL
 fi
-# Set vim mode for zsh
-bindkey -v
+
 # Include aliases dotfile
-source ~/.aliases
+. "$HOME/.aliases"
 
 # Alias code to codium, if code is not defined
 if ! command_exists code; then
@@ -63,6 +76,6 @@ export BAT_THEME=ansi-dark
 #[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 # device specific configuration
-if test -f $HOME/.device.profile; then
-    source $HOME/.device.profile
+if test -f "$HOME/.device.profile"; then
+    . "$HOME/.device.profile"
 fi

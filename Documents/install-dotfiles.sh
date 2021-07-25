@@ -52,12 +52,6 @@ function install_dotfiles() {
                 install_packages zsh
             fi
         fi
-        echo 'Installing of oh-my-zsh (https://ohmyz.sh)'
-        echo After oh-my-zsh installation you must exit the zsh shell, e. g. by typing exit and pressing enter.
-        echo -n "Install oh-my-zsh? (remember to exit) "
-        if y_n_dialog y; then
-            sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/main/tools/install.sh)"
-        fi
         if [ "$INSTALL_TYPE" = "replace" ]; then
             echo ".dotfiles" >> .gitignore
             dotfiles clone --bare $GIT_PREFIX$GIT_PATH $HOME/.dotfiles

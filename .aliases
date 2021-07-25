@@ -1,3 +1,4 @@
+alias ls="ls --color=auto"
 alias dotfiles="$(cat $HOME/.dotfiles-command.txt)"
 alias power-suspend="sudo systemctl suspend"
 alias config-i3="vim ~/.config/i3/config"
