@@ -267,7 +267,6 @@ time-alt = %H:%M
 format-prefix = 
 format-prefix-foreground = ${colors.foreground}
 format-underline = ${colors.primary}
-a
 label = %date% %time%
 
 [module/pulseaudio]
