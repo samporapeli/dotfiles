@@ -9,4 +9,6 @@ URxvt*boldFont: xft:Ubuntu Mono derivative Powerline Bold:pixelsize=12:antialias
 URxvt*italicFont: xft:Ubuntu Mono derivative Powerline Italic:pixelsize=12:antialias=true
 URxvt*letterSpace: -1
 URxvt*scrollBar: false
-
+URxvt*perl-ext-common: default, matcher
+URxvt.url-launcher: firefox
+URxvt*matcher.button: 1

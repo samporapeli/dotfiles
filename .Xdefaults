@@ -41,9 +41,11 @@ URxvt*.cursorColor:  #f8f8f2
 
 
 URxvt*depth: 32
-URxvt*font: xft:Hack:pixelsize=12:antialias=true
+URxvt*font: xft:Hack-Regular:pixelsize=12:antialias=true
 URxvt*boldFont: xft:Hack:pixelsize=12:antialias=true:Bold
 URxvt*italicFont: xft:Hack:pixelsize=12:antialias=true:Italic
 URxvt*letterSpace: -1
 URxvt*scrollBar: false
-
+URxvt*perl-ext-common: default, matcher
+URxvt.url-launcher: firefox
+URxvt*matcher.button: 1
