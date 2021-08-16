@@ -1,5 +1,8 @@
 " Based on https://missing.csail.mit.edu/2020/editors/ example
 
+" Set leader key
+let mapleader = ","
+
 " Not really necessary in .vimrc
 set nocompatible
 
