@@ -4,6 +4,9 @@
 [submodule ".vim/pack/sampo/start/vim-airline"]
 	path = .vim/pack/sampo/start/vim-airline
 	url = https://github.com/vim-airline/vim-airline.git
+[submodule ".vim/pack/sampo/start/vim-airline-themes"]
+	path = .vim/pack/sampo/start/vim-airline-themes
+	url = https://github.com/vim-airline/vim-airline-themes.git
 [submodule ".vim/pack/sampo/start/emmet-vim"]
 	path = .vim/pack/sampo/start/emmet-vim
 	url = https://github.com/mattn/emmet-vim.git
