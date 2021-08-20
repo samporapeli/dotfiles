@@ -10,3 +10,5 @@ wkhtmltopdf
 latexmk
 zsh
 gettext-base
+man
+texinfo
