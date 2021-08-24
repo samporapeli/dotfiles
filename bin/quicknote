@@ -20,6 +20,8 @@ if [[ "$1" = '--help' ]] || [[ "$1" == '-h' ]]; then
     echo -e '\tqn --latest note'
     echo -e '\t# open all notes that have "note" in filename'
     echo -e '\tqn --all note'
+    echo -e '\t# list all notes in the note directory'
+    echo -e '\tqn --ls'
     echo
     echo -e 'CONFIG (env variables):\n\t'
     echo -e '\tVISUAL (which editor to use)'
@@ -48,6 +50,8 @@ if [[ "$1" = '--latest' ]] || [[ "$1" = '--all' ]]; then
         exit
     fi
     "$VISUAL" '-p' ${SELECTED[*]}
+elif [[ "$1" = '--ls' ]]; then
+    ls "$QN_DIR"
 else
     "$VISUAL" "$DATESTAMP$QN_DELIM$1"
 fi
