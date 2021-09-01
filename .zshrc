@@ -24,8 +24,9 @@ bindkey '^P' autosuggest-accept
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=50000
 SAVEHIST=50000
-setopt HIST_IGNORE_DUPS
 setopt HIST_FIND_NO_DUPS
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
 setopt HIST_SAVE_NO_DUPS
 setopt INC_APPEND_HISTORY
 
