@@ -2,7 +2,7 @@
 
 # start necessary processes
 # keybindings
-sxhkd &
+sxhkd -m -1 &
 # compositor
 picom --experimental-backend &
 
