@@ -76,6 +76,11 @@ export BAT_THEME=ansi-dark
 #export NVM_DIR="$HOME/.nvm"
 #[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
+# set locale
+# (for some reason makes pipes.sh function correctly)
+# export LC_ALL='fi_FI.UTF-8'
+export LC_ALL='en_US.UTF-8'
+
 # device specific configuration
 if test -f "$HOME/.device.profile"; then
     . "$HOME/.device.profile"
