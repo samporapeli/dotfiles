@@ -28,3 +28,6 @@
 [submodule ".vim/pack/sampo/start/nerdtree"]
 	path = .vim/pack/sampo/start/nerdtree
 	url = https://github.com/preservim/nerdtree.git
+[submodule ".vim/pack/sampo/start/neoformat"]
+	path = .vim/pack/sampo/start/neoformat
+	url = https://github.com/sbdchd/neoformat.git
