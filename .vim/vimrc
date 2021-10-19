@@ -3,7 +3,8 @@
 " Set leader key
 let mapleader = ","
 
-" Not really necessary in .vimrc
+" It's a good idea to set nocompatible:
+" https://stackoverflow.com/a/22543937
 set nocompatible
 
 " Syntax hilighting
@@ -69,6 +70,7 @@ let g:tex_flavor = "latex"
 nnoremap <F5> :VimtexCompile<CR>
 
 " background
+" does not work with multiple tabs
 let t:is_light = 0
 function! ToggleBackground()
     if t:is_light == 0
