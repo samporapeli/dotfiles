@@ -7,7 +7,6 @@ wget
 bat
 pandoc
 wkhtmltopdf
-latexmk
 zsh
 gettext-base
 man
