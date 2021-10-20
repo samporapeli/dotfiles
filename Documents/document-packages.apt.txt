@@ -1,0 +1,3 @@
+pandoc
+wkhtmltopdf
+texlive-full

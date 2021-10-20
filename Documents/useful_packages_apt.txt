@@ -5,8 +5,6 @@ vim
 curl
 wget
 bat
-pandoc
-wkhtmltopdf
 zsh
 gettext-base
 man

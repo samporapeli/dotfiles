@@ -22,6 +22,17 @@ This might be a good idea if you only want some parts of the configuration.
 2. In repository directory, load git submodules: `git submodule init && git submodule update`
 3. Copy/link files from repository to needed locations in home directory.
 
+## Document related packages
+There's a small list of document editing related packages at
+[~/Documents/document-packages.apt.txt]
+including a full texlive install for creating documents using Latex.
+This is not included in the base install, as the size of the installation is rather big.
+Install packages from file:
+```zsh
+sudo apt install $(tr '\n' ' ' < ~/Documents/document-packages.apt.txt)
+```
+TODO: add helper function for this and use it here and in install script.
+
 ## How I manage vim plugins 
 Vim 8 introduced native package management, and that is what I use. [Here](https://shapeshed.com/vim-packages/) you can find a good tutorial on how to set it up with `git submodule`. I currently use the path [~/.vim/pack/sampo/start](.vim/pack/sampo/start) for all plugins.
 
