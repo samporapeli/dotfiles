@@ -31,3 +31,6 @@
 [submodule ".vim/pack/sampo/start/neoformat"]
 	path = .vim/pack/sampo/start/neoformat
 	url = https://github.com/sbdchd/neoformat.git
+[submodule ".local/share/nvim/site/autoload/vim-plug"]
+	path = .local/share/nvim/site/autoload/vim-plug
+	url = https://github.com/junegunn/vim-plug.git

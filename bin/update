@@ -29,3 +29,9 @@ zsh -i -c exit
 if command_exists vim-plugin; then
     vim-plugin update
 fi
+
+# Update Neovim plugins
+if command_exists nvim; then
+    echo 'nvim found, updating plugins...'
+    nvim -c PlugInstall -c PlugUpdate -c PlugClean -c quit -c quit
+fi
