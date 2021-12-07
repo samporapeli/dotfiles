@@ -1,0 +1,21 @@
+* {
+    darkgrey: #212121ee;
+    transparent: #00000000;
+    background-color: @transparent;
+    color: #fff;
+}
+
+window {
+    background-color: @darkgrey;
+    transparency: "real";
+    border-radius: 10px;
+    padding: 14px;
+}
+
+mainbox {
+    border-radius: 5;
+}
+
+entry {
+    placeholder: "Search";
+}

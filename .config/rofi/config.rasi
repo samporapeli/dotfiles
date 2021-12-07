@@ -1,6 +1,10 @@
 configuration {
-    modi: "window,drun,ssh,combi";
-    theme: "Monokai";
+    modi: "window,drun,ssh,combi,calc";
     font: "Noto 12";
     combi-modi: "window,drun,ssh";
+    show-icons: true;
+    sidebar-mode: true;
+    location: 0;
 }
+// @theme "Monokai"
+@theme "samporapeli"
