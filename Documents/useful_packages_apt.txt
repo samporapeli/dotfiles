@@ -2,6 +2,7 @@ git
 tmux
 screen
 vim
+neovim
 curl
 wget
 bat
