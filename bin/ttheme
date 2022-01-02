@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# currently only Konsole is supported
+if [[ -z "$KONSOLE_VERSION" ]]; then
+    echo 'This terminal emulator is not supported'
+    exit 1
+fi
+
+KONSOLE_LIGHT_THEME="SolarizedLight"
+KONSOLE_DARK_THEME="Breeze"
+
+# theme setting function
+set_theme() {
+    # set ARGUMENT variable for later use
+    if [[ "$1" == 'dark' ]]; then
+        ARGUMENT="colors=$KONSOLE_DARK_THEME"
+    else
+        ARGUMENT="colors=$KONSOLE_LIGHT_THEME"
+    fi
+    # set colors using konsoleprofile
+    # inside tmux? pass through
+    # (https://askubuntu.com/questions/416572/switch-profile-in-konsole-from-command-line)
+    # (https://superuser.com/questions/1193957/how-can-i-change-the-colorscheme-through-command-line)
+    # normal
+    if [[ -z "$TMUX" ]]; then
+        konsoleprofile "$ARGUMENT"
+    # tmux
+    else
+        # according to `konsoleprofile` source code `printf`
+        # is more portable than `echo`, thus using printf
+        printf '\033Ptmux;\033\033]50;%s\007\033\\' "$ARGUMENT"
+    fi
+}
+
+echo_help() (
+    echo 'supported parameters:'
+    echo -e '  dark\n  light\n  help'
+    echo ''
+    echo 'parameters are matched using wildcard:'
+    echo '  d   -> dark'
+    echo '  lig -> light'
+    echo 'etc.'
+)
+
+# dark, light or help?
+
+# the first test will match e.g. '', 'h'
+if [[ 'help' == "$1"* ]]; then
+    echo_help
+elif [[ 'dark' == "$1"* ]]; then
+    set_theme 'dark'
+elif [[ 'light' == "$1"* ]]; then
+    set_theme 'light'
+else
+    echo "parameter '$1' is not supported"
+    echo ''
+    echo_help
+    exit 1
+fi
