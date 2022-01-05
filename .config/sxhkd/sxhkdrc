@@ -11,6 +11,7 @@ super + @space
 	rofi -show combi
 
 # make sxhkd reload its configuration files:
+# (if Escape and CapsLock are swapped, press the button that activates CapsLock)
 super + shift + Escape
 	pkill -USR1 -x sxhkd && notify-send 'sxhkd config reloaded' || notify-send 'sxhkd reload failed'
 
