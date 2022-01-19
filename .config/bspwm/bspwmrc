@@ -26,6 +26,7 @@ bspc config gapless_monocle      true
 # window rules
 bspc rule -a 'plasmashell' state=floating layer=above focus=off sticky=on border=off center=off
 bspc rule -a Gimp state=floating follow=on
+bspc rule -a Zathura state=tiled
 
 # do not overlap with the top bar
 bspc config top_padding $((48 + 24))
