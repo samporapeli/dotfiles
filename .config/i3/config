@@ -42,35 +42,35 @@ bindsym xf86audiomicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 # use mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# start a terminal (mod + enter / ctrl + alt + dvorak t)
+# start a terminal (mod + enter / ctrl + alt + t)
 bindcode $mod+36 exec i3-sensible-terminal
-bindcode control+$alt+45 exec urxvt
+bindsym control+$alt+t exec urxvt
 
-# kill focused window with mod+q (as in q in qwerty layout)
-bindcode $mod+24 kill
+# kill focused window with mod + w
+bindsym $mod+w kill
 
 # start dmenu (a program launcher) (alt + space)
 # bindcode $alt+65 exec dmenu_run
 # start rofi instead
 bindcode $alt+65 exec rofi -show combi
 
-# change focus - just as it should work in vim with dvorak
-bindcode $mod+44 focus left
-bindcode $mod+54 focus down
-bindcode $mod+55 focus up
-bindcode $mod+33 focus right
+# change focus - just as it should work in vim
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
 
-# alternatively, you can use the cursor keys:
+# alternatively, you can use the arrow keys:
 bindcode $mod+113 focus left
 bindcode $mod+116 focus down
 bindcode $mod+111 focus up
 bindcode $mod+114 focus right
 
 # move focused window
-bindcode $mod+shift+44 move left
-bindcode $mod+shift+54 move down
-bindcode $mod+shift+55 move up
-bindcode $mod+shift+33 move right
+bindsym $mod+shift+h move left
+bindsym $mod+shift+j move down
+bindsym $mod+shift+k move up
+bindsym $mod+shift+l move right
 
 # alternatively, you can use the cursor keys:
 bindcode $mod+shift+113 move left
@@ -78,19 +78,19 @@ bindcode $mod+shift+116 move down
 bindcode $mod+shift+111 move up
 bindcode $mod+shift+114 move right
 
-# split in horizontal orientation (dvorak z)
-bindcode $mod+61 split h
+# split in horizontal orientation
+bindsym $mod+z split h
 
-# split in vertical orientation (dvorak v)
-bindcode $mod+60 split v
+# split in vertical orientation
+bindsym $mod+v split v
 
-# enter fullscreen mode for the focused container (dvorak f)
-bindcode $mod+29 fullscreen toggle
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
 
-# change container layout (stacked, tabbed, toggle split) (dvorak o,.)
-bindcode $mod+39 layout stacking
-bindcode $mod+25 layout tabbed
-bindcode $mod+26 layout toggle split
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+o layout stacking
+# bindcode $mod+25 layout tabbed
+# bindcode $mod+26 layout toggle split
 
 # toggle tiling / floating (mod + shift + space)
 bindcode $mod+shift+65 floating toggle
@@ -98,8 +98,8 @@ bindcode $mod+shift+65 floating toggle
 # change focus between tiling / floating windows (mod + space)
 bindcode $mod+65 focus mode_toggle
 
-# focus the parent container (mod + dvorak a)
-bindcode $mod+38 focus parent
+# focus the parent container
+# bindcode $mod+a focus parent
 
 # focus the child container
 #bindsym $mod+d focus child
@@ -144,13 +144,13 @@ bindsym $mod+shift+8 move container to workspace number $ws8
 bindsym $mod+shift+9 move container to workspace number $ws9
 bindsym $mod+shift+0 move container to workspace number $ws10
 
-# reload the configuration file (dvorak r)
-bindcode $mod+shift+32 reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3) (dvorak p)
-bindcode $mod+shift+27 restart
-# exit i3 (logs you out of your X session) (dvorak e)
+# reload the configuration file
+bindsym $mod+shift+r reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+shift+p restart
+# exit i3 (logs you out of your X session)
 # bindsym $mod+shift+period exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
-bindcode $mod+shift+40 exit
+bindsym $mod+shift+e exit
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -160,10 +160,10 @@ mode "resize" {
         # pressing right will grow the window’s width.
         # pressing up will shrink the window’s height.
         # pressing down will grow the window’s height.
-        bindcode 44 resize shrink width 10 px or 10 ppt
-        bindcode 54 resize grow height 10 px or 10 ppt
-        bindcode 55 resize shrink height 10 px or 10 ppt
-        bindcode 33 resize grow width 10 px or 10 ppt
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
@@ -176,8 +176,8 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
-# Dvorak r
-bindcode $mod+32 mode "resize"
+# Switch to resize mode
+bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
