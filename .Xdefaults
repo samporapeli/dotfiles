@@ -49,3 +49,4 @@ URxvt*scrollBar: false
 URxvt*perl-ext-common: default, matcher
 URxvt.url-launcher: firefox
 URxvt*matcher.button: 1
+URxvt*internalBorder: 12
