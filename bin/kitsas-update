@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# exit on failed command
+set -e
+
+# get download link
+cd "$HOME/bin/"
+mkdir -p temp/
+
+# create python virtual env if it doesn't exist
+if [[ ! -d "venv" ]]; then
+    echo 'Creating python virtual environment...'
+    python3 -m venv venv
+fi
+
+echo 'Activating python virtual environment...'
+source venv/bin/activate
+
+echo 'Checking/installing requirements...'
+pip install beautifulsoup4 requests
+
+echo 'Fetching download link from webpage'
+URL_FILE="kitsas_appimage_url.txt"
+python -c "
+import sys
+
+import requests
+from bs4 import BeautifulSoup
+
+download_url = 'https://kitsas.fi/lataa/'
+r = requests.get(download_url)
+if r.status_code != 200:
+    print(f'Downloading url {download_url} failed with status HTTP {r.status_code}')
+    exit(1)
+s = BeautifulSoup(r.text)
+
+for link in s.find_all('a'):
+    href = link.get('href')
+    if type(href) is str and 'AppImage' in href:
+        print(href)
+" | tail -n1 | tr -d '\n' > "temp/$URL_FILE"
+
+# parse filename from url
+python -c "
+import sys
+
+url = sys.argv[-1]
+# last non-empty string of url split by '/'
+filename = [s for s in url.split('/') if s != ''][-1]
+
+print(filename)
+" $(cat "$URL_FILE") | tr -d '\n' > "temp/$URL_FILE.filename"
+
+echo 'Downloading new AppImage...'
+cd temp
+# relies that filename format is somewhat consistent between versions
+rm -if ./Kitsas*.AppImage*
+wget "$(cat $URL_FILE)"
+
+echo 'Copying the AppImage and creating a symlink...'
+cd ..
+mv "temp/$(cat temp/$URL_FILE.filename)" "./"
+chmod +x "$(cat temp/$URL_FILE.filename)"
+ln -sf "$HOME/bin/$(cat temp/$URL_FILE.filename)" "$HOME/bin/kitsas"
+
+echo 'Updated!'
