@@ -132,6 +132,10 @@ bindsym $mod+0 workspace number $ws10
 # toggle workspace
 bindsym $mod+Tab workspace back_and_forth
 
+# change to next/previous workspace
+bindsym $mod+ctrl+Right workspace next
+bindsym $mod+ctrl+Left  workspace prev
+
 # move focused container to workspace
 bindsym $mod+shift+1 move container to workspace number $ws1
 bindsym $mod+shift+2 move container to workspace number $ws2
