@@ -9,4 +9,5 @@ call plug#begin(stdpath('data') . 'plugged')
 Plug 'norcalli/nvim-colorizer.lua'
 call plug#end()
 set termguicolors
-lua require'colorizer'.setup()
+" on lua error handling: https://www.lua.org/pil/8.4.html
+lua if pcall(function () require'colorizer' end) then require'colorizer'.setup() end
