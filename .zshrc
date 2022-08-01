@@ -70,7 +70,7 @@ if ! command_exists bat; then
     alias bat=batcat
 fi
 # bat theme
-export BAT_THEME=ansi-dark
+export BAT_THEME=ansi
 
 # Load nvm
 #export NVM_DIR="$HOME/.nvm"
