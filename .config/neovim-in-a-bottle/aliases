@@ -14,7 +14,7 @@ niab () (
 # accepts param:
 #   install_type (`compile`, `package` or `download`)
 niab-build () (
-    cd "$HOME/bin/neovim-in-a-bottle"
+    cd "$HOME/.config/neovim-in-a-bottle"
     if [[ -n "$1" ]]; then
         docker build --build-arg install_type=$1 --no-cache=true -t neovim-in-a-bottle .
     else
