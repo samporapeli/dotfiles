@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# TODO https://stackoverflow.com/questions/41703070/docker-container-sharing-clipboard-with-host
+# launch dockerized nvim sharing configuration and parameter directory/file
+
+niab () (
+    docker run \
+        -v "$HOME/.vim":/home/nvim/.vim \
+        -v "$HOME/.config/nvim":/home/nvim/.config/nvim \
+        -v "$(pwd)":"/home/nvim/files" \
+        -it neovim-in-a-bottle \
+        "nvim" /home/nvim/files/
+)
+
+# accepts param:
+#   install_type (`compile`, `package` or `download`)
+niab-build () (
+    cd "$HOME/bin/neovim-in-a-bottle"
+    if [[ -n "$1" ]]; then
+        docker build --build-arg install_type=$1 --no-cache=true -t neovim-in-a-bottle .
+    else
+        docker build --no-cache=true -t neovim-in-a-bottle .
+    fi
+)

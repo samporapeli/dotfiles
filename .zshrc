@@ -76,6 +76,9 @@ export BAT_THEME=ansi-dark
 #export NVM_DIR="$HOME/.nvm"
 #[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
+# neovim-in-a-bottle
+. "$HOME/.config/neovim-in-a-bottle/aliases"
+
 # set locale
 # (for some reason makes pipes.sh function correctly)
 # export LC_ALL='fi_FI.UTF-8'
