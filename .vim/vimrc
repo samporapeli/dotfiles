@@ -99,3 +99,5 @@ map <leader>t :NERDTreeToggle<CR>
 map <leader>nh :noh<CR>
 
 map <leader>aa ms gg V G "+y g`s:delmark s<CR>:echo 'Copied buffer content to +'<CR>
+
+map <leader>sp :set spell!<CR>
