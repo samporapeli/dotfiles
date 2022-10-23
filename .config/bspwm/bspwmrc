@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 # start necessary processes
 # keybindings
@@ -6,17 +6,19 @@ sxhkd &
 # compositor
 picom --experimental-backend &
 
-# workspaces
+# workspaces and displays
+bspc config remove_disabled_monitors true
+bspc config remove_unplugged_monitors true
 bspc monitor -d I II III IV V VI VII VIII IX X
 
 # gaps & borders
-bspc config border_width         6
-bspc config window_gap          12
+bspc config border_width         3
+bspc config window_gap           8
 
 # colors
 bspc config normal_border_color   '#cfcbd0'
-bspc config active_border_color   '#777777'
-bspc config focused_border_color  '#777777'
+bspc config active_border_color   '#173f4f'
+bspc config focused_border_color  '#4bb679'
 
 # windows
 bspc config split_ratio          0.50
@@ -29,4 +31,4 @@ bspc rule -a Gimp state=floating follow=on
 bspc rule -a Zathura state=tiled
 
 # do not overlap with the top bar
-bspc config top_padding $((48 + 24))
+bspc config top_padding $((36 + 0))
