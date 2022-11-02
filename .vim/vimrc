@@ -42,6 +42,9 @@ set tabstop=4 shiftwidth=4
 "set smarttab
 set shiftround
 
+" don't break words
+set linebreak
+
 " Make :W save (I often hit this accidentally as ':' is produced with Shift key)
 command W w
 command Wq wq
