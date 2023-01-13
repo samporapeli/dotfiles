@@ -45,6 +45,9 @@ set shiftround
 " don't break words
 set linebreak
 
+" Show colorcolumn on `textwidth`
+set colorcolumn=+0
+
 " Make :W save (I often hit this accidentally as ':' is produced with Shift key)
 command W w
 command Wq wq
