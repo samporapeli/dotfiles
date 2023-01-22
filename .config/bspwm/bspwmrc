@@ -27,6 +27,7 @@ bspc config gapless_monocle      true
 
 # window rules
 bspc rule -a 'plasmashell' state=floating layer=above focus=off sticky=on border=off center=off
+bspc rule -a 'krunner' state=floating layer=above focus=off sticky=on border=off center=off
 bspc rule -a Gimp state=floating follow=on
 bspc rule -a Zathura state=tiled
 
