@@ -13,3 +13,5 @@ set termguicolors
 " on lua error handling: https://www.lua.org/pil/8.4.html
 lua if pcall(function () require'colorizer' end) then require'colorizer'.setup() end
 lua require('Comment').setup()
+
+lua if os.getenv('NVIM_IDE') then require('ide') end

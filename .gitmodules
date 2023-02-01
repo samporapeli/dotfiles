@@ -34,3 +34,6 @@
 [submodule ".local/share/nvim/site/autoload/vim-plug"]
 	path = .local/share/nvim/site/autoload/vim-plug
 	url = https://github.com/junegunn/vim-plug.git
+[submodule ".local/share/nvim/site/pack/packer/start/packer.nvim"]
+	path = .local/share/nvim/site/pack/packer/start/packer.nvim
+	url = https://github.com/wbthomason/packer.nvim.git
