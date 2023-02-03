@@ -6,6 +6,9 @@ cd $PLUGIN_LOCATION
 
 function generate_helptags() {
     vim -c "helptags ALL" -c q    
+    if command_exists nvim; then
+        nvim -c "helptags ALL" -c q
+    fi
 }
 
 if [ "$1" = "add" ]; then
@@ -23,6 +26,10 @@ elif [ "$1" = "update" ]; then
     echo "Updating repositories..."
     dotfiles submodule init
     dotfiles submodule update
+    if command_exists nvim; then
+        echo 'nvim found, updating plugins (vim-plug)...'
+        nvim -c PlugInstall -c PlugUpdate -c PlugClean -c quit -c quit
+    fi
     echo "Updating helptags..."
     generate_helptags
     exit 0

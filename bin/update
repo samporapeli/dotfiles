@@ -25,13 +25,7 @@ antigen update
 ## this should update any added plugins
 zsh -i -c exit
 
-# Update vim plugins (and antigen and other possible submodules)
+# Update (n)vim plugins (and antigen and other possible submodules)
 if command_exists vim-plugin; then
     vim-plugin update
-fi
-
-# Update Neovim plugins
-if command_exists nvim; then
-    echo 'nvim found, updating plugins...'
-    nvim -c PlugInstall -c PlugUpdate -c PlugClean -c quit -c quit
 fi
