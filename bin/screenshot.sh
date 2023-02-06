@@ -19,4 +19,14 @@ else
 fi
 
 xclip -selection clipboard -t image/png -i "$FILE" &&
-    notify-send "Image \"$FILE\" copied to clipboard"
+    NOTIFICATION_RESULT=$(
+        notify-send \
+            -a 'screenshot.sh' \
+            "Image \"$FILE\" copied to clipboard" \
+            --action=KEEP="Keep and close" \
+            --action=DELETE="Delete the file" \
+    )
+
+if [[ "$NOTIFICATION_RESULT" = "DELETE" ]]; then
+    rm "$FILE"
+fi
