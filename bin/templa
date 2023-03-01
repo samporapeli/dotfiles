@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -e
+
+USAGE="templa template/path [target_dir]"
+
+TEMPLATE_DIR_BASE="$HOME/Documents/Templates"
+TEMPLATE_DIR="$TEMPLATE_DIR_BASE/$1"
+
+echo "Copying $(ls "$TEMPLATE_DIR" | wc -l) files from $TEMPLATE_DIR"
+cp -r "$TEMPLATE_DIR" "./$2"

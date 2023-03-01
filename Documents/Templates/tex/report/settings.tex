@@ -1,0 +1,70 @@
+\documentclass[11pt,a4paper,english,oneside]{article}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{ae,aecompl}
+\usepackage[style=authoryear,uniquelist=false,sorting=nyt,maxbibnames=99,maxcitenames=2]{biblatex}
+\usepackage{csquotes}
+\usepackage{listings,color}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{lmodern}
+\usepackage{helvet}
+\usepackage{lastpage}
+\usepackage{hyphenat}
+\usepackage[a-1b]{pdfx}
+\usepackage{hyperref}
+\usepackage{tocloft}
+\usepackage{verbatim}
+
+\graphicspath{ {./img/} }
+
+% References
+\addbibresource{references.bib}
+% \DefineBibliographyStrings{finnish}{andothers={ym\adddot}}
+
+% Link styles
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+    citecolor=black
+}
+\urlstyle{same}
+
+% Empty line instead of indentation between paragraphs
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+% Margins
+\evensidemargin 0mm
+\oddsidemargin 0mm
+\textwidth 159.2mm
+\topmargin 0mm
+\headheight 0mm
+\headsep 0mm
+\textheight 246.2mm
+
+% Line height 1.5
+\linespread{1.24}\selectfont
+
+\begin{comment}
+% Hyphenation settings
+\hyphenpenalty=10000
+\tolerance=100
+\hbadness=10000
+\end{comment}
+
+% Title format
+\begin{comment}
+% normal, sans serif
+\titleformat{\section}{\normalfont\sffamily\Large}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\sffamily\large}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\sffamily\normalsize}{\thesubsubsection}{1em}{}
+% small caps, sans serif
+\titleformat{\section}{\normalfont\sffamily\scshape\Large}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\sffamily\scshape\large}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\sffamily\scshape\normalsize}{\thesubsubsection}{1em}{}
+\end{comment}
