@@ -110,3 +110,6 @@ map <leader>sp :set spell!<CR>
 
 " auto-pairs
 let g:AutoPairsShortcutToggle = '<leader>p'
+
+map <leader>bn :bn<CR>
+map <leader>bp :bp<CR>
