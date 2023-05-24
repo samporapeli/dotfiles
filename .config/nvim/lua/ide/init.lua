@@ -2,9 +2,6 @@ require("ide.plugins")
 
 require("mason").setup()
 require("mason-lspconfig").setup({
-  ensure_installed = {
-    "lua_ls",
-  }
 })
 
 local cmp = require("cmp")
@@ -38,6 +35,9 @@ local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
 local lsp_attach = function(client, bufnr)
   -- custom keybindings here
 end
+
+vim.keymap.set('n', '<Leader>h', vim.lsp.buf.hover)
+vim.keymap.set('n', '<Leader>d', vim.lsp.buf.definition)
 
 local lspconfig = require("lspconfig")
 for _, server_name in ipairs(require("mason-lspconfig").get_installed_servers()) do
