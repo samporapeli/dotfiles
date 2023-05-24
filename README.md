@@ -33,6 +33,16 @@ sudo apt install $(tr '\n' ' ' < ~/Documents/document-packages.apt.txt)
 ```
 TODO: add helper function for this and use it here and in install script.
 
+## Neovim
+### `nide`: Neovim "IDE" with LSP
+My vim plugin ecosystem configuration is a bit spaghetti, so I'm writing down the required steps for making the `nide` alias work as it should.
+
+**WIP** Setting up:
+* Install `npm`
+* Make sure that the `$HOME/.config/nvim/` contains files from this repository, e.g., run `dot pull`.
+* `vim-plugin update`, however might not be necessary
+* `nide -c PackerUpdate`
+
 ## How I manage vim plugins 
 Vim 8 introduced native package management, and that is what I use. [Here](https://shapeshed.com/vim-packages/) you can find a good tutorial on how to set it up with `git submodule`. I currently use the path [~/.vim/pack/sampo/start](.vim/pack/sampo/start) for all plugins.
 
