@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+
+# Configuration file opener
+# See :conf -h or function print_help() for details
+#
+#
+# Future development ideas
+#
+# - tab completion (or support for partial key inputs)
+# - check e.g. $XDG_CONFIG_DIRS with typical filenames/paths instead of absolute addresses
+#     - support multiple alternative paths for each command (e.g., ".vimrc" or, if not found, ".vim/vimrc")
+# - traverse/print the array in alphabetical order when looping (especially when printing all mappings, but also for tests)
+# - separate functionality and configuration: external mapping file
+
+set -e
+
+VERSION="0.1.0"
+
+declare -A MAP
+
+MAP[self]="$0"
+
+# MAP COMMANDS TO CONFIGURATION FILE PATHS
+# protip: in vim, select lines and :sort
+MAP[alias]="$HOME/.aliases"
+MAP[bash]="$HOME/.bashrc"
+MAP[bspwm]="$HOME/.config/bspwm/bspwmrc"
+MAP[htop]="$HOME/.config/htop/htoprc"
+MAP[i3]="$HOME/.config/i3/config"
+MAP[kitty]="$HOME/.config/kitty/kitty.conf"
+MAP[neofetch]="$HOME/.config/neofetch/config.conf"
+MAP[nvim]="$HOME/.config/nvim/"
+MAP[picom]="$HOME/.config/picom/picom.conf"
+MAP[polybar]="$HOME/.config/polybar/config.ini"
+MAP[rofi]="$HOME/.config/rofi/config.rasi"
+MAP[screen]="$HOME/.screenrc"
+MAP[ssh]="$HOME/.ssh/config"
+MAP[sway]="$HOME/.config/sway/config"
+MAP[sxhkd]="$HOME/.config/sxhkd/sxhkdrc"
+MAP[tmux]="$HOME/.tmux.conf"
+MAP[vim]="$HOME/.vim/vimrc"
+MAP[xdefaults]="$HOME/.Xdefaults"
+MAP[xinit]="$HOME/.xinitrc"
+MAP[xprofile]="$HOME/.xprofile"
+MAP[zsh]="$HOME/.zshrc"
+
+#
+# End of mappings
+# 
+
+function print_help() {
+  echo "              _ "
+  echo "o  _  _   _  |_ "
+  echo "o (_ (_) | | |  "
+  echo -e "  v$VERSION"
+  echo
+  echo ":conf is a configuration file opener aiming to make opening your beloved configuration files faster without the burden of remembering where the files are located."
+  echo
+  echo "Mappings can be added and modified with the command ':conf self'."
+  echo "Written in Bash (v4.0) and released under an open-source license  (MIT)."
+  echo "Homepage: https://github.com/samporapeli/dotfiles/blob/main/bin/:conf"
+  echo
+  echo "Usage:"
+  echo -e "\t$0 program"
+  echo -e "\t$0 --help"
+  echo -e "\t$0 --test"
+  echo -e "\t$0 --mappings"
+  echo "Example:"
+  echo -e "\t$0 tmux"
+  echo -e "\t# ^ Opens '${MAP[tmux]}' in your \$EDITOR (currently '$EDITOR')"
+  echo -e
+  echo "Program names in this script are case-insensitive, e.g., 'TMUX' and 'tMuX' are the same as 'tmux'."
+  echo
+  echo "--test mode checks for each configured file path in MAP and reports whether they are found in the file system. Every file or directory doesn't have to exist even though they are defined in the MAP associative array, but it might be helpful to check whether the configuration file paths are correctly added. In addition to providing path-by-path details and a summary, the mode exits with the status code corresponding to the number of broken paths found."
+}
+
+function print_mappings() {
+  echo -e "All values and corresponding paths:\n"
+  for KEY in "${!MAP[@]}"; do
+    # TODO: look for options for a nice padding
+    echo -e "\t$KEY -> ${MAP[$KEY]}"
+  done
+  echo -e "\nEdit the list by using the command '$0 self'"
+}
+
+if [[ $# -lt 1 ]]; then
+  print_help
+  exit 255
+fi
+
+if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+  print_help
+  exit 0
+fi
+
+if [[ "$1" == "--mappings" || "$1" == "-m" ]]; then
+  print_mappings
+  exit 0
+fi
+
+if [[ "$1" == "--test" || "$1" == "-t" ]]; then
+  OK=0
+  ERROR=0
+
+  for KEY in "${!MAP[@]}"; do
+    FILE="${MAP[$KEY]}"
+    echo -en "$KEY -> $FILE: "
+    if [[ -f "$FILE" ]]; then
+      echo "OK (file)"
+      ((OK=OK+1))
+    elif [[ -d "$FILE" ]]; then
+      echo "OK (directory)"
+      ((OK=OK+1))
+    else
+      echo "ERROR (not found)"
+      ((ERROR=ERROR+1))
+    fi
+  done
+  echo
+  echo "Tests done. $((OK+ERROR)) paths tested: $OK OK, $ERROR not found."
+  exit $ERROR
+fi
+
+# $1 to lowercase
+KEY="${1,,}"
+if [[ -n ${MAP["$KEY"]} ]]; then
+  CONFIG_FILE=${MAP["$KEY"]}
+else
+  echo "No config file set for '$KEY'"
+  print_mappings
+  exit 254
+fi
+
+# cd for easily opening related files with relative paths
+cd "$(dirname """$CONFIG_FILE""")"
+# open the path in $EDITOR
+$EDITOR "$CONFIG_FILE"
