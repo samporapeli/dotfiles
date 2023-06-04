@@ -14,7 +14,7 @@
 
 set -e
 
-VERSION="0.1.0"
+VERSION="0.1.1"
 
 declare -A MAP
 
@@ -48,11 +48,18 @@ MAP[zsh]="$HOME/.zshrc"
 # End of mappings
 # 
 
-function print_help() {
+# use this instead of full path (which is what $0 gives)
+SELF_CMD=":conf"
+
+function print_version() {
   echo "              _ "
   echo "o  _  _   _  |_ "
   echo "o (_ (_) | | |  "
   echo -e "  v$VERSION"
+}
+
+function print_help() {
+  print_version
   echo
   echo ":conf is a configuration file opener aiming to make opening your beloved configuration files faster without the burden of remembering where the files are located."
   echo
@@ -61,12 +68,15 @@ function print_help() {
   echo "Homepage: https://github.com/samporapeli/dotfiles/blob/main/bin/:conf"
   echo
   echo "Usage:"
-  echo -e "\t$0 program"
-  echo -e "\t$0 --help"
-  echo -e "\t$0 --test"
-  echo -e "\t$0 --mappings"
+  echo -e "\t$SELF_CMD program"
+  echo -e "\t$SELF_CMD --edit program\t\t# same as just ':conf \$PROGRAM'"
+  echo -e "\t$SELF_CMD --print-only program\t# just print the path, do not open with editor"
+  echo -e "\t$SELF_CMD --help"
+  echo -e "\t$SELF_CMD --version"
+  echo -e "\t$SELF_CMD --test"
+  echo -e "\t$SELF_CMD --mappings"
   echo "Example:"
-  echo -e "\t$0 tmux"
+  echo -e "\t$SELF_CMD tmux"
   echo -e "\t# ^ Opens '${MAP[tmux]}' in your \$EDITOR (currently '$EDITOR')"
   echo -e
   echo "Program names in this script are case-insensitive, e.g., 'TMUX' and 'tMuX' are the same as 'tmux'."
@@ -80,12 +90,17 @@ function print_mappings() {
     # TODO: look for options for a nice padding
     echo -e "\t$KEY -> ${MAP[$KEY]}"
   done
-  echo -e "\nEdit the list by using the command '$0 self'"
+  echo -e "\nEdit the list by using the command '$SELF_CMD self'"
 }
 
 if [[ $# -lt 1 ]]; then
   print_help
   exit 255
+fi
+
+if [[ "$1" == "--version" || "$1" == "-v" ]]; then
+  print_version
+  exit 0
 fi
 
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
@@ -121,8 +136,17 @@ if [[ "$1" == "--test" || "$1" == "-t" ]]; then
   exit $ERROR
 fi
 
-# $1 to lowercase
-KEY="${1,,}"
+if [[ $# -eq 2 ]]; then
+  # --edit and --print-only
+  KEY="$2"
+  if [[ "$1" == "--print-only" ]]; then
+    EDITOR="echo -n"
+  fi
+else
+  KEY="$1"
+fi
+# $KEY to lowercase
+KEY="${KEY,,}"
 if [[ -n ${MAP["$KEY"]} ]]; then
   CONFIG_FILE=${MAP["$KEY"]}
 else
