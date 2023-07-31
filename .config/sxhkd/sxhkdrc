@@ -23,6 +23,11 @@ super + shift + s
 super + shift + ctrl + s
     ~/bin/screenshot.sh full
 
+
+# lock the desktop session
+# alt + l
+#   loginctl lock-session 1
+
 #
 # bspwm hotkeys
 #
