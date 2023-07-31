@@ -13,7 +13,7 @@ bspc monitor -d I II III IV V VI VII VIII IX X
 
 # gaps & borders
 bspc config border_width         3
-bspc config window_gap           8
+bspc config window_gap           0
 
 # colors
 bspc config normal_border_color   '#cfcbd0'
@@ -27,7 +27,7 @@ bspc config gapless_monocle      true
 
 # window rules
 bspc rule -a 'plasmashell' state=floating layer=above focus=off sticky=on border=off center=off
-bspc rule -a 'krunner' state=floating layer=above focus=off sticky=on border=off center=off
+bspc rule -a 'krunner' state=floating layer=above focus=on sticky=on border=off center=off
 bspc rule -a Gimp state=floating follow=on
 bspc rule -a Zathura state=tiled
 bspc rule -a "m-5000 rcs.exe" state=floating
