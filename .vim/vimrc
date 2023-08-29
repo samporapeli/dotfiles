@@ -52,6 +52,7 @@ set colorcolumn=+0
 command W w
 command Wq wq
 command WQ wq
+command Q q
 
 " Fix missing symbols
 let g:airline_powerline_fonts = 1
