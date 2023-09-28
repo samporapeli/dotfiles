@@ -105,7 +105,9 @@ map <leader>t :NERDTreeToggle<CR>
 
 map <leader>nh :noh<CR>
 
-nnoremap <leader>aa msggVG"+yg`s:delmark s<CR>:echo 'Copied buffer content to +'<CR>
+nnoremap <leader>aa ggVG
+nnoremap <leader>ca ggVGc
+nnoremap <leader>ya msggVG"+yg`s:delmark s<CR>:echo 'Copied buffer content to +'<CR>
 
 map <leader>sp :set spell!<CR>
 
