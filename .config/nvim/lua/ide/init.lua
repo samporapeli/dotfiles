@@ -1,3 +1,4 @@
+vim.g.copilot_enabled = false
 require("ide.plugins")
 
 require("mason").setup()
