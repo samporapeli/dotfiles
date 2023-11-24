@@ -6,6 +6,15 @@ source ~/.vim/vimrc
 set termguicolors
 
 lua << EOF
+  -- disable copilot
+  vim.g.copilot_enabled = false
+  vim.g.copilot_filetypes = {
+    markdown = true,
+    yaml = true,
+    json = true,
+    toml = true,
+    gitcommit = true,
+  }
   -- setup packer and load plugins
   local packer = require("packer")
   packer.startup(function (use)
