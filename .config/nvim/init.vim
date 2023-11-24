@@ -11,6 +11,7 @@ lua << EOF
   packer.startup(function (use)
     use 'norcalli/nvim-colorizer.lua'
     use 'numToStr/Comment.nvim'
+    use 'catppuccin/nvim'
   end)
   -- configure plugins
   -- on lua error handling: https://www.lua.org/pil/8.4.html
@@ -18,6 +19,7 @@ lua << EOF
     require'colorizer'.setup()
   end
   require('Comment').setup()
+  vim.cmd.colorscheme "catppuccin-mocha"
 
   -- load ide-config if NVIM_IDE is set
   if os.getenv('NVIM_IDE') then require('ide') end

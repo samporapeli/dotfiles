@@ -82,7 +82,7 @@ function! ToggleBackground()
 endfunction
 " Execute ToggleBackground just after initializing vim
 " https://stackoverflow.com/a/6821698
-autocmd VimEnter * silent call ToggleBackground()
+" autocmd VimEnter * silent call ToggleBackground()
 nnoremap <F12> :call ToggleBackground()<CR>
 inoremap <F12> <Esc>:call ToggleBackground()<CR>a
 
