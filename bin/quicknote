@@ -14,7 +14,7 @@ if [[ "$1" = '--help' ]] || [[ "$1" == '-h' ]]; then
     echo -e 'USAGE:'
     echo -e '\t# show this help'
     echo -e '\tqn --help'
-    echo -e '\t# open "'"$DATESTAMP$QN_DELIM" 'note.txt" in VISUAL editor'
+    echo -e '\t# open "'"$DATESTAMP$QN_DELIM"'note.txt" in VISUAL editor'
     echo -e '\tqn note.txt\t'
     echo -e '\t# open latest note that has "note" in filename'
     echo -e '\tqn --latest note'
