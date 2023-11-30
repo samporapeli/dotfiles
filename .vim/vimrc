@@ -64,32 +64,6 @@ let g:user_emmet_leader_key='<leader><leader>' " ,,, -> html completion
 let g:tex_flavor = "latex"
 nnoremap <F5> :VimtexCompile<CR>
 
-" background
-" does not work with multiple tabs
-let t:is_light = 0
-function! ToggleBackground()
-    if t:is_light == 0
-        set background=light
-        AirlineTheme light
-        let t:is_light = 1
-        echom "background is set to light"
-    else
-        set background=dark
-        AirlineTheme dark
-        let t:is_light = 0
-        echom "background is set to dark"
-    endif
-endfunction
-" Execute ToggleBackground just after initializing vim
-" https://stackoverflow.com/a/6821698
-" autocmd VimEnter * silent call ToggleBackground()
-nnoremap <F12> :call ToggleBackground()<CR>
-inoremap <F12> <Esc>:call ToggleBackground()<CR>a
-
-" vim-airline
-
-" use tabline
-let g:airline#extensions#tabline#enabled = 1
 " the delay after pressing esc in insert mode is annoying
 set timeoutlen=1000 ttimeoutlen=0
 

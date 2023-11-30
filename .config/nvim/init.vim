@@ -21,6 +21,8 @@ lua << EOF
     use 'norcalli/nvim-colorizer.lua'
     use 'numToStr/Comment.nvim'
     use 'catppuccin/nvim'
+    use 'vim-airline/vim-airline'
+    use 'vim-airline/vim-airline-themes'
   end)
   -- configure plugins
   -- on lua error handling: https://www.lua.org/pil/8.4.html
@@ -33,3 +35,29 @@ lua << EOF
   -- load ide-config if NVIM_IDE is set
   if os.getenv('NVIM_IDE') then require('ide') end
 EOF
+
+" background
+let g:is_light = 0
+function! ToggleBackground()
+    if g:is_light == 0
+        set background=light
+        AirlineTheme papercolor
+        let g:is_light = 1
+        echom "background is set to light"
+    else
+        set background=dark
+        AirlineTheme catppuccin
+        let g:is_light = 0
+        echom "background is set to dark"
+    endif
+endfunction
+" Execute ToggleBackground just after initializing vim
+" https://stackoverflow.com/a/6821698
+" autocmd VimEnter * silent call ToggleBackground()
+nnoremap <F12> :call ToggleBackground()<CR>
+inoremap <F12> <Esc>:call ToggleBackground()<CR>a
+
+" vim-airline
+let g:airline_theme='catppuccin'
+" use tabline
+let g:airline#extensions#tabline#enabled = 1
