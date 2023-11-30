@@ -30,34 +30,13 @@ lua << EOF
     require'colorizer'.setup()
   end
   require('Comment').setup()
-  vim.cmd.colorscheme "catppuccin-mocha"
+  vim.cmd.colorscheme 'catppuccin-mocha'
+
+  -- vim-airline
+  vim.g.airline_theme = 'catppuccin'
+  vim.g['airline#extensions#tabline#enabled'] = 1
+  require('toggle_background')
 
   -- load ide-config if NVIM_IDE is set
   if os.getenv('NVIM_IDE') then require('ide') end
 EOF
-
-" background
-let g:is_light = 0
-function! ToggleBackground()
-    if g:is_light == 0
-        set background=light
-        AirlineTheme papercolor
-        let g:is_light = 1
-        echom "background is set to light"
-    else
-        set background=dark
-        AirlineTheme catppuccin
-        let g:is_light = 0
-        echom "background is set to dark"
-    endif
-endfunction
-" Execute ToggleBackground just after initializing vim
-" https://stackoverflow.com/a/6821698
-" autocmd VimEnter * silent call ToggleBackground()
-nnoremap <F12> :call ToggleBackground()<CR>
-inoremap <F12> <Esc>:call ToggleBackground()<CR>a
-
-" vim-airline
-let g:airline_theme='catppuccin'
-" use tabline
-let g:airline#extensions#tabline#enabled = 1
