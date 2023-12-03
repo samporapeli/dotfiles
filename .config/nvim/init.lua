@@ -1,4 +1,4 @@
-local ide_mode = os.getenv('NVIM_IDE')
+local ide_mode = os.getenv("NVIM_IDE")
 
 vim.cmd [[
   set runtimepath^=~/.vim runtimepath+=~/.vim/after
@@ -6,10 +6,10 @@ vim.cmd [[
   source ~/.vim/vimrc
 ]]
 
-vim.g.vimtex_compiler_progname = 'nvr'
+vim.g.vimtex_compiler_progname = "nvr"
 
--- disable copilot by default
-vim.g.copilot_enabled = false
+-- Copilot
+vim.g.copilot_enabled = false -- require `:Copilot enable` to start
 vim.g.copilot_filetypes = {
   markdown = true,
   yaml = true,
@@ -17,31 +17,33 @@ vim.g.copilot_filetypes = {
   toml = true,
   gitcommit = true,
 }
+
 -- setup packer and load plugins
 local packer = require("packer")
 packer.startup(function (use)
-  use 'norcalli/nvim-colorizer.lua'
-  use 'numToStr/Comment.nvim'
-  use 'catppuccin/nvim'
-  use 'vim-airline/vim-airline'
-  use 'vim-airline/vim-airline-themes'
+  use "norcalli/nvim-colorizer.lua"
+  use "numToStr/Comment.nvim"
+  use "catppuccin/nvim"
+  use "vim-airline/vim-airline"
+  use "vim-airline/vim-airline-themes"
   if ide_mode then
-    require('ide.plugins')(use)
+    require("ide.plugins")(use)
   end
 end)
+
 -- configure plugins
 -- on lua error handling: https://www.lua.org/pil/8.4.html
 vim.opt.termguicolors = true
-if pcall(function () require'colorizer' end) then
-  require'colorizer'.setup()
+if pcall(function () require("colorizer") end) then
+  require("colorizer").setup()
 end
-require('Comment').setup()
-vim.cmd.colorscheme 'catppuccin-mocha'
+require("Comment").setup()
 
--- vim-airline
-vim.g.airline_theme = 'catppuccin'
-vim.g['airline#extensions#tabline#enabled'] = 1
-require('toggle_background')
+-- appearance and vim-airline
+vim.cmd.colorscheme "catppuccin-mocha"
+vim.g.airline_theme = "catppuccin"
+vim.g["airline#extensions#tabline#enabled"] = 1
+require("toggle_background")
 
 -- load ide-config if NVIM_IDE is set
-if ide_mode then require('ide') end
+if ide_mode then require("ide") end
