@@ -6,6 +6,7 @@ source ~/.vim/vimrc
 set termguicolors
 
 lua << EOF
+  local ide_mode = os.getenv('NVIM_IDE')
   -- disable copilot
   vim.g.copilot_enabled = false
   vim.g.copilot_filetypes = {
@@ -23,6 +24,9 @@ lua << EOF
     use 'catppuccin/nvim'
     use 'vim-airline/vim-airline'
     use 'vim-airline/vim-airline-themes'
+    if ide_mode then
+      require('ide.plugins')(use)
+    end
   end)
   -- configure plugins
   -- on lua error handling: https://www.lua.org/pil/8.4.html
@@ -38,5 +42,5 @@ lua << EOF
   require('toggle_background')
 
   -- load ide-config if NVIM_IDE is set
-  if os.getenv('NVIM_IDE') then require('ide') end
+  if ide_mode then require('ide') end
 EOF

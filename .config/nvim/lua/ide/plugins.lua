@@ -1,6 +1,4 @@
-local packer = require("packer")
-
-return packer.startup(function (use)
+return function (use)
   use "wbthomason/packer.nvim"
   use "neovim/nvim-lspconfig"
   use "williamboman/mason.nvim"
@@ -11,4 +9,4 @@ return packer.startup(function (use)
   use "hrsh7th/cmp-vsnip"
   use "hrsh7th/vim-vsnip"
   use "github/copilot.vim"
-end)
+end
