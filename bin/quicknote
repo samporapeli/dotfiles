@@ -1,57 +1,117 @@
 #!/bin/bash
 
 # quicknote or qn for short
-# tool for quickly creating notes with reasonable filenames
+# tool for quickly taking notes with datestamped filenames
 
 DATESTAMP=$(date --iso-8601)
 
-QN_DELIM=$QN_DELIM
-if [[ ! -n "$QN_DELIM" ]]; then
+print_help() {
+    echo -e 'USAGE: qn [options] note-name.txt
+\t# show this help
+\tqn --help
+\t# version information
+\tqn --version
+\t# open "'"$DATESTAMP$QN_DELIM"'note.txt" in VISUAL editor
+\tqn note.txt\t
+\t# open latest note that has "note" in filename
+\tqn --latest note
+\t# open all notes that have "note" in filename
+\tqn --all note
+\t# list all notes in the note directory
+\tqn --ls
+\t# override QN_DIR - for example, use current directory:
+\tqn --dir .
+
+CONFIG (environment variables):
+\tVISUAL (which editor to use)
+\tQN_DIR (where notes are saved)
+\tQN_DELIM (delimiter string between the datestamp and name)'
+}
+
+print_version() {
+    echo -e 'quicknote 1.1.0
+
+https://github.com/samporapeli/dotfiles/blob/main/bin/quicknote'
+}
+
+# last argument should be the pattern/filename
+PATTERN=${!#}
+
+if [[ -z "$QN_DELIM" ]]; then
     QN_DELIM='_'
 fi
 
-if [[ "$1" = '--help' ]] || [[ "$1" == '-h' ]]; then
-    echo -e 'USAGE:'
-    echo -e '\t# show this help'
-    echo -e '\tqn --help'
-    echo -e '\t# open "'"$DATESTAMP$QN_DELIM"'note.txt" in VISUAL editor'
-    echo -e '\tqn note.txt\t'
-    echo -e '\t# open latest note that has "note" in filename'
-    echo -e '\tqn --latest note'
-    echo -e '\t# open all notes that have "note" in filename'
-    echo -e '\tqn --all note'
-    echo -e '\t# list all notes in the note directory'
-    echo -e '\tqn --ls'
-    echo
-    echo -e 'CONFIG (env variables):\n\t'
-    echo -e '\tVISUAL (which editor to use)'
-    echo -e '\tQN_DIR (where notes are saved)'
-    echo -e '\tQN_DELIM (delimiter string between timestamp and name)'
-    exit 0
-fi
-
-if [[ ! -n "$VISUAL" ]]; then
-    echo 'VISUAL not set, try "export VISUAL=vim"'
-    exit 1
-fi
-
-if [[ -n "$QN_DIR" ]]; then
-    cd "$QN_DIR" || exit 1
-fi
-
-if [[ "$1" = '--latest' ]] || [[ "$1" = '--all' ]]; then
-    SELECTED=()
-    mapfile -t SELECTED < <(ls -ct1 ./*$2*)
-    if [[ "$1" = '--latest' ]]; then
-        SELECTED=("${SELECTED[0]}")
+# override QN_DIR if --dir is passed
+i=1
+while [[ $i -le $# ]]; do
+    param=${!i}
+    if [[ "$param" = "--dir" ]] || [[ "$param" = "-d" ]]; then
+      ((i++))
+      QN_DIR=${!i}
     fi
-    if [[ "${SELECTED[*]}" = '' ]]; then
-        echo "No notes found including \"$2\""
-        exit
-    fi
-    "$VISUAL" '-p' ${SELECTED[*]}
-elif [[ "$1" = '--ls' ]]; then
-    ls "$QN_DIR"
-else
-    "$VISUAL" "$DATESTAMP$QN_DELIM$1"
+    ((i++))
+done
+
+# set QN_DIR if not set by --dir or env variable
+if [[ -z "$QN_DIR" ]]; then
+    QN_DIR="$HOME/Documents/quicknotes"
 fi
+cd "$QN_DIR" || exit 1
+
+i=1
+while [[ $i -le $# ]]; do
+    param=${!i}
+
+    # --help
+    if [[ "$param" = '--help' ]] || [[ "$param" = '-h' ]]; then
+        print_help
+        exit 0
+    # --version
+    elif [[ "$param" = '--version' ]] || [[ "$param" = '-v' ]]; then
+        print_version
+        exit 0
+
+    # check $VISUAL (after help command for convenience)
+    elif [[ -z "$VISUAL" ]]; then
+        echo 'VISUAL not set, try "export VISUAL=vim"'
+        exit 1
+
+    # --ls
+    elif [[ "$param" = '--ls' ]] || [[ "$param" = '-l' ]]; then
+        ls "$QN_DIR"
+        exit 0
+
+    # set the file lists when using --latest or --all
+    elif [[ "$param" = '--latest' ]] || [[ "$param" = '--all' ]]; then
+        if [[ $i = "$#" ]]; then
+            echo "Pattern missing for \"$param\""
+            exit 1
+        fi
+        SELECTED=()
+        mapfile -t SELECTED < <(ls -ct1 ./*"$PATTERN"*)
+        if [[ "$param" = '--latest' ]]; then
+            SELECTED=("${SELECTED[0]}")
+        fi
+        if [[ "${SELECTED[*]}" = '' ]]; then
+            echo "No notes found including \"$PATTERN\""
+            exit 1
+        fi
+    # --dir is already handled
+    elif [[ "$param" = '--dir' ]] || [[ "$param" = '-d' ]]; then
+        i=$((i + 2))
+        continue
+    elif [[ ! $i = "$#" ]]; then
+        echo "Unknown argument: \"$param\""
+        exit 1
+    fi
+
+    ((i++))
+done
+
+# add last argument to SELECTED (with datestamp) if SELECTED is empty
+if [[ "${#SELECTED[@]}" = 0 ]]; then
+    SELECTED=("$DATESTAMP$QN_DELIM$PATTERN")
+fi
+
+mkdir -p "$QN_DIR"
+"$VISUAL" '-p' "${SELECTED[@]}"
