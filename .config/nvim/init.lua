@@ -27,7 +27,7 @@ packer.startup(function (use)
   use "vim-airline/vim-airline"
   use "vim-airline/vim-airline-themes"
   if ide_mode then
-    require("ide.plugins")(use)
+    require("samporapeli.ide.plugins")(use)
   end
 end)
 
@@ -43,7 +43,7 @@ require("Comment").setup()
 vim.cmd.colorscheme "catppuccin-mocha"
 vim.g.airline_theme = "catppuccin"
 vim.g["airline#extensions#tabline#enabled"] = 1
-require("toggle_background")
+require("samporapeli.toggle_background")
 
 -- load ide-config if NVIM_IDE is set
-if ide_mode then require("ide") end
+if ide_mode then require("samporapeli.ide") end
