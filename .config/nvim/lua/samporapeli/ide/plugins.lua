@@ -9,4 +9,7 @@ return function (use)
   use "hrsh7th/cmp-vsnip"
   use "hrsh7th/vim-vsnip"
   use "github/copilot.vim"
+  if vim.bo.filetype == "dart" then
+    require("samporapeli.ide.dart.plugins")(use)
+  end
 end

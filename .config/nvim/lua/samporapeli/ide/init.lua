@@ -47,6 +47,13 @@ for _, server_name in ipairs(require("mason-lspconfig").get_installed_servers())
   })
 end
 
+if vim.bo.filetype == "dart" then
+  require("samporapeli.ide.dart")
+  lspconfig.dartls.setup({
+    cmd = { "/usr/bin/env", "dart", "language-server", "--protocol=lsp" },
+  })
+end
+
 -- arduino
 -- if file doesn't exist, run `arduino-cli config init`
 -- vim.env.ARDUINOCLI_CONFIG_PATH = os.getenv("HOME") .. "/.arduino15/arduino-cli.yaml"
