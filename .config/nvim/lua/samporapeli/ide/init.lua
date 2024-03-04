@@ -3,34 +3,34 @@ require("mason-lspconfig").setup({})
 
 local cmp = require("cmp")
 cmp.setup({
-  sources = cmp.config.sources({
-    { name = "nvim_lsp" },
-    { name = "vsnip" },
-  }, {
-    {
-      { name = "buffer" },
-    },
-  }),
-  snippet = {
-    expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
-    end,
-  },
-  window = {
+	sources = cmp.config.sources({
+		{ name = "nvim_lsp" },
+		{ name = "vsnip" },
+	}, {
+		{
+			{ name = "buffer" },
+		},
+	}),
+	snippet = {
+		expand = function(args)
+			vim.fn["vsnip#anonymous"](args.body)
+		end,
+	},
+	window = {
 
-  },
-  mapping = cmp.mapping.preset.insert({
-    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-    ["<C-f>"] = cmp.mapping.scroll_docs(4),
-    ["<C-Space>"] = cmp.mapping.complete(),
-    ["<C-e>"] = cmp.mapping.abort(),
-    ["<CR>"] = cmp.mapping.confirm({ select = true }),
-  }),
+	},
+	mapping = cmp.mapping.preset.insert({
+		["<C-b>"] = cmp.mapping.scroll_docs(-4),
+		["<C-f>"] = cmp.mapping.scroll_docs(4),
+		["<C-Space>"] = cmp.mapping.complete(),
+		["<C-e>"] = cmp.mapping.abort(),
+		["<CR>"] = cmp.mapping.confirm({ select = true }),
+	}),
 })
 
 local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
 local lsp_attach = function(client, bufnr)
-  -- custom keybindings here
+	-- custom keybindings here
 end
 
 vim.keymap.set("n", "<Leader>h", vim.lsp.buf.hover)
@@ -41,17 +41,17 @@ vim.keymap.set("n", "<Leader>gd", vim.lsp.buf.definition)
 
 local lspconfig = require("lspconfig")
 for _, server_name in ipairs(require("mason-lspconfig").get_installed_servers()) do
-  lspconfig[server_name].setup({
-    on_attach = lsp_attach,
-    capabilities = lsp_capabilities,
-  })
+	lspconfig[server_name].setup({
+		on_attach = lsp_attach,
+		capabilities = lsp_capabilities,
+	})
 end
 
 if vim.bo.filetype == "dart" then
-  require("samporapeli.ide.dart")
-  lspconfig.dartls.setup({
-    cmd = { "/usr/bin/env", "dart", "language-server", "--protocol=lsp" },
-  })
+	require("samporapeli.ide.dart")
+	lspconfig.dartls.setup({
+		cmd = { "/usr/bin/env", "dart", "language-server", "--protocol=lsp" },
+	})
 end
 
 -- arduino
