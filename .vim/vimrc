@@ -42,6 +42,10 @@ set tabstop=2 shiftwidth=2
 "set smarttab
 set shiftround
 
+" show whitespace
+set listchars=tab:→┄,eol:↵,space:·,trail:•
+set list
+
 " don't break words
 set linebreak
 
@@ -78,6 +82,7 @@ let g:markdown_fenced_languages = ['sh', 'bash=sh', 'python', 'html', 'javascrip
 map <leader>t :NERDTreeToggle<CR>
 
 map <leader>nh :noh<CR>
+map <leader>nl :set list!<CR>
 
 nnoremap <leader>aa ggVG
 nnoremap <leader>ca ggVGc
