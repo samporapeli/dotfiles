@@ -38,9 +38,35 @@ filetype plugin on
 filetype indent on
 set autoindent
 set expandtab
-set tabstop=2 shiftwidth=2
 "set smarttab
 set shiftround
+
+function SetIndentWidth(...)
+  let width = a:0 > 0 ? a:1 : 2
+  execute 'set shiftwidth=' . width
+  execute 'set softtabstop=' . width
+  execute 'set tabstop=' . width
+endfunction
+
+function ReTab(tabs, ...)
+  let width = a:0 > 0 ? a:1 : &shiftwidth
+  call SetIndentWidth(width)
+  if a:tabs
+    execute 'set noexpandtab'
+  else
+    execute 'set expandtab'
+  end
+  %retab!
+endfunction
+
+call SetIndentWidth()
+
+" shortcut to indent with tabs/spaces
+" Example: convert 2-space indent to tabs (width=3)
+" :Tabs 2 (converts spaces to tabs)
+" :Tabs 3 (changes width 2->3)
+command -nargs=? Tabs execute 'call ReTab(1, <f-args>)'
+command -nargs=? Spaces execute 'call ReTab(0, <f-args>)'
 
 " show whitespace
 set listchars=tab:→┄,eol:↵,space:·,trail:•
