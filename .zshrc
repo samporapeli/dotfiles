@@ -41,6 +41,8 @@ bindkey "$terminfo[kcud1]" down-line-or-beginning-search
 bindkey -M vicmd 'k' up-line-or-beginning-search
 bindkey -M vicmd 'j' down-line-or-beginning-search
 
+bindkey '^R' history-incremental-search-backward
+
 # Custom binaries and scripts
 export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
 . "$HOME/.shell_scripts"
