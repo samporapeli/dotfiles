@@ -35,7 +35,12 @@ https://github.com/samporapeli/dotfiles/blob/main/bin/quicknote'
 }
 
 # last argument should be the pattern/filename
-PATTERN=${!#}
+# if no parameters are given, set PATTERN to default
+if [[ $# = 0 ]]; then
+    PATTERN="quicknote.txt"
+else
+    PATTERN=${!#}
+fi
 
 if [[ -z "$QN_DELIM" ]]; then
     QN_DELIM='_'
