@@ -16,6 +16,7 @@ alias svdvorak="setxkbmap se -variant svdvorak -option caps:swapescape"
 alias t="ttheme"
 alias tabe="e -p"
 alias u="uptime"
+alias urlencode="python3 -c 'import urllib.parse as p, sys; print(p.quote(\" \".join(sys.argv[1:])))'"
 
 alias -g ...="../../"
 alias -g ....="../../../"
