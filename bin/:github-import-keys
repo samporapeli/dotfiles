@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [[ $# -eq 0 ]]; then
+	echo "Usage: $0 <github-username>"
+	exit 1
+fi
+
+USERNAME=$1
+KEY_URL="https://github.com/${USERNAME}.gpg"
+TEMP_FILE=$(mktemp)
+
+if ! curl -s "$KEY_URL" -o "$TEMP_FILE"; then
+	echo "Failed to download keys for ${USERNAME}"
+	rm "$TEMP_FILE"
+	exit 1
+fi
+
+if gpg --import "$TEMP_FILE"; then
+	rm "$TEMP_FILE"
+	echo "Keys of $USERNAME imported successfully."
+else
+	rm "$TEMP_FILE"
+	echo "Failed to import keys of $USERNAME."
+	exit 1
+fi
