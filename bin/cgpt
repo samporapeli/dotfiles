@@ -1,0 +1,91 @@
+#!/bin/bash
+
+set -euo pipefail
+
+VERSION="1.0.0"
+
+# Default settings
+MODEL="gpt-4o"
+API_BASE="https://api.openai.com/v1"
+
+authorized_curl () {
+	curl -H "Authorization: Bearer $OPENAPI_KEY" "$@" 2> /dev/null
+}
+
+list_models () {
+  authorized_curl "$API_BASE/models" | jq '.data | map(.id) | map(select(startswith("gpt"))) | sort'
+}
+
+HELP_TEXT="[1mcurl gpt[0m version $VERSION
+
+[1mUSAGE:[0m
+	cgpt [--model <model_id>] <prompt>
+	cgpt --help
+	cgpt --list-models
+
+For cgpt to work, you must have a valid OpenAI API key in the OPENAPI_KEY environment variable. For example, place the following in your shell startup file:
+
+export OPENAPI_KEY='your_key_here'
+
+You can create a key at <https://platform.openai.com/account/api-keys>.
+"
+
+# Handle parameters
+while [[ "$1" = -* ]]; do
+	if [[ "$1" = "--help" ]] || [[ "$1" = "-h" ]]; then
+		echo -en "$HELP_TEXT"
+		exit
+	fi
+	if [[ "$1" = "--list-models" ]]; then
+		echo "Available models:"
+		list_models
+		exit
+	fi
+	if [[ "$1" = "--model" ]]; then
+		MODEL="$2"
+		shift
+	fi
+	# Consume the parameter that has been handled
+	shift
+done
+
+MESSAGE="${*:-'no message provided by the user'}"
+
+if [ ! -t 0 ]; then
+	STDIN_CONTENT="$(cat /dev/stdin)"
+else
+	STDIN_CONTENT=''
+fi
+
+SYSTEM_MESSAGE="You are outputting to a terminal ($SHELL). Prefer using ANSI escape sequences for formatting and highlighting responses [1minstead of markdown[0m. Utilize [4munderlined text[0m, [1mbold text, [31mred text[0m, [32mgreen text[0m, [34mblue text[0m, and other relevant ANSI codes where appropriate."
+
+# Create the payload of the http request
+JSON_BODY=$(jq -n \
+	--arg model "$MODEL" \
+	--arg shell "$SHELL" \
+	--arg stdin "$STDIN_CONTENT" \
+	--arg message "$MESSAGE" \
+	--arg system_message "$SYSTEM_MESSAGE" \
+	'{
+		model: $model,
+		stream: true,
+		messages: [
+			{ content: $system_message, role: "system" },
+			{ content: "STDIN CONTENT:\n\($stdin)", role: "user" },
+			{ content: $message, role: "user" }
+		]
+	}'
+)
+
+JQ_PROGRAM='.choices[0].delta.content | select(. != null)'
+
+authorized_curl \
+	-X POST \
+	"$API_BASE/chat/completions" \
+	--json "$JSON_BODY" \
+	2> /dev/null | \
+	sed -e 's/^data: //' -e 's/^\[DONE\]//' | \
+	while ILF='' read -r line; do
+		echo -n "$line" | jq --raw-output0 "$JQ_PROGRAM" | tr -d '\000'
+	done 
+echo
