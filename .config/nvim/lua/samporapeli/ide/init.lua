@@ -37,6 +37,7 @@ vim.keymap.set("n", "<Leader>h", vim.lsp.buf.hover)
 vim.keymap.set("n", "<Leader>do", vim.diagnostic.open_float)
 vim.keymap.set("n", "<Leader>dn", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<Leader>dp", vim.diagnostic.goto_prev)
+vim.keymap.set("n", "<Leader>dl", vim.diagnostic.setqflist)
 vim.keymap.set("n", "<Leader>gd", vim.lsp.buf.definition)
 vim.keymap.set("n", "<Leader><F2>", vim.lsp.buf.rename)
 
