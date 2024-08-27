@@ -15,7 +15,7 @@ else
 fi
 
 if [ -z "$FILE_PATH" ]; then
-    curl --form "Viesti=$TEXT_MESSAGE" "$CURL_ENDPOINT"
+    curl --form "Viesti=\"$TEXT_MESSAGE\"" "$CURL_ENDPOINT"
 else
-    curl --form "Viesti=$TEXT_MESSAGE" --form "Tiedosto=@$FILE_PATH" "$CURL_ENDPOINT"
+    curl --form "Viesti=\"$TEXT_MESSAGE\"" --form "Tiedosto=@\"$FILE_PATH\"" "$CURL_ENDPOINT"
 fi
