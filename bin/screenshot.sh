@@ -7,18 +7,49 @@ FILENAME="$(date --iso-8601=ns)_screenshot.png"
 FILE="$SS_DIRECTORY/$FILENAME"
 mkdir -p "$SS_DIRECTORY"
 
-IS_WAYLAND=$([[ "$XDG_SESSION_TYPE" = "wayland" ]])
+if [[ "$XDG_SESSION_TYPE" = "wayland" ]]; then
+    IS_WAYLAND=true
+else
+    IS_WAYLAND=false
+fi
+
+take_screenshot_select() {
+    if $IS_WAYLAND; then
+        gnome-screenshot --area --file="$FILE"
+    else
+        scrot -s -F "$FILE"
+    fi
+}
+
+take_screenshot_full() {
+    if $IS_WAYLAND; then
+      gnome-screenshot --file="$FILE"
+    else
+      scrot -F "$FILE"
+    fi
+}
+
+take_screenshot_window() {
+    if $IS_WAYLAND; then
+        gnome-screenshot -w --file="$FILE"
+    else
+        scrot -u -F "$FILE"
+    fi
+}
 
 if [[ "$1" == "select" ]]; then
-    $IS_WAYLAND && gnome-screenshot --area --file="$FILE" || scrot -s -F "$FILE"
+    take_screenshot_select
 elif [[ "$1" == "full" ]] || [[ "$1" == "" ]]; then
-    $IS_WAYLAND && gnome-screenshot --file="$FILE" || scrot -F "$FILE"
+    take_screenshot_full
+elif [[ "$1" == "window" ]]; then
+    take_screenshot_window
 else
     echo "Unknown parameter '$1'"
     echo ""
     echo "Usage:"
     echo "  $0 [full]"
     echo "  $0 select"
+    echo "  $0 window"
     exit 1
 fi
 
