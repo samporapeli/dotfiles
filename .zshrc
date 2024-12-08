@@ -22,12 +22,12 @@ bindkey '^P' autosuggest-accept
 # https://zsh.sourceforge.io/Doc/Release/Options.html#History
 # https://github.com/ohmyzsh/ohmyzsh/issues/1720#issuecomment-286366959
 HISTFILE="$HOME/.zsh_history"
-HISTSIZE=50000
-SAVEHIST=50000
+HISTSIZE=5000000
+SAVEHIST=5000000
 setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
-setopt HIST_SAVE_NO_DUPS
+setopt SHARE_HISTORY
 setopt INC_APPEND_HISTORY
 
 autoload -U up-line-or-beginning-search
