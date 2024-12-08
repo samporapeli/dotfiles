@@ -92,6 +92,11 @@ if [[ "$TERM" = "xterm-kitty" ]]; then
   alias ssh='TERM=xterm-256color ssh'
 fi
 
+CMD_NOT_FOUND_PATH='/etc/zsh_command_not_found'
+if test -f "$CMD_NOT_FOUND_PATH"; then
+  . "$CMD_NOT_FOUND_PATH"
+fi
+
 # device specific configuration
 if test -f "$HOME/.device.profile"; then
     . "$HOME/.device.profile"
