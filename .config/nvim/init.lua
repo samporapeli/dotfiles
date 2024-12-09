@@ -17,6 +17,9 @@ vim.g.copilot_filetypes = {
 	toml = true,
 	gitcommit = true,
 }
+--Enable/disable with leader + co{e,d}
+vim.api.nvim_set_keymap("n", "<Leader>coe", ":Copilot enable<CR>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<Leader>cod", ":Copilot disable<CR>", { noremap = true })
 
 -- setup packer and load plugins
 local packer = require("packer")
