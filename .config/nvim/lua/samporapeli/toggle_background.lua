@@ -10,7 +10,7 @@ local function toggle_background()
 	end
 end
 
-vim.keymap.set({"i", "n", "c"}, "<F12>", toggle_background)
+vim.keymap.set({"i", "n", "c", "v"}, "<F12>", toggle_background)
 vim.api.nvim_create_user_command("ToggleBackground", toggle_background, {})
 
 return toggle_background

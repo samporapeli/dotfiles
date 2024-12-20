@@ -47,6 +47,7 @@ vim.cmd.colorscheme "catppuccin-mocha"
 vim.g.airline_theme = "catppuccin"
 vim.g["airline#extensions#tabline#enabled"] = 1
 require("samporapeli.toggle_background")
+require("samporapeli.trim_trailing_whitespace")
 
 -- load ide-config if NVIM_IDE is set
 if ide_mode then require("samporapeli.ide") end

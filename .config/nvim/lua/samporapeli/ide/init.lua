@@ -34,6 +34,7 @@ local lsp_attach = function(client, bufnr)
 end
 
 vim.keymap.set("n", "<Leader>h", vim.lsp.buf.hover)
+vim.keymap.set("n", "<Leader>ca", vim.lsp.buf.code_action)
 vim.keymap.set("n", "<Leader>do", vim.diagnostic.open_float)
 vim.keymap.set("n", "<Leader>dn", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<Leader>dp", vim.diagnostic.goto_prev)
