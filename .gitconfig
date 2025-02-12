@@ -10,3 +10,6 @@
     rebase = true
 [push]
 	autoSetupRemote = true
+[log]
+	abbrevCommit = true
+	showSignature = true
