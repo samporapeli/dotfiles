@@ -91,8 +91,12 @@ export BAT_THEME=ansi
 # export LC_ALL='fi_FI.UTF-8'
 export LC_ALL='en_US.UTF-8'
 
+if [[ "$TERMINFO" == *"/kitty"* ]]; then
+    export TERM=xterm-kitty
+fi
+
 if [[ "$TERM" = "xterm-kitty" ]]; then
-  alias ssh='TERM=xterm-256color ssh'
+    alias ssh='TERM=xterm-256color ssh'
 fi
 
 CMD_NOT_FOUND_PATH='/etc/zsh_command_not_found'
