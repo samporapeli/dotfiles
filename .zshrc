@@ -11,6 +11,9 @@ setopt interactivecomments
 # Set vim mode for zsh
 bindkey -v
 
+# Cancel line editing with Ctrl + C
+bindkey '^C' cancel
+
 # antigen plugin manager
 . "$HOME/.antigen/bin/antigen.zsh"
 antigen init "$HOME/.config/antigenrc"
