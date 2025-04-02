@@ -112,8 +112,5 @@ nnoremap <leader>ya msggVG"+yg`s:delmark s<CR>:echo 'Copied buffer content to +'
 
 map <leader>sp :set spell!<CR>
 
-" auto-pairs
-let g:AutoPairsShortcutToggle = '<leader>p'
-
 map <leader>bn :bn<CR>
 map <leader>bp :bp<CR>
