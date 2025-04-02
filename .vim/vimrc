@@ -37,6 +37,7 @@ filetype on
 filetype plugin on
 filetype indent on
 set autoindent
+set smartindent
 set expandtab
 "set smarttab
 set shiftround
@@ -106,6 +107,8 @@ let g:markdown_fenced_languages = ['sh', 'bash=sh', 'zsh=sh', 'python', 'html', 
 map <leader>nh :noh<CR>
 map <leader>nl :set list!<CR>
 
+nnoremap <leader>o o<ESC>o
+nnoremap <leader>O O<ESC>O
 nnoremap <leader>aa ggVG
 nnoremap <leader>ca ggVGc
 nnoremap <leader>ya msggVG"+yg`s:delmark s<CR>:echo 'Copied buffer content to +'<CR>
@@ -114,3 +117,5 @@ map <leader>sp :set spell!<CR>
 
 map <leader>bn :bn<CR>
 map <leader>bp :bp<CR>
+
+set backupcopy=yes
