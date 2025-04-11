@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [[ $# -ne 2 ]]; then
+  echo -e 'Usage:\n\t:diff file1 file2' >&2
+  exit 1
+fi
+
+if command -v delta &> /dev/null; then
+  diff -u "$1" "$2" | delta --diff-highlight
+else
+  diff -u "$1" "$2"
+fi
