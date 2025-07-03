@@ -40,23 +40,7 @@ My vim plugin ecosystem configuration is a bit spaghetti, so I'm writing down th
 **WIP** Setting up:
 * Install `npm`
 * Make sure that the `$HOME/.config/nvim/` contains files from this repository, e.g., run `dot pull`.
-* `vim-plugin update`, however might not be necessary
 * `nide -c PackerUpdate`
-
-## How I manage vim plugins 
-Vim 8 introduced native package management, and that is what I use. [Here](https://shapeshed.com/vim-packages/) you can find a good tutorial on how to set it up with `git submodule`. I currently use the path [~/.vim/pack/sampo/start](.vim/pack/sampo/start) for all plugins.
-
-However, I created a small tool that automates some steps during adding, deleting and updating plugins. It is located in [~/bin/vim-plugin](./bin/vim-plugin). Should I just use some actual vim plugin manager? Probably, but I couldn't resist writing this.
-
-Basic usage (with example plugin):
-```bash
-# Add a new plugin
-vim-plugin add https://github.com/vim-airline/vim-airline.git
-# Update all installed plugins and generate helptags
-vim-plugin update
-# Delete a plugin
-vim-plugin delete vim-airline
-```
 
 ## [Node Version Manager](https://github.com/nvm-sh/nvm)
 Install or update nvm: `install-nvm`
