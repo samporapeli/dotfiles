@@ -1,21 +1,3 @@
 [submodule ".antigen"]
 	path = .antigen
 	url = https://github.com/zsh-users/antigen.git
-[submodule ".vim/pack/sampo/start/emmet-vim"]
-	path = .vim/pack/sampo/start/emmet-vim
-	url = https://github.com/mattn/emmet-vim.git
-[submodule ".vim/pack/sampo/start/vimtex"]
-	path = .vim/pack/sampo/start/vimtex
-	url = https://github.com/lervag/vimtex.git
-[submodule ".vim/pack/sampo/start/vim-surround"]
-	path = .vim/pack/sampo/start/vim-surround
-	url = https://github.com/tpope/vim-surround.git
-[submodule ".vim/pack/sampo/start/detectindent"]
-	path = .vim/pack/sampo/start/detectindent
-	url = https://github.com/ciaranm/detectindent.git
-[submodule ".vim/pack/sampo/start/vim-repeat"]
-	path = .vim/pack/sampo/start/vim-repeat
-	url = https://github.com/tpope/vim-repeat.git
-[submodule ".local/share/nvim/site/pack/packer/start/packer.nvim"]
-	path = .local/share/nvim/site/pack/packer/start/packer.nvim
-	url = https://github.com/wbthomason/packer.nvim.git
