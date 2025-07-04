@@ -1,5 +1,4 @@
 local ct = require("samporapeli.concatable")
-local conditionally = require("samporapeli.conditionally")
 
 return ct.new({
 	"neovim/nvim-lspconfig",
@@ -11,7 +10,19 @@ return ct.new({
 	"hrsh7th/cmp-vsnip",
 	"hrsh7th/vim-vsnip",
 	"github/copilot.vim",
-}) ..
-conditionally(vim.bo.filetype == "dart")
-	.if_true(require("samporapeli.plugins.dart"))
-	.if_false({})
+	{
+		"mattn/emmet-vim",
+		init = function()
+			-- default unless leader is set: Ctrl-Y + ,
+			vim.g.user_emmet_leader_key = '<Leader>' -- ,, -> html completion
+		end,
+	},
+  {
+    "lervag/vimtex",
+    ft = "tex",
+		config = function()
+				vim.g.tex_flavor = "latex"
+				vim.keymap.set({"i", "n", "c", "v"}, "<F5>", function() vim.cmd("VimtexCompile") end)
+		end,
+  },
+}) .. require("samporapeli.plugins.dart")

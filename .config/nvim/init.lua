@@ -32,10 +32,9 @@ if pcall(function () require("colorizer") end) then
 end
 require("Comment").setup()
 
--- appearance and vim-airline
+-- appearance
 vim.cmd.colorscheme "catppuccin-mocha"
-vim.g.airline_theme = "catppuccin"
-vim.g["airline#extensions#tabline#enabled"] = 1
+
 require("samporapeli.toggle_background")
 require("samporapeli.trim_trailing_whitespace")
 
