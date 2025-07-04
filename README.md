@@ -37,7 +37,7 @@ TODO: add helper function for this and use it here and in the install script.
 The `nide` (**N**eovim **IDE**) alias starts Neovim with LSP and other tools configured.
 Alias `e` starts `nvim` with a lighter configuration.
 
-[~/.vim/vimrc](./vim/vimrc) is loaded in [~/.config/nvim/init.lua](~/.config/nvim/init.lua), which allows using the same core configuration with `vim` and `nvim`, e.g. when working with external machines.
+[~/.vim/vimrc](./vim/vimrc) is loaded in [~/.config/nvim/init.lua](./.config/nvim/init.lua), which allows using the same core configuration with `vim` and `nvim`, e.g. when working with external machines.
 
 ## [Node Version Manager](https://github.com/nvm-sh/nvm)
 Install or update nvm: `install-nvm`
