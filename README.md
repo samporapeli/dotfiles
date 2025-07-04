@@ -24,30 +24,27 @@ This might be a good idea if you only want some parts of the configuration.
 
 ## Document related packages
 There's a small list of document editing related packages at
-[~/Documents/document-packages.apt.txt]
+[~/Documents/document-packages.apt.txt](./Documents/document-packages.apt.txt)
 including a full texlive install for creating documents using Latex.
 This is not included in the base install, as the size of the installation is rather big.
 Install packages from file:
 ```zsh
 sudo apt install $(tr '\n' ' ' < ~/Documents/document-packages.apt.txt)
 ```
-TODO: add helper function for this and use it here and in install script.
+TODO: add helper function for this and use it here and in the install script.
 
 ## Neovim
-### `nide`: Neovim "IDE" with LSP
-My vim plugin ecosystem configuration is a bit spaghetti, so I'm writing down the required steps for making the `nide` alias work as it should.
+The `nide` (**N**eovim **IDE**) alias starts Neovim with LSP and other tools configured.
+Alias `e` starts `nvim` with a lighter configuration.
 
-**WIP** Setting up:
-* Install `npm`
-* Make sure that the `$HOME/.config/nvim/` contains files from this repository, e.g., run `dot pull`.
-* `nide -c PackerUpdate`
+[~/.vim/vimrc](./vim/vimrc) is loaded in [~/.config/nvim/init.lua](~/.config/nvim/init.lua), which allows using the same core configuration with `vim` and `nvim`, e.g. when working with external machines.
 
 ## [Node Version Manager](https://github.com/nvm-sh/nvm)
 Install or update nvm: `install-nvm`
 
 As loading nvm in .zshrc increases shell startup time, I decided to load nvm manually when needed: `. load-nvm` (or `source load-nvm`)
 
-## Custom "apps"
+## Custom commands and scripts
 ### Aliases
 [~/.aliases](./.aliases)
 ### [~/bin](./bin/)
@@ -63,6 +60,3 @@ This repository contains some configuration files related to my second computer 
 
 ## Windows
 There is Windows specific configuration in [.windows-config](./.windows-config/) directory, currently only configuration file for Windows Terminal.
-
-## Misc
-Configuration files to make programs work in certain (read: right :grin:) way, like .latexmkrc to use PDF as default format.
