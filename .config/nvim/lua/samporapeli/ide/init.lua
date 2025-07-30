@@ -1,5 +1,9 @@
+-- Mason (language server manager)
 require("mason").setup()
 require("mason-lspconfig").setup()
+
+-- Github Copilot
+require("samporapeli.ide.copilot")
 
 local cmp = require("cmp")
 cmp.setup({
