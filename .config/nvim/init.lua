@@ -1,4 +1,4 @@
-local ide_mode = os.getenv("NVIM_IDE")
+local ide_mode = require("samporapeli.ide.ide_mode")
 
 -- Load vimrc configuration
 vim.cmd [[
@@ -26,4 +26,4 @@ require("samporapeli.toggle_background")
 require("samporapeli.trim_trailing_whitespace")
 
 -- load ide-config if NVIM_IDE is set
-if ide_mode then require("samporapeli.ide") end
+if ide_mode.enabled then require("samporapeli.ide") end
