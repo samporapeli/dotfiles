@@ -39,6 +39,20 @@ Alias `e` starts `nvim` with a lighter configuration.
 
 [~/.vim/vimrc](./vim/vimrc) is loaded in [~/.config/nvim/init.lua](./.config/nvim/init.lua), which allows using the same core configuration with `vim` and `nvim`, e.g. when working with external machines.
 
+### Configuration with environment variables
+
+[~/.config/nvim/lua/samporapeli/config/](./.config/nvim/lua/samporapeli/config/)
+
+#### `NVIM_IDE`
+Activate IDE-like features such as LSP and Copilot plugins.
+
+Inteded to be used with `nide` alias, which sets the variable automatically for just that session.
+
+#### `NVIM_ICON_FONT`
+Enable patched font features, i.e., icons (Powerline, dev icons, etc.).
+
+No direct alias (like `nide`). Add `export NVIM_ICON_FONT=1` to `~/.device.profile` **when** a [nerd patched font](https://www.nerdfonts.com/font-downloads) (Hack) is installed. Icons are disabled by default for compatibility between systems.
+
 ## [Node Version Manager](https://github.com/nvm-sh/nvm)
 Install or update nvm: `install-nvm`
 

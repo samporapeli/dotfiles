@@ -1,4 +1,4 @@
-local ide_mode = require("samporapeli.ide.ide_mode")
+local ide_mode = require("samporapeli.config.ide_mode")
 
 return {
 	{

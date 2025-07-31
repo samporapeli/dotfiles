@@ -1,6 +1,23 @@
+local icon_font = require("samporapeli.config.icon_font")
+
 -- Mason (language server manager)
-require("mason").setup()
-require("mason-lspconfig").setup()
+-- Default is "◍" for all
+local mason_icons = {
+	package_installed = "●",
+	package_pending = "◍",
+	package_uninstalled = "◌",
+}
+if not icon_font.enabled then
+	mason_icons.package_installed = "[x]"
+	mason_icons.package_pending = "[/]"
+	mason_icons.package_uninstalled = "[ ]"
+end
+require("mason").setup({
+	ui = {
+		icons = mason_icons
+	},
+})
+require("mason-lspconfig").setup({})
 
 -- Github Copilot
 require("samporapeli.ide.copilot")

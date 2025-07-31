@@ -1,4 +1,4 @@
-local ide_mode = require("samporapeli.ide.ide_mode")
+local ide_mode = require("samporapeli.config.ide_mode")
 
 -- Load vimrc configuration
 vim.cmd [[
@@ -6,7 +6,7 @@ vim.cmd [[
 	let &packpath = &runtimepath
 	source ~/.vim/vimrc
 ]]
---
+
 -- load plugins
 require("samporapeli.config.lazy")
 
