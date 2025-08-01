@@ -1,6 +1,7 @@
+local is_truthy = require("samporapeli.config.utils").is_truthy
+
 local M = {}
 
-local env_value = os.getenv("NVIM_IDE")
-M.enabled = env_value == "1" or string.lower(env_value or "") == "true" or string.lower(env_value or "") == "yes"
+M.enabled = is_truthy(os.getenv("NVIM_IDE"))
 
 return M
