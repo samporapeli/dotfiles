@@ -20,6 +20,14 @@ end
 
 -- Declare plugins
 return {
+	-- Load ftplugins from ~/.vim
+	{
+		dir = "~/.vim",
+		name = "vim-config",
+		lazy = false,
+		priority = 1000,
+	},
+	-- Actual plugins
 	"catppuccin/nvim",
 	"norcalli/nvim-colorizer.lua",
 	"numToStr/Comment.nvim",

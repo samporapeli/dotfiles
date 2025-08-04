@@ -1,11 +1,11 @@
 local ide_mode = require("samporapeli.config.ide_mode")
 
 -- Load vimrc configuration
-vim.cmd [[
-	set runtimepath^=~/.vim runtimepath+=~/.vim/after
-	let &packpath = &runtimepath
-	source ~/.vim/vimrc
-]]
+vim.opt.runtimepath:prepend("~/.vim")
+vim.opt.runtimepath:append("~/.vim/after")
+vim.o.packpath = vim.o.runtimepath
+vim.cmd("source ~/.vim/vimrc")
+-- vimscript ftplugins are loaded as a lazy.nvim "plugin"
 
 -- load plugins
 require("samporapeli.config.lazy")
