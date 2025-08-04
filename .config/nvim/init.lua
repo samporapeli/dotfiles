@@ -9,13 +9,11 @@ vim.cmd("source ~/.vim/vimrc")
 
 -- load plugins
 require("samporapeli.config.lazy")
+-- load custom scripts/commands
+require("samporapeli.scripts")
 
 -- appearance
 vim.cmd.colorscheme "catppuccin-mocha"
-
--- load custom scripts/commands
-require("samporapeli.toggle_background")
-require("samporapeli.trim_trailing_whitespace")
 
 -- load "ide" config if NVIM_IDE is set
 if ide_mode.enabled then require("samporapeli.ide") end

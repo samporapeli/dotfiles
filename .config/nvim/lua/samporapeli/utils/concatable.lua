@@ -1,6 +1,6 @@
 -- Enable table concatenation with `..` operator
 -- Usage:
--- local ct = require("samporapeli.concatable")
+-- local ct = require("samporapeli.utils.concatable")
 -- ct.new({"a", "b"}) .. { "b", "c" }
 -- => { "a", "b", "b", "c" }
 

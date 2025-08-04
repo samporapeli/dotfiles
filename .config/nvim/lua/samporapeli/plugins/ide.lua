@@ -1,5 +1,5 @@
 local ide_mode = require("samporapeli.config.ide_mode")
-local ct = require("samporapeli.concatable")
+local ct = require("samporapeli.utils.concatable")
 
 local plugin_list = {
 	-- Setup of lsp plugins takes place at samporapeli/ide/lsp.lua
