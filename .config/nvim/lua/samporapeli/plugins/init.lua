@@ -1,4 +1,5 @@
 local ct = require("samporapeli.concatable")
 
 return ct.new(require("samporapeli.plugins.basic"))
-  .. require("samporapeli.plugins.ide")
+	.. ct.new(require("samporapeli.plugins.lualine"))
+	.. ct.new(require("samporapeli.plugins.ide"))
