@@ -62,6 +62,49 @@ local plugin_list = {
 	{ "hrsh7th/vim-vsnip" },
 	{ "github/copilot.vim" },
 	{
+		"nvim-treesitter/nvim-treesitter",
+		branch = "master",
+		lazy = false,
+		build = ":TSUpdate",
+		config = function()
+			require("nvim-treesitter.configs").setup({
+				ensure_installed = {
+					"lua", "query", "vim", "vimdoc", -- Core
+					"markdown", "markdown_inline", -- Documentation and writing
+					"bash", "cmake", "json", "json5", "jsonc", "make", "toml", "yaml", -- Shell and config
+					"css", "html", "javascript", "jsdoc", "scss", "tsx", "typescript", -- Web
+					"dockerfile", "gitcommit", "gitignore", "python", "sql", "xml", -- Common
+				},
+				sync_install = false,
+				auto_install = true,
+				highlight = {
+					enable = true,
+					additional_vim_regex_highlighting = false,
+				},
+				indent = {
+					enable = true,
+				},
+				incremental_selection = {
+					enable = true,
+					keymaps = {
+						init_selection = "<C-space>",
+						node_incremental = "<C-space>",
+						scope_incremental = "grc",
+						node_decremental = "<bs>",
+					},
+				},
+			})
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function()
+					if require("nvim-treesitter.parsers").has_parser() then
+						vim.opt_local.foldmethod = "expr"
+						vim.opt_local.foldexpr = "nvim_treesitter#foldexpr()"
+					end
+				end
+			})
+		end,
+	},
+	{
 		"mattn/emmet-vim",
 		init = function()
 			-- default unless leader is set: Ctrl-Y + ,
