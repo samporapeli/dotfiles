@@ -157,5 +157,5 @@ fi
 
 # cd for easily opening related files with relative paths
 cd "$(dirname """$CONFIG_FILE""")"
-# open the path in $EDITOR
-$EDITOR "$CONFIG_FILE"
+# open the path in $VISUAL
+$VISUAL "$CONFIG_FILE"
