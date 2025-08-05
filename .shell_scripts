@@ -1,11 +1,11 @@
 #!/bin/bash
 
 function command_exists() {
-    command -v $1 &> /dev/null
+    command -v "$1" &> /dev/null
 }
 
 function lowercase() {
-    echo $1 | tr '[:upper:]' '[:lower:]'
+    echo "$1" | tr '[:upper:]' '[:lower:]'
 }
 
 function y_n_dialog() {
@@ -17,8 +17,8 @@ function y_n_dialog() {
     else
         echo -n "[y/n] "
     fi
-    read ANSWER
-    ANSWER="$(lowercase $ANSWER)"
+    read -r ANSWER
+    ANSWER="$(lowercase "$ANSWER")"
     if [ "$ANSWER" = "n" ] || { [ "$ANSWER" = "" ] && [ "$1" = "n" ]; }; then
         # non-zero return value means error, and e. g. command false returns value 1
         return 1
@@ -27,35 +27,35 @@ function y_n_dialog() {
         return 0
     else
         echo -n "Please answer 'y' or 'n': "
-        y_n_dialog $1
+        y_n_dialog "$1"
     fi
 }
 
 function install_packages() {
     if command_exists apt-get; then
         sudo apt-get update
-        sudo apt-get -y install $@
+        sudo apt-get -y install "$@"
+    elif command_exists dnf; then
+        sudo dnf install -y "$@"
+    elif command_exists zypper; then
+        sudo zypper refresh
+        sudo zypper install -y "$@"
     elif command_exists pkg; then
         pkg update
-        yes | pkg install $@
+        yes | pkg install "$@"
     fi
 }
 
 function dotfiles() {
     if ! command_exists envsubst; then
-        echo "gettext-base must be installed"
-        echo -n "Install now? "
-        if y_n_dialog y; then
-            install_packages gettext-base
-        else
-            echo "Please install gettext-base manually and try again."
-            exit 1
-        fi
+        echo "Error: 'envsubst' command is not available."
+        echo "Please install 'envsubst' (often provided by package 'envsubst' or 'gettext-base') and try again."
+        exit 1
     fi
-    DOTFILES_COMMAND_URL="https://raw.githubusercontent.com/samporapeli/dotfiles/master/.dotfiles-command.txt"
+    DOTFILES_COMMAND_URL="https://raw.githubusercontent.com/samporapeli/dotfiles/main/.dotfiles-command.txt"
     DOTFILES_COMMAND_PATH="$HOME/.dotfiles-command.txt"
     if test -f "$DOTFILES_COMMAND_PATH"; then
-        DOTFILES_COMMAND=$(cat "$DOTFILES_COMMAND_PATH" | envsubst)
+        DOTFILES_COMMAND=$(envsubst < "$DOTFILES_COMMAND_PATH")
     elif command_exists "curl"; then
         DOTFILES_COMMAND=$(curl -s "$DOTFILES_COMMAND_URL" | envsubst)
     elif command_exists "wget"; then
@@ -64,6 +64,6 @@ function dotfiles() {
         echo "dotfiles-command.txt not available"
         exit 1
     fi
-    $DOTFILES_COMMAND $@
+    $DOTFILES_COMMAND "$@"
 }
 

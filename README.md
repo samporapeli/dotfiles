@@ -12,6 +12,14 @@ bash <(wget -qO - sampo.website/install-dotfiles.sh)
 ```
 If you select 'clone', it just clones this repository. With 'replace' it creates a bare git repository in `~/.dotfiles/` and clones this repository there and checkout all the files in this repository into the home directory of the user. **This will overwrite all previous files with same paths than in repository. Make sure to backup beforehand** as there is no undo or automatic backups, or just clone the repository and do copying manually.
 
+### Unattended usage of the installation script
+When environment variable `SAMPORAPELI_DOTFILES_UNATTENDED_INSTALL` is set to `true`, the installation script will automatically install dotfiles and **replace the current configuration without any confirmation**.
+Requires `bash`, `curl`, `envsubst` and `git` to be available.
+
+```bash
+SAMPORAPELI_DOTFILES_UNATTENDED_INSTALL=true bash <(curl -sL sampo.website/install-dotfiles.sh)
+```
+
 #### Notes
 * The "`curl -sL https://url/script.sh | bash`" way does not currently work with the install script as it's interactive. However, `bash -c "$(curl -sL sampo.website/install-dotfiles.sh)"` will work.
 * The actual file location is [https://raw.githubusercontent.com/samporapeli/dotfiles/main/Documents/install-dotfiles.sh](https://raw.githubusercontent.com/samporapeli/dotfiles/main/Documents/install-dotfiles.sh) and [sampo.website](https://sampo.website) has a redirect to that location.
