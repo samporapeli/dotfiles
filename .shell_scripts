@@ -64,6 +64,6 @@ function dotfiles() {
         echo "dotfiles-command.txt not available"
         exit 1
     fi
-    $DOTFILES_COMMAND "$@"
+    eval "$DOTFILES_COMMAND \"\$@\""
 }
 
