@@ -66,6 +66,22 @@ Install or update nvm: `install-nvm`
 
 As loading nvm in .zshrc increases shell startup time, I decided to load nvm manually when needed: `. load-nvm` (or `source load-nvm`)
 
+## Docker distros
+
+Build container image:
+
+```zsh
+docker build -t docker-distro-tumbleweed ~/.config/docker-distro/tumbleweed/
+```
+
+Create a new temporary container and launch a shell:
+
+```zsh
+docker run -it --rm docker-distro-tumbleweed
+```
+
+The container will be removed after exiting, no data is retained.
+
 ## Custom commands and scripts
 ### Aliases
 [~/.aliases](./.aliases)
