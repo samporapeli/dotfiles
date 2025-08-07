@@ -1,11 +1,14 @@
 FROM opensuse/tumbleweed
 
 # Install useful packages not included in the image by default
-RUN zypper refresh && zypper install -y envsubst git htop man neovim sudo vim wget zsh
+RUN zypper refresh && zypper install -y envsubst git htop man neovim tmux sudo vim wget zsh
 
 # Create non-root user 'dev'
 RUN useradd dev -m -s /bin/zsh
 RUN echo "dev ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Set up tmux
+RUN mkdir -p /run/tmux && chmod a+rwx,o+t /run/tmux
 
 # Root configuration complete, switch to dev user
 USER dev
