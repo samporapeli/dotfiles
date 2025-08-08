@@ -8,7 +8,10 @@ return {
 		priority = 1000,
 	},
 	-- Actual plugins
-	"catppuccin/nvim",
+	{
+		"catppuccin/nvim",
+		name = "catppuccin"
+	},
 	"tpope/vim-repeat",
 	"tpope/vim-surround",
 	{
