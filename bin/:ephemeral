@@ -1,0 +1,30 @@
+#!/bin/bash
+
+EPHEMERAL_PATH="$HOME/.config/ephemeral"
+
+if [[ "$1" == "--build" ]]; then
+  docker build -t "ephemeral-$2" "$EPHEMERAL_PATH/$2/"
+  exit
+elif [[ "$1" == "--help" ]]; then
+  echo 'Usage:'
+  echo '  :ephemeral --build <image>'
+  echo '  :ephemeral [--run] <image> [docker arguments]'
+  echo '  :ephemeral --help'
+  echo '  :ephemeral --list'
+  echo
+  echo 'Examples:'
+  echo '  :ephemeral --run postgres'
+  echo '  :ephemeral tumbleweed -v /tmp/shared:/shared'
+  exit
+elif [[ "$1" == "--list" ]]; then
+  ls "$EPHEMERAL_PATH"
+  exit
+elif [[ "$1" == "--run" ]]; then
+  shift 1
+fi
+
+EPHEMERAL_IMAGE="$1"
+shift 1
+
+echo "Executing: docker run -it --rm $* \"ephemeral-$EPHEMERAL_IMAGE\""
+docker run -it --rm "$@" "ephemeral-$EPHEMERAL_IMAGE"

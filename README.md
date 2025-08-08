@@ -66,21 +66,26 @@ Install or update nvm: `install-nvm`
 
 As loading nvm in .zshrc increases shell startup time, I decided to load nvm manually when needed: `. load-nvm` (or `source load-nvm`)
 
-## Docker distros
+## Ephemeral environments
 
-Build container image:
+[~/.config/ephemeral](./.config/ephemeral/) contains docker image definitions for throwaway container creation.
+
+Build a container image:
 
 ```zsh
-docker build -t docker-distro-tumbleweed ~/.config/docker-distro/tumbleweed/
+docker build -t ephemeral-tumbleweed ~/.config/ephemeral/tumbleweed/
 ```
 
 Create a new temporary container and launch a shell:
 
 ```zsh
-docker run -it --rm docker-distro-tumbleweed
+docker run -it --rm ephemeral-tumbleweed
 ```
 
-The container will be removed after exiting, no data is retained.
+The container will be removed after exiting (`--rm`), no data is retained.
+
+The command `:ephemeral` works as a shorthand for the above mentioned docker commands.
+Run `:ephemeral --help` for details.
 
 ## Custom commands and scripts
 ### Aliases
