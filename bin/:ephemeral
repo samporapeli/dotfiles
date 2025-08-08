@@ -8,6 +8,7 @@ if [[ "$1" == "--build" ]]; then
 elif [[ "$1" == "--help" ]]; then
   echo 'Usage:'
   echo '  :ephemeral --build <image>'
+  echo '  :ephemeral --build-all'
   echo '  :ephemeral [--run] <image> [docker arguments]'
   echo '  :ephemeral --help'
   echo '  :ephemeral --list'
@@ -18,6 +19,17 @@ elif [[ "$1" == "--help" ]]; then
   exit
 elif [[ "$1" == "--list" ]]; then
   ls "$EPHEMERAL_PATH"
+  exit
+elif [[ "$1" == "--build-all" ]]; then
+  mapfile -t IMAGES < <("$0" --list)
+  echo -e "Building ${#IMAGES[@]} images:"
+  for IMAGE_NAME in ${IMAGES[@]}; do
+    echo "- $IMAGE_NAME"
+  done
+  echo
+  for IMAGE_NAME in ${IMAGES[@]}; do
+    "$0" --build "$IMAGE_NAME"
+  done
   exit
 elif [[ "$1" == "--run" ]]; then
   shift 1
