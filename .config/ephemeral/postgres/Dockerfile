@@ -1,5 +1,9 @@
 FROM postgres:alpine
 
+# Set up entrypoint
+COPY entrypoint.sh /opt/entrypoint.sh
+RUN chmod +x /opt/entrypoint.sh
+
 # Create a 'dev' database and user
 USER postgres
 RUN initdb -D /var/lib/postgresql/data && \
@@ -9,4 +13,4 @@ RUN initdb -D /var/lib/postgresql/data && \
     pg_ctl -D /var/lib/postgresql/data stop
 
 # Start postgres and open psql
-CMD pg_ctl -D /var/lib/postgresql/data start && psql dev
+ENTRYPOINT ["/opt/entrypoint.sh"]
