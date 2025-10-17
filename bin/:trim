@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [[ "$1" == "--help" ]] || [[ $# -eq 0 ]]; then
+  echo 'Usage:'
+  echo '  :trim <file1> [file2] [...]'
+  echo
+  echo 'Trim trailing whitespace from one or more files'
+  exit
+fi
+
+for file in "$@"; do
+  if [[ -f "$file" ]]; then
+    sed -i 's/[[:space:]]*$//' "$file"
+    echo "Trimmed: $file"
+  elif [[ -d "$file" ]]; then
+    echo "Skipping directory: $file"
+  else
+    echo "File not found: $file"
+  fi
+done
