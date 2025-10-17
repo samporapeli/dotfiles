@@ -1,0 +1,52 @@
+#!/usr/bin/sh
+#
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+
+# This one removes the "# Please enter the commit message..." help message.
+#
+/usr/bin/perl -i.bak -ne 'print unless(m/^. Please enter the commit message/..m/^#$/)' "$COMMIT_MSG_FILE"
+
+# The second includes the output of "git diff --name-status -r"
+# into the message, just before the "git status" output.  It is
+# commented because it doesn't cope with --amend or with squashed
+# commits.
+#
+# case "$COMMIT_SOURCE,$SHA1" in
+#  ,|template,)
+#    /usr/bin/perl -i.bak -pe '
+#       print "\n" . `git diff --cached --name-status -r`
+# 	 if /^#/ && $first++ == 0' "$COMMIT_MSG_FILE" ;;
+#  *) ;;
+# esac
+
+# The third example adds a Signed-off-by line to the message, that can
+# still be edited.  This is rarely a good idea.
+#
+# SOB=$(git var GIT_COMMITTER_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+# git interpret-trailers --in-place --trailer "$SOB" "$COMMIT_MSG_FILE"
+# if test -z "$COMMIT_SOURCE"
+# then
+#   /usr/bin/perl -i.bak -pe 'print "\n" if !$first_line++' "$COMMIT_MSG_FILE"
+# fi
+
+# Add git log for reference when writing a commit message
+ORIGINAL_CONTENT=$(cat "$COMMIT_MSG_FILE")
+{
+  echo "$ORIGINAL_CONTENT"
+  echo "# Recent commits:"
+  git log --oneline -5 | sed 's/^/#\t/'
+  echo "#"
+} > "$COMMIT_MSG_FILE"
+
+# Add committer information
+ORIGINAL_CONTENT=$(cat "$COMMIT_MSG_FILE")
+{
+  USERNAME=$(git config user.name)
+  EMAIL=$(git config user.email)
+  echo "$ORIGINAL_CONTENT"
+  echo "# Committing as:"
+  echo "$USERNAME <$EMAIL>" | sed 's/^/#\t/'
+  echo "#"
+} > "$COMMIT_MSG_FILE"

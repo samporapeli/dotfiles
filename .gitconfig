@@ -6,6 +6,7 @@
 	autocorrect = 8
 [init]
 	defaultBranch = main
+	templateDir = /home/sr/.git-templates
 [pull]
     rebase = true
 [push]
