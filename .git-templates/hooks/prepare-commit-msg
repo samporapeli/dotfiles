@@ -31,22 +31,26 @@ SHA1=$3
 #   /usr/bin/perl -i.bak -pe 'print "\n" if !$first_line++' "$COMMIT_MSG_FILE"
 # fi
 
-# Add git log for reference when writing a commit message
-ORIGINAL_CONTENT=$(cat "$COMMIT_MSG_FILE")
-{
-  echo "$ORIGINAL_CONTENT"
-  echo "# Recent commits:"
-  git log --oneline -5 | sed 's/^/#\t/'
-  echo "#"
-} > "$COMMIT_MSG_FILE"
+# Only when writing the commit message in an editor
+if test -z "$COMMIT_SOURCE"
+then
+  # Add git log for reference
+  ORIGINAL_CONTENT=$(cat "$COMMIT_MSG_FILE")
+  {
+    echo "$ORIGINAL_CONTENT"
+    echo "# Recent commits:"
+    git log --oneline -5 | sed 's/^/#\t/'
+    echo "#"
+  } > "$COMMIT_MSG_FILE"
 
-# Add committer information
-ORIGINAL_CONTENT=$(cat "$COMMIT_MSG_FILE")
-{
-  USERNAME=$(git config user.name)
-  EMAIL=$(git config user.email)
-  echo "$ORIGINAL_CONTENT"
-  echo "# Committing as:"
-  echo "$USERNAME <$EMAIL>" | sed 's/^/#\t/'
-  echo "#"
-} > "$COMMIT_MSG_FILE"
+  # Add committer information
+  ORIGINAL_CONTENT=$(cat "$COMMIT_MSG_FILE")
+  {
+    USERNAME=$(git config user.name)
+    EMAIL=$(git config user.email)
+    echo "$ORIGINAL_CONTENT"
+    echo "# Committing as:"
+    echo "$USERNAME <$EMAIL>" | sed 's/^/#\t/'
+    echo "#"
+  } > "$COMMIT_MSG_FILE"
+fi
