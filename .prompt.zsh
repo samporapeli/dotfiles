@@ -20,6 +20,11 @@ zstyle ':vcs_info:*' unstagedstr '*'
 # vcs_info supports multiple version control systems, but I need just git
 zstyle ':vcs_info:*' enable git
 
+# if SAMPORAPELI_ZSH_ENVIRONMENT is set, display it's value
+if [[ -n "$SAMPORAPELI_ZSH_ENVIRONMENT" ]]; then
+  ENVIRONMENT_PROMPT_PART=" %F{14}[$SAMPORAPELI_ZSH_ENVIRONMENT]%f"
+fi
+
 # Explaining prompt:
 #
 # %B /  %F{n}: begin bold / color
@@ -29,6 +34,6 @@ zstyle ':vcs_info:*' enable git
 # %(..): conditional expression (see docs)
 # %?: exit code of last process
 # %n@%m: user@host
-PROMPT='%B${vcs_info_msg_0_}%F{12}%2~%f %# %b'
+PROMPT='%B${vcs_info_msg_0_}'"%F{12}%2~%f$ENVIRONMENT_PROMPT_PART %# %b"
 # rprompt is located on the right side of the terminal
 RPROMPT='%(?..%F{red}(%?%) %f)%n@%m'
