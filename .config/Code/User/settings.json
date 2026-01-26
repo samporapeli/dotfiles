@@ -1,0 +1,8 @@
+{
+    "keyboard.dispatch": "keyCode",
+    "telemetry.telemetryLevel": "off",
+    "telemetry.feedback.enabled": false,
+    "telemetry.editStats.enabled": false,
+    "gitlens.telemetry.enabled": false,
+    "gitlens.plusFeatures.enabled": false
+}
