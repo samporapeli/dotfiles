@@ -5,6 +5,9 @@ setopt autocd
 # Prompt
 . "$HOME/.prompt.zsh"
 
+# PID in job notifications
+setopt long_list_jobs
+
 # Make commenting with '#' work
 setopt interactivecomments
 
