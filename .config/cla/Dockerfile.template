@@ -1,0 +1,43 @@
+FROM opensuse/tumbleweed
+
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+
+# Install dependencies
+RUN zypper refresh && \
+    zypper install -y \
+      nodejs npm \
+      git \
+      file \
+      diffutils \
+      envsubst \
+      findutils \
+      tree \
+      bash \
+      jq \
+      zsh \
+      python3 \
+      which \
+      nvim \
+      vim \
+    && zypper clean -a
+
+RUN npm install -g pnpm
+
+RUN useradd claude -m -s /bin/zsh
+USER claude
+
+# Install dotfiles
+RUN cd /home/claude && SAMPORAPELI_DOTFILES_UNATTENDED_INSTALL=true bash <(curl -sL sampo.website/install-dotfiles.sh)
+
+# Install Claude Code
+RUN curl -fsSL https://claude.ai/install.sh | bash
+ENV PATH="/home/claude/.local/bin:$PATH"
+
+ENV CLAUDE_CODE_DISABLE_AUTO_UPDATE=1
+ENV CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+
+# Set up working directory
+WORKDIR /workspace
+
+CMD ["/bin/zsh"]

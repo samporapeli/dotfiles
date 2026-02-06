@@ -1,0 +1,31 @@
+{
+  "numStartups": 0,
+  "theme": "dark",
+  "preferredNotifChannel": "auto",
+  "verbose": false,
+  "editorMode": "normal",
+  "autoCompactEnabled": true,
+  "hasSeenTasksHint": false,
+  "queuedCommandUpHintCount": 0,
+  "diffTool": "auto",
+  "customApiKeyResponses": {
+    "approved": [],
+    "rejected": []
+  },
+  "env": {},
+  "tipsHistory": {},
+  "memoryUsageCount": 0,
+  "promptQueueUseCount": 0,
+  "todoFeatureEnabled": true,
+  "showExpandedTodos": false,
+  "messageIdleNotifThresholdMs": 60000,
+  "autoConnectIde": false,
+  "autoInstallIdeExtension": true,
+  "checkpointingShadowRepos": [],
+  "fileCheckpointingEnabled": true,
+  "terminalProgressBarEnabled": true,
+  "cachedStatsigGates": {},
+  "cachedDynamicConfigs": {},
+  "cachedGrowthBookFeatures": {},
+  "respectGitignore": true
+}

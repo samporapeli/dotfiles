@@ -1,0 +1,130 @@
+#!/bin/bash
+set -eo pipefail
+
+VERSION="1.0.0"
+IMAGE_PREFIX="cla"
+CONFIG_DIR="${HOME}/.config/cla"
+DOCKERFILE_TEMPLATE="${CONFIG_DIR}/Dockerfile.template"
+CLAUDEJSON_TEMPLATE="${CONFIG_DIR}/claude.json.template"
+
+show_usage() {
+    cat << EOF
+:cla v${VERSION} - isolated Claude Code environments
+
+Usage: :cla <profile-name> [OPTIONS]
+
+Options:
+    --shell         Launch interactive shell instead of Claude CLI
+    --build         Force rebuild of Docker image
+    -h, --help      Show this help message
+
+Examples:
+    :cla work                    # Launch Claude CLI with 'work' profile
+    :cla personal --shell        # Launch shell with 'personal' profile
+    :cla --shell work --build    # Build and launch a shell with 'work' profile
+EOF
+}
+
+# Parse arguments
+PROFILE_NAME=""
+LAUNCH_SHELL=false
+BUILD_IMAGE=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            show_usage
+            exit 0
+            ;;
+        --shell)
+            LAUNCH_SHELL=true
+            shift
+            ;;
+        --build)
+            BUILD_IMAGE=true
+            shift
+            ;;
+        -*)
+            echo "Error: Unknown option $1"
+            show_usage
+            exit 1
+            ;;
+        *)
+            # Any argument without -- is treated as the profile name
+            if [ -z "$PROFILE_NAME" ]; then
+                PROFILE_NAME="$1"
+            else
+                echo "Error: Multiple profile names specified: '$PROFILE_NAME' and '$1'"
+                show_usage
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
+if [ -z "$PROFILE_NAME" ]; then
+    echo "Error: Profile name required"
+    echo ""
+    show_usage
+    exit 1
+fi
+
+IMAGE_NAME="${IMAGE_PREFIX}-${PROFILE_NAME}"
+PROFILE_CONFIG_DIR="${CONFIG_DIR}/${PROFILE_NAME}"
+CLAUDE_DIR="${PROFILE_CONFIG_DIR}/.claude"
+PROFILE_DOCKERFILE="${PROFILE_CONFIG_DIR}/Dockerfile"
+
+mkdir -p "${PROFILE_CONFIG_DIR}"
+mkdir -p "${CLAUDE_DIR}"
+
+# Check for templates
+if [ ! -f "${DOCKERFILE_TEMPLATE}" ]; then
+    echo "Error: Could not find Dockerfile.template at $DOCKERFILE_TEMPLATE"
+    exit 1
+fi
+if [ ! -f "${CLAUDEJSON_TEMPLATE}" ]; then
+    echo "Error: Could not find claude.json.template at $CLAUDEJSON_TEMPLATE"
+    exit 1
+fi
+
+# Copy Dockerfile from template if it doesn't exist
+if [ ! -f "${PROFILE_DOCKERFILE}" ]; then
+    cp "${DOCKERFILE_TEMPLATE}" "${PROFILE_DOCKERFILE}"
+fi
+# Copy claude.json from template if it doesn't exist
+if [ ! -f "${PROFILE_CONFIG_DIR}/claude.json" ]; then
+    cp "${CLAUDEJSON_TEMPLATE}" "${PROFILE_CONFIG_DIR}/claude.json"
+fi
+
+# Build the Docker image if it doesn't exist or the --build flag is used
+if [ "${BUILD_IMAGE}" = true ] || ! docker image inspect "${IMAGE_NAME}" > /dev/null 2>&1; then
+    echo "Building Docker image: ${IMAGE_NAME}"
+    docker build --no-cache -t "${IMAGE_NAME}" -f "${PROFILE_DOCKERFILE}" "${PROFILE_CONFIG_DIR}"
+fi
+
+# Determine the command to run in the container
+if [ "$LAUNCH_SHELL" = true ]; then
+    EXEC_CMD="/bin/zsh"
+else
+    EXEC_CMD="/home/claude/.local/bin/claude"
+fi
+
+# Run the Docker container
+docker run \
+    --rm \
+    -it \
+    -v "${PWD}:/workspace/${PWD}" \
+    -v "${CLAUDE_DIR}:/home/claude/.claude" \
+    -v "${PROFILE_CONFIG_DIR}/claude.json:/home/claude/.claude.json" \
+    -v /etc/localtime:/etc/localtime:ro \
+    -e TERM=xterm-256color \
+    -e SAMPORAPELI_ZSH_ENVIRONMENT="${IMAGE_NAME}" \
+    --cap-drop=ALL \
+    --security-opt=no-new-privileges \
+    --memory=4g \
+    --cpus=2 \
+    --pids-limit=100 \
+    -w "/workspace/${PWD}" \
+    "${IMAGE_NAME}" \
+    /bin/zsh -c "${EXEC_CMD}"
