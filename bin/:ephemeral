@@ -3,7 +3,7 @@
 EPHEMERAL_PATH="$HOME/.config/ephemeral"
 
 if [[ "$1" == "--build" ]]; then
-  docker build -t "ephemeral-$2" "$EPHEMERAL_PATH/$2/"
+  docker build --no-cache -t "ephemeral-$2" "$EPHEMERAL_PATH/$2/"
   exit
 elif [[ "$1" == "--help" ]]; then
   echo 'Usage:'
@@ -39,4 +39,6 @@ EPHEMERAL_IMAGE="$1"
 shift 1
 
 echo "Executing: docker run -it --rm $* \"ephemeral-$EPHEMERAL_IMAGE\""
-docker run -it --rm "$@" "ephemeral-$EPHEMERAL_IMAGE"
+docker run -it --rm \
+  -e SAMPORAPELI_ZSH_ENVIRONMENT="ephemeral ${EPHEMERAL_IMAGE}" \
+  "$@" "ephemeral-$EPHEMERAL_IMAGE"
