@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+VERSION='v0.1.0'
+
+RESULT=$(curl 'https://protonvpn.com/services/v1/ip/lookup?fields=connection.ipAddress%2Clocation.country.names%2Clocation.city.names%2Cconnection.isp' 2> /dev/null)
+
+IPADDR=$(jq -r '.data.connection.ipAddress' <<< "$RESULT")
+
+FULL_OUTPUT="no"
+
+print_help() {
+    echo ":ipaddr $VERSION"
+    echo
+    echo "Retrieve your public IP address (and optionally location info) via ProtonVPN's lookup service."
+    echo
+
+    echo "USAGE:"
+    echo "  :ipaddr <subcommand>"
+    echo
+    echo "SUBCOMMANDS:"
+    echo "  help   Show this help message"
+    echo "  full   Print IP address together with city and country"
+    echo "  (none) Print only the IP address (default behavior)"
+    echo 
+    echo "EXAMPLES:"
+    echo "  :ipaddr               # prints just the IP address"
+    echo "  :ipaddr full          # prints IP, city, and country"
+    echo "  :ipaddr help          # shows this help text"
+}
+
+if [[ -n "$1" ]]; then
+  if [[ "$1" = "help" ]]; then
+    print_help
+    exit
+  elif [[ "$1" = "full" ]]; then
+    FULL_OUTPUT="yes"
+    CITY=$(jq -r '.data.location.city.names.en' <<< "$RESULT")
+    COUNTRY=$(jq -r '.data.location.country.names.en' <<< "$RESULT")
+  else
+    echo -e "Subcommand '$1' is not supported\n"
+    print_help
+    exit 2
+  fi
+fi
+
+echo "$IPADDR"
+
+if [[ "$FULL_OUTPUT" = "yes" ]]; then
+  echo "$CITY, $COUNTRY"
+fi
