@@ -1,11 +1,12 @@
 #!/bin/bash
 set -eo pipefail
 
-VERSION="1.0.0"
+VERSION="1.1.0"
 IMAGE_PREFIX="cla"
 CONFIG_DIR="${HOME}/.config/cla"
 DOCKERFILE_TEMPLATE="${CONFIG_DIR}/Dockerfile.template"
 CLAUDEJSON_TEMPLATE="${CONFIG_DIR}/claude.json.template"
+INSTALL_SCRIPTS_SRC="${CONFIG_DIR}/_install-scripts"
 
 show_usage() {
     cat << EOF
@@ -14,14 +15,16 @@ show_usage() {
 Usage: :cla <profile-name> [OPTIONS]
 
 Options:
-    --shell         Launch interactive shell instead of Claude CLI
-    --build         Force rebuild of Docker image
-    -h, --help      Show this help message
+    --shell               Launch interactive shell instead of Claude CLI
+    --build               Force rebuild of Docker image
+    --reset-dockerfile    Reset Dockerfile from template and exit (does not touch claude.json)
+    -h, --help            Show this help message
 
 Examples:
-    :cla work                    # Launch Claude CLI with 'work' profile
-    :cla personal --shell        # Launch shell with 'personal' profile
-    :cla --shell work --build    # Build and launch a shell with 'work' profile
+    :cla work                            # Launch Claude CLI with 'work' profile
+    :cla personal --shell                # Launch shell with 'personal' profile
+    :cla work --reset-dockerfile         # Reset 'work' Dockerfile to default
+    :cla --shell work --build            # Build and launch a shell with 'work' profile
 EOF
 }
 
@@ -29,6 +32,7 @@ EOF
 PROFILE_NAME=""
 LAUNCH_SHELL=false
 BUILD_IMAGE=false
+RESET_DOCKERFILE=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -44,13 +48,16 @@ while [[ $# -gt 0 ]]; do
             BUILD_IMAGE=true
             shift
             ;;
+        --reset-dockerfile)
+            RESET_DOCKERFILE=true
+            shift
+            ;;
         -*)
             echo "Error: Unknown option $1"
             show_usage
             exit 1
             ;;
         *)
-            # Any argument without -- is treated as the profile name
             if [ -z "$PROFILE_NAME" ]; then
                 PROFILE_NAME="$1"
             else
@@ -67,6 +74,11 @@ if [ -z "$PROFILE_NAME" ]; then
     echo "Error: Profile name required"
     echo ""
     show_usage
+    exit 1
+fi
+
+if [[ "$PROFILE_NAME" == _* ]]; then
+    echo "Error: Invalid profile name (name must not start with an underscore"
     exit 1
 fi
 
@@ -97,10 +109,23 @@ if [ ! -f "${PROFILE_CONFIG_DIR}/claude.json" ]; then
     cp "${CLAUDEJSON_TEMPLATE}" "${PROFILE_CONFIG_DIR}/claude.json"
 fi
 
+# Handle --reset-dockerfile
+if [ "${RESET_DOCKERFILE}" = true ]; then
+    echo "Resetting Dockerfile for profile '${PROFILE_NAME}'..."
+    cp "${DOCKERFILE_TEMPLATE}" "${PROFILE_DOCKERFILE}"
+    echo "  ✓ Dockerfile reset from template"
+    echo "Reset complete."
+    exit 0
+fi
+
 # Build the Docker image if it doesn't exist or the --build flag is used
 if [ "${BUILD_IMAGE}" = true ] || ! docker image inspect "${IMAGE_NAME}" > /dev/null 2>&1; then
     echo "Building Docker image: ${IMAGE_NAME}"
-    docker build --no-cache -t "${IMAGE_NAME}" -f "${PROFILE_DOCKERFILE}" "${PROFILE_CONFIG_DIR}"
+    docker build --no-cache \
+        -t "${IMAGE_NAME}" \
+        -f "${PROFILE_DOCKERFILE}" \
+        --build-context install-scripts="${INSTALL_SCRIPTS_SRC}" \
+        "${PROFILE_CONFIG_DIR}"
 fi
 
 # Determine the command to run in the container

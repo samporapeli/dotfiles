@@ -3,6 +3,8 @@ FROM opensuse/tumbleweed
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
+COPY --from=install-scripts . /usr/local/bin/
+
 # Install dependencies
 RUN zypper refresh && \
     zypper install -y \
@@ -12,19 +14,24 @@ RUN zypper refresh && \
       diffutils \
       envsubst \
       findutils \
+      tar \
       tree \
       bash \
       jq \
       zsh \
       python3 \
+      sqlite3-devel \
       which \
       nvim \
       vim \
     && zypper clean -a
 
-RUN npm install -g pnpm
-
 RUN useradd claude -m -s /bin/zsh
+
+# Comment/uncomment below
+RUN cla_install_pnpm.sh
+RUN cla_install_flutter.sh
+
 USER claude
 
 # Install dotfiles
