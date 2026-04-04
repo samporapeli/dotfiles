@@ -25,8 +25,8 @@ super + shift + ctrl + s
 
 
 # lock the desktop session
-# alt + l
-#   loginctl lock-session 1
+super + alt + l
+    xterm -e loginctl lock-session
 
 #
 # bspwm hotkeys
