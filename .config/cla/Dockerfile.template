@@ -9,6 +9,7 @@ COPY --from=install-scripts . /usr/local/bin/
 RUN zypper refresh && \
     zypper install -y \
       nodejs npm \
+      awk \
       git \
       file \
       diffutils \
