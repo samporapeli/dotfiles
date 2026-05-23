@@ -63,44 +63,37 @@ local plugin_list = {
 	{ "github/copilot.vim" },
 	{
 		"nvim-treesitter/nvim-treesitter",
-		branch = "master",
+		branch = "main",
 		lazy = false,
 		build = ":TSUpdate",
 		config = function()
-			require("nvim-treesitter.configs").setup({
-				ensure_installed = {
-					"lua", "query", "vim", "vimdoc", -- Core
-					"markdown", "markdown_inline", -- Documentation and writing
-					"bash", "cmake", "json", "json5", "jsonc", "make", "toml", "yaml", -- Shell and config
-					"css", "html", "javascript", "jsdoc", "scss", "tsx", "typescript", -- Web
-					"dockerfile", "gitcommit", "gitignore", "python", "sql", "xml", -- Common
-				},
-				sync_install = false,
-				auto_install = true,
-				highlight = {
-					enable = true,
-					additional_vim_regex_highlighting = false,
-				},
-				indent = {
-					enable = true,
-				},
-				incremental_selection = {
-					enable = true,
-					keymaps = {
-						init_selection = "<C-space>",
-						node_incremental = "<C-space>",
-						scope_incremental = "grc",
-						node_decremental = "<bs>",
-					},
-				},
-			})
+			require("nvim-treesitter").setup({})
+
+			local parsers = {
+				"lua", "query", "vim", "vimdoc",
+				"markdown", "markdown_inline",
+				"bash", "cmake", "json", "json5", "jsonc", "make", "toml", "yaml",
+				"css", "html", "javascript", "jsdoc", "scss", "tsx", "typescript",
+				"dockerfile", "gitcommit", "gitignore", "python", "sql", "xml",
+			}
+
+			local installed = require("nvim-treesitter.config").get_installed()
+			local to_install = vim.iter(parsers)
+				:filter(function(p) return not vim.tbl_contains(installed, p) end)
+				:totable()
+
+			if #to_install > 0 then
+				require("nvim-treesitter").install(to_install)
+			end
+
 			vim.api.nvim_create_autocmd("FileType", {
 				callback = function()
-					if require("nvim-treesitter.parsers").has_parser() then
+					local ok = pcall(vim.treesitter.get_parser)
+					if ok then
 						vim.opt_local.foldmethod = "expr"
-						vim.opt_local.foldexpr = "nvim_treesitter#foldexpr()"
+						vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 					end
-				end
+				end,
 			})
 		end,
 	},

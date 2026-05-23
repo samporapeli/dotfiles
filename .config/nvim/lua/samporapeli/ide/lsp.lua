@@ -9,10 +9,13 @@ local lsp_attach = function(client, bufnr)
 	-- custom keybindings here
 end
 
--- Setup lua_ls with vim.lsp.config
-vim.lsp.config('lua_ls', {
+-- Default config applied to all servers
+vim.lsp.config('*', {
 	on_attach = lsp_attach,
 	capabilities = lsp_capabilities,
+})
+
+vim.lsp.config('lua_ls', {
 	settings = {
 		Lua = {
 			diagnostics = {
@@ -25,32 +28,8 @@ vim.lsp.config('lua_ls', {
 	},
 })
 
--- Setup other servers with lspconfig
-local lspconfig = require("lspconfig")
-for _, server_name in ipairs(require("mason-lspconfig").get_installed_servers()) do
-	if server_name ~= "lua_ls" then -- Skip lua_ls, handled above
-		lspconfig[server_name].setup({
-			on_attach = lsp_attach,
-			capabilities = lsp_capabilities,
-		})
-	end
-end
+vim.lsp.config('dartls', {
+	cmd = { "/usr/bin/env", "dart", "language-server", "--protocol=lsp" },
+})
 
--- Start LSP for existing buffers that were opened before config loaded
-vim.schedule(function()
-	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-		if vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].filetype ~= "" then
-			vim.api.nvim_buf_call(bufnr, function()
-				-- Trigger FileType event to start appropriate LSP
-				vim.cmd("doautocmd FileType " .. vim.bo.filetype)
-			end)
-		end
-	end
-end)
-
-if vim.bo.filetype == "dart" then
-	local lspconfig = require("lspconfig")
-	lspconfig.dartls.setup({
-		cmd = { "/usr/bin/env", "dart", "language-server", "--protocol=lsp" },
-	})
-end
+vim.lsp.enable('dartls')

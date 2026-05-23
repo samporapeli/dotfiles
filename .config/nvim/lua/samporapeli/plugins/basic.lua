@@ -15,7 +15,7 @@ return {
 	"tpope/vim-repeat",
 	"tpope/vim-surround",
 	{
-		"norcalli/nvim-colorizer.lua",
+		"catgoose/nvim-colorizer.lua",
 		config = function ()
 			vim.opt.termguicolors = true
 			require("colorizer").setup()
