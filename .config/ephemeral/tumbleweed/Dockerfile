@@ -1,7 +1,7 @@
 FROM opensuse/tumbleweed
 
 # Install useful packages not included in the image by default
-RUN zypper refresh && zypper install -y envsubst git htop man neovim tmux sudo vim wget zsh; \
+RUN zypper refresh && zypper install -y envsubst gcc git htop man neovim tree-sitter tmux sudo vim wget zsh; \
   EXIT_CODE=$?; \
   if [ $EXIT_CODE -eq 107 ]; then \
       echo "Ignoring zypper exit code 107 (RPM post-script failure in Docker context)"; \
