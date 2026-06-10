@@ -3,49 +3,48 @@ FROM opensuse/tumbleweed
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
-COPY --from=install-scripts . /usr/local/bin/
+COPY --from=install_scripts . /usr/local/bin/
 
 # Install dependencies
 RUN zypper refresh && \
     zypper install -y \
       nodejs npm \
+      ShellCheck \
       awk \
-      gcc \
-      git \
-      file \
+      bash \
       diffutils \
       envsubst \
+      file \
       findutils \
+      gcc \
+      git \
+      jq \
+      luajit-lpeg \
+      nvim \
+      python3 \
+      sqlite3-devel \
       tar \
       tree \
       tree-sitter \
-      bash \
-      jq \
-      zsh \
-      python3 \
-      sqlite3-devel \
       which \
-      nvim \
-      vim \
+      yq \
+      zsh \
     && zypper clean -a
 
-RUN useradd claude -m -s /bin/zsh
+RUN useradd cla -m -s /bin/zsh
 
 # Comment/uncomment below
-RUN cla_install_pnpm.sh
+RUN cla_install_claude_code.sh
 RUN cla_install_flutter.sh
+RUN cla_install_pnpm.sh
+RUN cla_install_samporapeli_dotfiles.sh
 
-USER claude
-
-# Install dotfiles
-RUN cd /home/claude && SAMPORAPELI_DOTFILES_UNATTENDED_INSTALL=true bash <(curl -sL sampo.website/install-dotfiles.sh)
-
-# Install Claude Code
-RUN curl -fsSL https://claude.ai/install.sh | bash
-ENV PATH="/home/claude/.local/bin:$PATH"
-
+# Claude Code
+ENV PATH="/home/cla/.local/bin:$PATH"
 ENV CLAUDE_CODE_DISABLE_AUTO_UPDATE=1
 ENV CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+
+USER cla
 
 # Set up working directory
 WORKDIR /workspace

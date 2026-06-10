@@ -2,7 +2,7 @@
 set -eu
 
 install_flutter() {
-  USER_HOME='/home/claude'
+  USER_HOME='/home/cla'
   cd "$USER_HOME" || exit
   mkdir -p "$USER_HOME/develop"
   FLUTTER_SDK="flutter_linux_3.41.6-stable.tar.xz"
@@ -16,4 +16,4 @@ install_flutter() {
 }
 
 export -f install_flutter
-su -c 'bash -c install_flutter' claude
+su -c 'bash -c install_flutter' cla

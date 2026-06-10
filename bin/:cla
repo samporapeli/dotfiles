@@ -1,12 +1,12 @@
 #!/bin/bash
 set -eo pipefail
 
-VERSION="1.1.0"
+VERSION="1.2.0"
 IMAGE_PREFIX="cla"
 CONFIG_DIR="${HOME}/.config/cla"
 DOCKERFILE_TEMPLATE="${CONFIG_DIR}/Dockerfile.template"
 CLAUDEJSON_TEMPLATE="${CONFIG_DIR}/claude.json.template"
-INSTALL_SCRIPTS_SRC="${CONFIG_DIR}/_install-scripts"
+INSTALL_SCRIPTS_SRC="${CONFIG_DIR}/_install_scripts"
 
 show_usage() {
     cat << EOF
@@ -124,7 +124,7 @@ if [ "${BUILD_IMAGE}" = true ] || ! docker image inspect "${IMAGE_NAME}" > /dev/
     docker build --no-cache \
         -t "${IMAGE_NAME}" \
         -f "${PROFILE_DOCKERFILE}" \
-        --build-context install-scripts="${INSTALL_SCRIPTS_SRC}" \
+        --build-context install_scripts="${INSTALL_SCRIPTS_SRC}" \
         "${PROFILE_CONFIG_DIR}"
 fi
 
@@ -132,7 +132,7 @@ fi
 if [ "$LAUNCH_SHELL" = true ]; then
     EXEC_CMD="/bin/zsh"
 else
-    EXEC_CMD="/home/claude/.local/bin/claude"
+    EXEC_CMD="/home/cla/.local/bin/claude"
 fi
 
 # Run the Docker container
@@ -140,8 +140,8 @@ docker run \
     --rm \
     -it \
     -v "${PWD}:/workspace/${PWD}" \
-    -v "${CLAUDE_DIR}:/home/claude/.claude" \
-    -v "${PROFILE_CONFIG_DIR}/claude.json:/home/claude/.claude.json" \
+    -v "${CLAUDE_DIR}:/home/cla/.claude" \
+    -v "${PROFILE_CONFIG_DIR}/claude.json:/home/cla/.claude.json" \
     -v /etc/localtime:/etc/localtime:ro \
     -e TERM=xterm-256color \
     -e SAMPORAPELI_ZSH_ENVIRONMENT="${IMAGE_NAME}" \
