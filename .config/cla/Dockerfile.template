@@ -20,7 +20,7 @@ RUN zypper refresh && \
       git \
       jq \
       luajit-lpeg \
-      nvim \
+      neovim \
       python3 \
       sqlite3-devel \
       tar \
