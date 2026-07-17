@@ -35,7 +35,8 @@ RUN useradd cla -m -s /bin/zsh
 
 # Comment/uncomment below
 RUN cla_install_claude_code.sh
-RUN cla_install_flutter.sh
+# RUN cla_install_flutter.sh
+RUN cla_install_opencode.sh
 RUN cla_install_pnpm.sh
 RUN cla_install_samporapeli_dotfiles.sh
 
@@ -43,6 +44,9 @@ RUN cla_install_samporapeli_dotfiles.sh
 ENV PATH="/home/cla/.local/bin:$PATH"
 ENV CLAUDE_CODE_DISABLE_AUTO_UPDATE=1
 ENV CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+
+# OpenCode
+ENV PATH="/home/cla/.opencode/bin:$PATH"
 
 USER cla
 
