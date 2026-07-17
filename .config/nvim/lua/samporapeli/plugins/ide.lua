@@ -72,7 +72,7 @@ local plugin_list = {
 			local parsers = {
 				"lua", "query", "vim", "vimdoc",
 				"markdown", "markdown_inline",
-				"bash", "cmake", "json", "json5", "jsonc", "make", "toml", "yaml",
+				"bash", "cmake", "json", "json5", "make", "toml", "yaml",
 				"css", "html", "javascript", "jsdoc", "scss", "tsx", "typescript",
 				"dockerfile", "gitcommit", "gitignore", "python", "sql", "xml",
 			}
