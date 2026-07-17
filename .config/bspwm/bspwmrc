@@ -4,7 +4,7 @@
 # keybindings
 sxhkd &
 # compositor
-picom --experimental-backend &
+picom -b --backend=xrender
 
 # workspaces and displays
 bspc config remove_disabled_monitors true
