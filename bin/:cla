@@ -1,36 +1,37 @@
 #!/bin/bash
 set -eo pipefail
 
-VERSION="1.2.0"
+VERSION="1.3.0"
 IMAGE_PREFIX="cla"
 CONFIG_DIR="${HOME}/.config/cla"
-DOCKERFILE_TEMPLATE="${CONFIG_DIR}/Dockerfile.template"
-CLAUDEJSON_TEMPLATE="${CONFIG_DIR}/claude.json.template"
+TEMPLATES_DIR="${CONFIG_DIR}/_templates"
+DOCKERFILE_TEMPLATE="${TEMPLATES_DIR}/Dockerfile"
+CLAUDEJSON_TEMPLATE="${TEMPLATES_DIR}/claude.json"
+OPENCODEJSON_TEMPLATE="${TEMPLATES_DIR}/opencode.json"
+AGENTS_TEMPLATE="${TEMPLATES_DIR}/AGENTS.md"
 INSTALL_SCRIPTS_SRC="${CONFIG_DIR}/_install_scripts"
 
 show_usage() {
     cat << EOF
-:cla v${VERSION} - isolated Claude Code environments
+:cla v${VERSION} - isolated AI coding environments
 
 Usage: :cla <profile-name> [OPTIONS]
 
 Options:
-    --shell               Launch interactive shell instead of Claude CLI
     --build               Force rebuild of Docker image
-    --reset-dockerfile    Reset Dockerfile from template and exit (does not touch claude.json)
+    --reset-dockerfile    Reset Dockerfile from template
+    --version             Show version
     -h, --help            Show this help message
 
 Examples:
-    :cla work                            # Launch Claude CLI with 'work' profile
-    :cla personal --shell                # Launch shell with 'personal' profile
+    :cla work                            # Launch shell with 'work' profile
+    :cla work --build                    # Force rebuild and launch
     :cla work --reset-dockerfile         # Reset 'work' Dockerfile to default
-    :cla --shell work --build            # Build and launch a shell with 'work' profile
 EOF
 }
 
 # Parse arguments
 PROFILE_NAME=""
-LAUNCH_SHELL=false
 BUILD_IMAGE=false
 RESET_DOCKERFILE=false
 
@@ -40,9 +41,9 @@ while [[ $# -gt 0 ]]; do
             show_usage
             exit 0
             ;;
-        --shell)
-            LAUNCH_SHELL=true
-            shift
+        --version)
+            echo "v${VERSION}"
+            exit 0
             ;;
         --build)
             BUILD_IMAGE=true
@@ -50,6 +51,9 @@ while [[ $# -gt 0 ]]; do
             ;;
         --reset-dockerfile)
             RESET_DOCKERFILE=true
+            shift
+            ;;
+        --shell)
             shift
             ;;
         -*)
@@ -78,25 +82,62 @@ if [ -z "$PROFILE_NAME" ]; then
 fi
 
 if [[ "$PROFILE_NAME" == _* ]]; then
-    echo "Error: Invalid profile name (name must not start with an underscore"
+    echo "Error: Invalid profile name (name must not start with an underscore)"
     exit 1
 fi
 
 IMAGE_NAME="${IMAGE_PREFIX}-${PROFILE_NAME}"
 PROFILE_CONFIG_DIR="${CONFIG_DIR}/${PROFILE_NAME}"
-CLAUDE_DIR="${PROFILE_CONFIG_DIR}/.claude"
+CLAUDE_DIR="${PROFILE_CONFIG_DIR}/_claude/.claude"
+CLAUDEJSON_PATH="${PROFILE_CONFIG_DIR}/_claude/claude.json"
+OPENCJSON_PATH="${PROFILE_CONFIG_DIR}/_opencode/opencode.jsonc"
+AGENTS_PATH="${PROFILE_CONFIG_DIR}/_opencode/AGENTS.md"
 PROFILE_DOCKERFILE="${PROFILE_CONFIG_DIR}/Dockerfile"
 
-mkdir -p "${PROFILE_CONFIG_DIR}"
-mkdir -p "${CLAUDE_DIR}"
+# --- Migration logic ---
+if [ -d "${PROFILE_CONFIG_DIR}" ]; then
+    if [ ! -d "${PROFILE_CONFIG_DIR}/_claude" ]; then
+        echo "Profile '${PROFILE_NAME}' uses old directory structure."
+        echo "Files will be moved into _claude/ subdirectory."
+        read -r -p "Migrate? [y/N] " MIGRATE || MIGRATE="n"
+        if [[ "$MIGRATE" =~ ^[Yy]$ ]]; then
+            mkdir -p "${PROFILE_CONFIG_DIR}/_claude"
 
-# Check for templates
+            if [ -f "${PROFILE_CONFIG_DIR}/claude.json" ]; then
+                mv "${PROFILE_CONFIG_DIR}/claude.json" "${PROFILE_CONFIG_DIR}/_claude/claude.json"
+            fi
+            if [ -d "${PROFILE_CONFIG_DIR}/.claude" ]; then
+                mv "${PROFILE_CONFIG_DIR}/.claude" "${PROFILE_CONFIG_DIR}/_claude/.claude"
+            fi
+
+            echo "  ✓ Migrated to new directory structure"
+        else
+            echo "  ⚠ Skipping migration (proceeding with old structure)"
+        fi
+    fi
+fi
+
+# --- Create directory structure ---
+mkdir -p "${PROFILE_CONFIG_DIR}/_claude"
+mkdir -p "${CLAUDE_DIR}"
+mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/share"
+mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/state"
+
+# --- Copy templates ---
 if [ ! -f "${DOCKERFILE_TEMPLATE}" ]; then
-    echo "Error: Could not find Dockerfile.template at $DOCKERFILE_TEMPLATE"
+    echo "Error: Could not find Dockerfile template at $DOCKERFILE_TEMPLATE"
     exit 1
 fi
 if [ ! -f "${CLAUDEJSON_TEMPLATE}" ]; then
-    echo "Error: Could not find claude.json.template at $CLAUDEJSON_TEMPLATE"
+    echo "Error: Could not find claude.json template at $CLAUDEJSON_TEMPLATE"
+    exit 1
+fi
+if [ ! -f "${OPENCODEJSON_TEMPLATE}" ]; then
+    echo "Error: Could not find opencode.json template at $OPENCODEJSON_TEMPLATE"
+    exit 1
+fi
+if [ ! -f "${AGENTS_TEMPLATE}" ]; then
+    echo "Error: Could not find AGENTS.md template at $AGENTS_TEMPLATE"
     exit 1
 fi
 
@@ -104,9 +145,20 @@ fi
 if [ ! -f "${PROFILE_DOCKERFILE}" ]; then
     cp "${DOCKERFILE_TEMPLATE}" "${PROFILE_DOCKERFILE}"
 fi
+
 # Copy claude.json from template if it doesn't exist
-if [ ! -f "${PROFILE_CONFIG_DIR}/claude.json" ]; then
-    cp "${CLAUDEJSON_TEMPLATE}" "${PROFILE_CONFIG_DIR}/claude.json"
+if [ ! -f "${CLAUDEJSON_PATH}" ]; then
+    cp "${CLAUDEJSON_TEMPLATE}" "${CLAUDEJSON_PATH}"
+fi
+
+# Copy opencode.jsonc from template if it doesn't exist
+if [ ! -f "${OPENCJSON_PATH}" ]; then
+    cp "${OPENCODEJSON_TEMPLATE}" "${OPENCJSON_PATH}"
+fi
+
+# Copy AGENTS.md from template if it doesn't exist
+if [ ! -f "${AGENTS_PATH}" ]; then
+    cp "${AGENTS_TEMPLATE}" "${AGENTS_PATH}"
 fi
 
 # Handle --reset-dockerfile
@@ -128,28 +180,29 @@ if [ "${BUILD_IMAGE}" = true ] || ! docker image inspect "${IMAGE_NAME}" > /dev/
         "${PROFILE_CONFIG_DIR}"
 fi
 
-# Determine the command to run in the container
-if [ "$LAUNCH_SHELL" = true ]; then
-    EXEC_CMD="/bin/zsh"
-else
-    EXEC_CMD="/home/cla/.local/bin/claude"
-fi
+# --- Build docker run command ---
+DOCKER_RUN=(
+    docker run
+    --rm
+    -it
+    -v "${PWD}:/workspace/${PWD}"
+    -v "${CLAUDE_DIR}:/home/cla/.claude"
+    -v "${CLAUDEJSON_PATH}:/home/cla/.claude.json"
+    -v "${AGENTS_PATH}:/home/cla/.config/opencode/AGENTS.md"
+    -v "${OPENCJSON_PATH}:/home/cla/.config/opencode/opencode.jsonc"
+    -v "${PROFILE_CONFIG_DIR}/_opencode/share:/home/cla/.local/share/opencode"
+    -v "${PROFILE_CONFIG_DIR}/_opencode/state:/home/cla/.local/state/opencode"
+    -v /etc/localtime:/etc/localtime:ro
+    -e TERM=xterm-256color
+    -e SAMPORAPELI_ZSH_ENVIRONMENT="${IMAGE_NAME}"
+    --cap-drop=ALL
+    --security-opt=no-new-privileges
+    --memory=4g
+    --cpus=2
+    --pids-limit=100
+    -w "/workspace/${PWD}"
+    "${IMAGE_NAME}"
+    /bin/zsh
+)
 
-# Run the Docker container
-docker run \
-    --rm \
-    -it \
-    -v "${PWD}:/workspace/${PWD}" \
-    -v "${CLAUDE_DIR}:/home/cla/.claude" \
-    -v "${PROFILE_CONFIG_DIR}/claude.json:/home/cla/.claude.json" \
-    -v /etc/localtime:/etc/localtime:ro \
-    -e TERM=xterm-256color \
-    -e SAMPORAPELI_ZSH_ENVIRONMENT="${IMAGE_NAME}" \
-    --cap-drop=ALL \
-    --security-opt=no-new-privileges \
-    --memory=4g \
-    --cpus=2 \
-    --pids-limit=100 \
-    -w "/workspace/${PWD}" \
-    "${IMAGE_NAME}" \
-    /bin/zsh -c "${EXEC_CMD}"
+"${DOCKER_RUN[@]}"
