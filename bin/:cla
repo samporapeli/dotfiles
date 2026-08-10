@@ -90,6 +90,7 @@ IMAGE_NAME="${IMAGE_PREFIX}-${PROFILE_NAME}"
 PROFILE_CONFIG_DIR="${CONFIG_DIR}/${PROFILE_NAME}"
 CLAUDE_DIR="${PROFILE_CONFIG_DIR}/_claude/.claude"
 CLAUDEJSON_PATH="${PROFILE_CONFIG_DIR}/_claude/claude.json"
+PI_DIR="${PROFILE_CONFIG_DIR}/_pi/.pi"
 OPENCJSON_PATH="${PROFILE_CONFIG_DIR}/_opencode/opencode.jsonc"
 AGENTS_PATH="${PROFILE_CONFIG_DIR}/_opencode/AGENTS.md"
 PROFILE_DOCKERFILE="${PROFILE_CONFIG_DIR}/Dockerfile"
@@ -122,6 +123,7 @@ mkdir -p "${PROFILE_CONFIG_DIR}/_claude"
 mkdir -p "${CLAUDE_DIR}"
 mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/share"
 mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/state"
+mkdir -p "${PI_DIR}"
 
 # --- Copy templates ---
 if [ ! -f "${DOCKERFILE_TEMPLATE}" ]; then
@@ -188,6 +190,7 @@ DOCKER_RUN=(
     -v "${PWD}:/workspace/${PWD}"
     -v "${CLAUDE_DIR}:/home/cla/.claude"
     -v "${CLAUDEJSON_PATH}:/home/cla/.claude.json"
+    -v "${PI_DIR}:/home/cla/.pi"
     -v "${AGENTS_PATH}:/home/cla/.config/opencode/AGENTS.md"
     -v "${OPENCJSON_PATH}:/home/cla/.config/opencode/opencode.jsonc"
     -v "${PROFILE_CONFIG_DIR}/_opencode/share:/home/cla/.local/share/opencode"
