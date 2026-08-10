@@ -45,7 +45,7 @@ ENV PATH="/home/cla/.local/bin:$PATH"
 ENV CLAUDE_CODE_DISABLE_AUTO_UPDATE=1
 ENV CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 
-# OpenCode
+# Opencode
 ENV PATH="/home/cla/.opencode/bin:$PATH"
 
 USER cla
