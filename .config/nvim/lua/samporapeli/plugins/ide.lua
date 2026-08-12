@@ -83,7 +83,7 @@ local plugin_list = {
 				:totable()
 
 			if #to_install > 0 then
-				require("nvim-treesitter").install(to_install)
+				require("nvim-treesitter").install(to_install):wait(5*60*1000) -- blocking install, 5 min timeout
 			end
 
 			vim.api.nvim_create_autocmd("FileType", {

@@ -58,7 +58,7 @@ function install_dotfiles() {
         update_submodules
         install_antigen_plugins
         # Install neovim plugins
-        NVIM_IDE=yes nvim -c exit
+        NVIM_IDE=yes nvim --headless "+Lazy! sync" +qa
         echo 'Unattended install of samporapeli/dotfiles completed!'
         exit
     fi
