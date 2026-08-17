@@ -8,7 +8,6 @@ COPY --from=install_scripts . /usr/local/bin/
 # Install dependencies
 RUN zypper refresh && \
     zypper install -y \
-      nodejs npm \
       ShellCheck \
       awk \
       bash \
@@ -21,6 +20,8 @@ RUN zypper refresh && \
       jq \
       luajit-lpeg \
       neovim \
+      nodejs \
+      npm \
       python3 \
       sqlite3-devel \
       tar \
@@ -34,19 +35,19 @@ RUN zypper refresh && \
 RUN useradd cla -m -s /bin/zsh
 
 # Comment/uncomment below
+# RUN cla_install_antigravity.sh
 RUN cla_install_claude_code.sh
 # RUN cla_install_flutter.sh
-RUN cla_install_opencode.sh
+# RUN cla_install_opencode.sh
 # RUN cla_install_pi.sh
 RUN cla_install_pnpm.sh
 RUN cla_install_samporapeli_dotfiles.sh
 
 # Claude Code
-ENV PATH="/home/cla/.local/bin:$PATH"
 ENV CLAUDE_CODE_DISABLE_AUTO_UPDATE=1
 ENV CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 
-# Opencode
+ENV PATH="/home/cla/.local/bin:$PATH"
 ENV PATH="/home/cla/.opencode/bin:$PATH"
 
 USER cla

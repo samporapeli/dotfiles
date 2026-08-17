@@ -9,6 +9,7 @@ DOCKERFILE_TEMPLATE="${TEMPLATES_DIR}/Dockerfile"
 CLAUDEJSON_TEMPLATE="${TEMPLATES_DIR}/claude.json"
 OPENCODEJSON_TEMPLATE="${TEMPLATES_DIR}/opencode.json"
 AGENTS_TEMPLATE="${TEMPLATES_DIR}/AGENTS.md"
+ANTIGR_TEMPLATE="${TEMPLATES_DIR}/antigravity.json"
 INSTALL_SCRIPTS_SRC="${CONFIG_DIR}/_install_scripts"
 
 show_usage() {
@@ -93,6 +94,8 @@ CLAUDEJSON_PATH="${PROFILE_CONFIG_DIR}/_claude/claude.json"
 PI_DIR="${PROFILE_CONFIG_DIR}/_pi/.pi"
 OPENCJSON_PATH="${PROFILE_CONFIG_DIR}/_opencode/opencode.jsonc"
 AGENTS_PATH="${PROFILE_CONFIG_DIR}/_opencode/AGENTS.md"
+ANTIGR_GEMINI_DIR="${PROFILE_CONFIG_DIR}/_antigravity/.gemini"
+ANTIGR_SETTINGS_PATH="${ANTIGR_GEMINI_DIR}/antigravity-cli/settings.json"
 PROFILE_DOCKERFILE="${PROFILE_CONFIG_DIR}/Dockerfile"
 
 # --- Migration logic ---
@@ -124,6 +127,7 @@ mkdir -p "${CLAUDE_DIR}"
 mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/share"
 mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/state"
 mkdir -p "${PI_DIR}"
+mkdir -p "${ANTIGR_GEMINI_DIR}/antigravity-cli"
 
 # --- Copy templates ---
 if [ ! -f "${DOCKERFILE_TEMPLATE}" ]; then
@@ -163,6 +167,23 @@ if [ ! -f "${AGENTS_PATH}" ]; then
     cp "${AGENTS_TEMPLATE}" "${AGENTS_PATH}"
 fi
 
+# Copy AGENTS.md to GEMINI.md for Antigravity CLI (if AGENTS.md exists and GEMINI.md doesn't)
+GEMINI_PATH="${ANTIGR_GEMINI_DIR}/GEMINI.md"
+if [ -f "${AGENTS_PATH}" ] && [ ! -f "${GEMINI_PATH}" ]; then
+    cp "${AGENTS_PATH}" "${GEMINI_PATH}"
+fi
+
+# Copy AGENTS.md to CLAUDE.md for Claude Code (if AGENTS.md exists and CLAUDE.md doesn't)
+CLAUDE_MD_PATH="${PROFILE_CONFIG_DIR}/_claude/CLAUDE.md"
+if [ -f "${AGENTS_PATH}" ] && [ ! -f "${CLAUDE_MD_PATH}" ]; then
+    cp "${AGENTS_PATH}" "${CLAUDE_MD_PATH}"
+fi
+
+# Copy antigravity settings if they don't exist
+if [ -f "${ANTIGR_TEMPLATE}" ] && [ ! -f "${ANTIGR_SETTINGS_PATH}" ]; then
+    cp "${ANTIGR_TEMPLATE}" "${ANTIGR_SETTINGS_PATH}"
+fi
+
 # Handle --reset-dockerfile
 if [ "${RESET_DOCKERFILE}" = true ]; then
     echo "Resetting Dockerfile for profile '${PROFILE_NAME}'..."
@@ -195,6 +216,7 @@ DOCKER_RUN=(
     -v "${OPENCJSON_PATH}:/home/cla/.config/opencode/opencode.jsonc"
     -v "${PROFILE_CONFIG_DIR}/_opencode/share:/home/cla/.local/share/opencode"
     -v "${PROFILE_CONFIG_DIR}/_opencode/state:/home/cla/.local/state/opencode"
+    -v "${ANTIGR_GEMINI_DIR}:/home/cla/.gemini"
     -v /etc/localtime:/etc/localtime:ro
     -e TERM=xterm-256color
     -e SAMPORAPELI_ZSH_ENVIRONMENT="${IMAGE_NAME}"

@@ -1,0 +1,15 @@
+{
+  "enableTelemetry": false,
+  "permissions": {
+    "allow": [
+      "command(cd)",
+      "command(git diff)",
+      "command(git log)",
+      "command(git status)",
+      "command(ls)",
+      "command(which)"
+    ]
+  },
+  "trustedWorkspaces": [
+  ]
+}
