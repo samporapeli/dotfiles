@@ -93,6 +93,7 @@ PROFILE_CONFIG_DIR="${CONFIG_DIR}/${PROFILE_NAME}"
 CLAUDE_DIR="${PROFILE_CONFIG_DIR}/_claude/.claude"
 CLAUDEJSON_PATH="${PROFILE_CONFIG_DIR}/_claude/claude.json"
 PI_DIR="${PROFILE_CONFIG_DIR}/_pi/.pi"
+PI_AGENTS_PATH="${PI_DIR}/agent/AGENTS.md"
 OPENCJSON_PATH="${PROFILE_CONFIG_DIR}/_opencode/opencode.jsonc"
 AGENTS_PATH="${PROFILE_CONFIG_DIR}/_opencode/AGENTS.md"
 ANTIGR_GEMINI_DIR="${PROFILE_CONFIG_DIR}/_antigravity/.gemini"
@@ -181,6 +182,11 @@ fi
 CLAUDE_MD_PATH="${PROFILE_CONFIG_DIR}/_claude/CLAUDE.md"
 if [ -f "${AGENTS_PATH}" ] && [ ! -f "${CLAUDE_MD_PATH}" ]; then
     cp "${AGENTS_PATH}" "${CLAUDE_MD_PATH}"
+fi
+
+# Copy AGENTS.md to PI global instructions (if AGENTS.md exists and PI's AGENTS.md doesn't)
+if [ -f "${AGENTS_PATH}" ] && [ ! -f "${PI_AGENTS_PATH}" ]; then
+    cp "${AGENTS_PATH}" "${PI_AGENTS_PATH}"
 fi
 
 # Copy antigravity settings if they don't exist
