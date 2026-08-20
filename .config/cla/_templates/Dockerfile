@@ -12,6 +12,7 @@ RUN zypper refresh && \
       awk \
       bash \
       diffutils \
+      deno \
       envsubst \
       file \
       findutils \
@@ -37,6 +38,7 @@ RUN useradd cla -m -s /bin/zsh
 # Comment/uncomment below
 # RUN cla_install_antigravity.sh
 RUN cla_install_claude_code.sh
+# RUN cla_install_copilot_cli.sh
 # RUN cla_install_flutter.sh
 # RUN cla_install_opencode.sh
 # RUN cla_install_pi.sh

@@ -10,6 +10,7 @@ CLAUDEJSON_TEMPLATE="${TEMPLATES_DIR}/claude.json"
 OPENCODEJSON_TEMPLATE="${TEMPLATES_DIR}/opencode.json"
 AGENTS_TEMPLATE="${TEMPLATES_DIR}/AGENTS.md"
 ANTIGR_TEMPLATE="${TEMPLATES_DIR}/antigravity.json"
+COPILOT_TEMPLATE="${TEMPLATES_DIR}/copilot-instructions.md"
 INSTALL_SCRIPTS_SRC="${CONFIG_DIR}/_install_scripts"
 
 show_usage() {
@@ -96,6 +97,8 @@ OPENCJSON_PATH="${PROFILE_CONFIG_DIR}/_opencode/opencode.jsonc"
 AGENTS_PATH="${PROFILE_CONFIG_DIR}/_opencode/AGENTS.md"
 ANTIGR_GEMINI_DIR="${PROFILE_CONFIG_DIR}/_antigravity/.gemini"
 ANTIGR_SETTINGS_PATH="${ANTIGR_GEMINI_DIR}/antigravity-cli/settings.json"
+COPILOT_HOME_DIR="${PROFILE_CONFIG_DIR}/_copilot/.copilot"
+COPILOT_INSTRUCTIONS_PATH="${COPILOT_HOME_DIR}/copilot-instructions.md"
 PROFILE_DOCKERFILE="${PROFILE_CONFIG_DIR}/Dockerfile"
 
 # --- Migration logic ---
@@ -128,6 +131,7 @@ mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/share"
 mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/state"
 mkdir -p "${PI_DIR}"
 mkdir -p "${ANTIGR_GEMINI_DIR}/antigravity-cli"
+mkdir -p "${COPILOT_HOME_DIR}"
 
 # --- Copy templates ---
 if [ ! -f "${DOCKERFILE_TEMPLATE}" ]; then
@@ -184,6 +188,11 @@ if [ -f "${ANTIGR_TEMPLATE}" ] && [ ! -f "${ANTIGR_SETTINGS_PATH}" ]; then
     cp "${ANTIGR_TEMPLATE}" "${ANTIGR_SETTINGS_PATH}"
 fi
 
+# Copy AGENTS.md to copilot-instructions.md for Copilot CLI (if AGENTS.md exists and copilot-instructions.md doesn't)
+if [ -f "${AGENTS_PATH}" ] && [ ! -f "${COPILOT_INSTRUCTIONS_PATH}" ]; then
+    cp "${AGENTS_PATH}" "${COPILOT_INSTRUCTIONS_PATH}"
+fi
+
 # Handle --reset-dockerfile
 if [ "${RESET_DOCKERFILE}" = true ]; then
     echo "Resetting Dockerfile for profile '${PROFILE_NAME}'..."
@@ -217,6 +226,7 @@ DOCKER_RUN=(
     -v "${PROFILE_CONFIG_DIR}/_opencode/share:/home/cla/.local/share/opencode"
     -v "${PROFILE_CONFIG_DIR}/_opencode/state:/home/cla/.local/state/opencode"
     -v "${ANTIGR_GEMINI_DIR}:/home/cla/.gemini"
+    -v "${COPILOT_HOME_DIR}:/home/cla/.copilot"
     -v /etc/localtime:/etc/localtime:ro
     -e TERM=xterm-256color
     -e SAMPORAPELI_ZSH_ENVIRONMENT="${IMAGE_NAME}"
