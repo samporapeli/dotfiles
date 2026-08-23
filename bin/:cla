@@ -22,6 +22,7 @@ Usage: :cla <profile-name> [OPTIONS]
 Options:
     --build               Force rebuild of Docker image
     --reset-dockerfile    Reset Dockerfile from template
+    --reconfigure         Reset Dockerfile and open in editor
     --version             Show version
     -h, --help            Show this help message
 
@@ -29,6 +30,7 @@ Examples:
     :cla work                            # Launch shell with 'work' profile
     :cla work --build                    # Force rebuild and launch
     :cla work --reset-dockerfile         # Reset 'work' Dockerfile to default
+    :cla work --reconfigure              # Reset Dockerfile and open in editor
 EOF
 }
 
@@ -36,6 +38,7 @@ EOF
 PROFILE_NAME=""
 BUILD_IMAGE=false
 RESET_DOCKERFILE=false
+RECONFIGURE=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -53,6 +56,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --reset-dockerfile)
             RESET_DOCKERFILE=true
+            shift
+            ;;
+        --reconfigure)
+            RECONFIGURE=true
             shift
             ;;
         --shell)
@@ -92,6 +99,8 @@ IMAGE_NAME="${IMAGE_PREFIX}-${PROFILE_NAME}"
 PROFILE_CONFIG_DIR="${CONFIG_DIR}/${PROFILE_NAME}"
 CLAUDE_DIR="${PROFILE_CONFIG_DIR}/_claude/.claude"
 CLAUDEJSON_PATH="${PROFILE_CONFIG_DIR}/_claude/claude.json"
+CODEX_DIR="${PROFILE_CONFIG_DIR}/_codex/.codex"
+CODEX_AGENTS_PATH="${CODEX_DIR}/AGENTS.md"
 PI_DIR="${PROFILE_CONFIG_DIR}/_pi/.pi"
 PI_AGENTS_PATH="${PI_DIR}/agent/AGENTS.md"
 OPENCJSON_PATH="${PROFILE_CONFIG_DIR}/_opencode/opencode.jsonc"
@@ -131,8 +140,10 @@ mkdir -p "${CLAUDE_DIR}"
 mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/share"
 mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/state"
 mkdir -p "${PI_DIR}"
+mkdir -p "${PI_DIR}/agent"
 mkdir -p "${ANTIGR_GEMINI_DIR}/antigravity-cli"
 mkdir -p "${COPILOT_HOME_DIR}"
+mkdir -p "${CODEX_DIR}"
 
 # --- Copy templates ---
 if [ ! -f "${DOCKERFILE_TEMPLATE}" ]; then
@@ -199,12 +210,29 @@ if [ -f "${AGENTS_PATH}" ] && [ ! -f "${COPILOT_INSTRUCTIONS_PATH}" ]; then
     cp "${AGENTS_PATH}" "${COPILOT_INSTRUCTIONS_PATH}"
 fi
 
+# Copy AGENTS.md to Codex AGENTS.md (if AGENTS.md exists and Codex's doesn't)
+if [ -f "${AGENTS_PATH}" ] && [ ! -f "${CODEX_AGENTS_PATH}" ]; then
+    cp "${AGENTS_PATH}" "${CODEX_AGENTS_PATH}"
+fi
+
 # Handle --reset-dockerfile
 if [ "${RESET_DOCKERFILE}" = true ]; then
     echo "Resetting Dockerfile for profile '${PROFILE_NAME}'..."
     cp "${DOCKERFILE_TEMPLATE}" "${PROFILE_DOCKERFILE}"
     echo "  ✓ Dockerfile reset from template"
     echo "Reset complete."
+    exit 0
+fi
+
+# Handle --reconfigure
+if [ "${RECONFIGURE}" = true ]; then
+    echo "Resetting Dockerfile for profile '${PROFILE_NAME}'..."
+    cp "${DOCKERFILE_TEMPLATE}" "${PROFILE_DOCKERFILE}"
+    echo "  ✓ Dockerfile reset from template"
+    EDITOR="${VISUAL:-${EDITOR:-nano}}"
+    echo "Opening Dockerfile in ${EDITOR}..."
+    "${EDITOR}" "${PROFILE_DOCKERFILE}"
+    echo "Reconfigure complete."
     exit 0
 fi
 
@@ -233,6 +261,7 @@ DOCKER_RUN=(
     -v "${PROFILE_CONFIG_DIR}/_opencode/state:/home/cla/.local/state/opencode"
     -v "${ANTIGR_GEMINI_DIR}:/home/cla/.gemini"
     -v "${COPILOT_HOME_DIR}:/home/cla/.copilot"
+    -v "${CODEX_DIR}:/home/cla/.codex"
     -v /etc/localtime:/etc/localtime:ro
     -e TERM=xterm-256color
     -e SAMPORAPELI_ZSH_ENVIRONMENT="${IMAGE_NAME}"
