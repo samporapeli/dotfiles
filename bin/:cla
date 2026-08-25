@@ -103,8 +103,8 @@ CODEX_DIR="${PROFILE_CONFIG_DIR}/_codex/.codex"
 CODEX_AGENTS_PATH="${CODEX_DIR}/AGENTS.md"
 PI_DIR="${PROFILE_CONFIG_DIR}/_pi/.pi"
 PI_AGENTS_PATH="${PI_DIR}/agent/AGENTS.md"
-OPENCJSON_PATH="${PROFILE_CONFIG_DIR}/_opencode/opencode.jsonc"
-AGENTS_PATH="${PROFILE_CONFIG_DIR}/_opencode/AGENTS.md"
+OPENCODE_JSON_PATH="${PROFILE_CONFIG_DIR}/_opencode/opencode/opencode.jsonc"
+AGENTS_PATH="${PROFILE_CONFIG_DIR}/_opencode/opencode/AGENTS.md"
 ANTIGR_GEMINI_DIR="${PROFILE_CONFIG_DIR}/_antigravity/.gemini"
 ANTIGR_SETTINGS_PATH="${ANTIGR_GEMINI_DIR}/antigravity-cli/settings.json"
 COPILOT_HOME_DIR="${PROFILE_CONFIG_DIR}/_copilot/.copilot"
@@ -139,6 +139,7 @@ mkdir -p "${PROFILE_CONFIG_DIR}/_claude"
 mkdir -p "${CLAUDE_DIR}"
 mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/share"
 mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/state"
+mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/opencode"
 mkdir -p "${PI_DIR}"
 mkdir -p "${PI_DIR}/agent"
 mkdir -p "${ANTIGR_GEMINI_DIR}/antigravity-cli"
@@ -174,8 +175,8 @@ if [ ! -f "${CLAUDEJSON_PATH}" ]; then
 fi
 
 # Copy opencode.jsonc from template if it doesn't exist
-if [ ! -f "${OPENCJSON_PATH}" ]; then
-    cp "${OPENCODEJSON_TEMPLATE}" "${OPENCJSON_PATH}"
+if [ ! -f "${OPENCODE_JSON_PATH}" ]; then
+    cp "${OPENCODEJSON_TEMPLATE}" "${OPENCODE_JSON_PATH}"
 fi
 
 # Copy AGENTS.md from template if it doesn't exist
@@ -256,7 +257,7 @@ DOCKER_RUN=(
     -v "${CLAUDEJSON_PATH}:/home/cla/.claude.json"
     -v "${PI_DIR}:/home/cla/.pi"
     -v "${AGENTS_PATH}:/home/cla/.config/opencode/AGENTS.md"
-    -v "${OPENCJSON_PATH}:/home/cla/.config/opencode/opencode.jsonc"
+    -v "${OPENCODE_JSON_PATH}:/home/cla/.config/opencode/opencode.jsonc"
     -v "${PROFILE_CONFIG_DIR}/_opencode/share:/home/cla/.local/share/opencode"
     -v "${PROFILE_CONFIG_DIR}/_opencode/state:/home/cla/.local/state/opencode"
     -v "${ANTIGR_GEMINI_DIR}:/home/cla/.gemini"
