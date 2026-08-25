@@ -7,7 +7,7 @@ CONFIG_DIR="${HOME}/.config/cla"
 TEMPLATES_DIR="${CONFIG_DIR}/_templates"
 DOCKERFILE_TEMPLATE="${TEMPLATES_DIR}/Dockerfile"
 CLAUDEJSON_TEMPLATE="${TEMPLATES_DIR}/claude.json"
-OPENCODEJSON_TEMPLATE="${TEMPLATES_DIR}/opencode.json"
+OPENCODEJSON_TEMPLATE="${TEMPLATES_DIR}/opencode.jsonc"
 AGENTS_TEMPLATE="${TEMPLATES_DIR}/AGENTS.md"
 ANTIGR_TEMPLATE="${TEMPLATES_DIR}/antigravity.json"
 COPILOT_TEMPLATE="${TEMPLATES_DIR}/copilot-instructions.md"
@@ -156,7 +156,7 @@ if [ ! -f "${CLAUDEJSON_TEMPLATE}" ]; then
     exit 1
 fi
 if [ ! -f "${OPENCODEJSON_TEMPLATE}" ]; then
-    echo "Error: Could not find opencode.json template at $OPENCODEJSON_TEMPLATE"
+    echo "Error: Could not find opencode.jsonc template at $OPENCODEJSON_TEMPLATE"
     exit 1
 fi
 if [ ! -f "${AGENTS_TEMPLATE}" ]; then

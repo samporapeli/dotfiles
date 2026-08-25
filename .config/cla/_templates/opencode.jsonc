@@ -3,5 +3,8 @@
   "autoupdate": false,
   "logLevel": "WARN",
   "permission": "ask",
-  "share": "disabled"
+  "share": "disabled",
+  "skills": {
+    "paths": ["~/.config/opencode/skills"]
+  }
 }
