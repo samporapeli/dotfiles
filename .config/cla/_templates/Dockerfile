@@ -51,6 +51,8 @@ RUN cla_install_samporapeli_dotfiles.sh
 ENV CLAUDE_CODE_DISABLE_AUTO_UPDATE=1
 ENV CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 
+ENV PI_OFFLINE=1
+
 ENV PATH="/home/cla/.local/bin:$PATH"
 ENV PATH="/home/cla/.opencode/bin:$PATH"
 
