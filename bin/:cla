@@ -340,6 +340,8 @@ if [ "${BUILD_IMAGE}" = true ] || ! docker image inspect "${IMAGE_NAME}" > /dev/
         "${PROFILE_CONFIG_DIR}"
 fi
 
+HOST_TZ=$(timedatectl show --property=Timezone --value 2>/dev/null || true)
+
 # --- Build docker run command ---
 DOCKER_RUN=(
     docker run
@@ -358,6 +360,7 @@ DOCKER_RUN=(
     -v "${GROK_DIR}:/home/cla/.grok"
     -v /etc/localtime:/etc/localtime:ro
     -e TERM=xterm-256color
+    -e TZ="${TZ:-${HOST_TZ:-Europe/Helsinki}}"
     -e SAMPORAPELI_ZSH_ENVIRONMENT="${IMAGE_NAME}"
     --cap-drop=ALL
     --security-opt=no-new-privileges
