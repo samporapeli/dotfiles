@@ -9,6 +9,7 @@ DOCKERFILE_TEMPLATE="${TEMPLATES_DIR}/Dockerfile"
 DOCKERIGNORE_TEMPLATE="${TEMPLATES_DIR}/.dockerignore"
 CLAUDE_TEMPLATE_DIR="${TEMPLATES_DIR}/claude"
 CLAUDEJSON_TEMPLATE="${CLAUDE_TEMPLATE_DIR}/claude.json"
+CLAUDE_SETTINGS_TEMPLATE="${CLAUDE_TEMPLATE_DIR}/.claude/settings.json"
 OPENCODE_TEMPLATE_DIR="${TEMPLATES_DIR}/opencode"
 ANTIGRAVITY_TEMPLATE_DIR="${TEMPLATES_DIR}/antigravity"
 PI_TEMPLATE_DIR="${TEMPLATES_DIR}/pi"
@@ -124,6 +125,7 @@ COPILOT_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_copilot"
 CLAUDE_DIR="${CLAUDE_PROFILE_DIR}/.claude"
 CLAUDEJSON_PATH="${CLAUDE_PROFILE_DIR}/claude.json"
 CLAUDE_MD_PATH="${CLAUDE_DIR}/CLAUDE.md"
+CLAUDE_SETTINGS_PATH="${CLAUDE_DIR}/settings.json"
 OPENCODE_CONFIG_DIR="${OPENCODE_PROFILE_DIR}/config"
 OPENCODE_SHARE_DIR="${OPENCODE_PROFILE_DIR}/share"
 OPENCODE_STATE_DIR="${OPENCODE_PROFILE_DIR}/state"
@@ -265,6 +267,10 @@ if [ ! -f "${CLAUDEJSON_TEMPLATE}" ]; then
     echo "Error: Could not find claude.json template at $CLAUDEJSON_TEMPLATE"
     exit 1
 fi
+if [ ! -f "${CLAUDE_SETTINGS_TEMPLATE}" ]; then
+    echo "Error: Could not find settings.json template at $CLAUDE_SETTINGS_TEMPLATE"
+    exit 1
+fi
 
 # Copy Dockerfile and .dockerignore from template if they don't exist
 seed_file "${DOCKERFILE_TEMPLATE}" "${PROFILE_DOCKERFILE}"
@@ -274,6 +280,7 @@ fi
 
 # Re-seed if deleted; otherwise Docker would create a directory in its place.
 seed_file "${CLAUDEJSON_TEMPLATE}" "${CLAUDEJSON_PATH}"
+seed_file "${CLAUDE_SETTINGS_TEMPLATE}" "${CLAUDE_SETTINGS_PATH}"
 
 # Propagate the shared AGENTS.md template to each tool's instruction file.
 seed_file "${AGENTS_TEMPLATE}" "${OPENCODE_AGENTS_PATH}"

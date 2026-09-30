@@ -49,10 +49,7 @@ RUN cla_install_claude_code.sh
 RUN cla_install_pnpm.sh
 RUN cla_install_samporapeli_dotfiles.sh
 
-# Claude Code
-ENV CLAUDE_CODE_DISABLE_AUTO_UPDATE=1
-ENV CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
-
+ENV DO_NOT_TRACK=1
 ENV PI_OFFLINE=1
 
 ENV PATH="/home/cla/.local/bin:$PATH"
