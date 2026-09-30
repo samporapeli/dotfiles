@@ -17,16 +17,17 @@ RUN zypper refresh && \
       fd \
       file \
       findutils \
-      gcc \
+      gcc gcc-c++ \
       git \
       jq \
       luajit-lpeg \
+      make \
       neovim \
       nodejs \
       npm \
       python3 \
       ripgrep \
-      sqlite3-devel \
+      sqlite3 \
       tar \
       tree \
       tree-sitter \
