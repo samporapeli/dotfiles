@@ -1,0 +1,8 @@
+{
+  "theme": "dark",
+  "compaction": {
+    "enabled": true
+  },
+  "enableInstallTelemetry": false,
+  "tuiMode": "regular"
+}

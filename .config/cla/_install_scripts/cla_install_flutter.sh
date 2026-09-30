@@ -5,7 +5,7 @@ install_flutter() {
   USER_HOME='/home/cla'
   cd "$USER_HOME" || exit
   mkdir -p "$USER_HOME/develop"
-  FLUTTER_SDK="flutter_linux_3.41.6-stable.tar.xz"
+  FLUTTER_SDK="flutter_linux_3.47.5-stable.tar.xz"
   curl -O "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/$FLUTTER_SDK"
   tar -xf "$FLUTTER_SDK" -C ~/develop/ && rm "$FLUTTER_SDK"
   echo 'export PATH="$HOME/develop/flutter/bin:$PATH"' >> "$USER_HOME/.device.profile"

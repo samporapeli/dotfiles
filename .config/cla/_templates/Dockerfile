@@ -11,10 +11,10 @@ RUN zypper refresh && \
       ShellCheck \
       awk \
       bash \
-      bubblewrap \
-      diffutils \
       deno \
+      diffutils \
       envsubst \
+      fd \
       file \
       findutils \
       gcc \
@@ -25,6 +25,7 @@ RUN zypper refresh && \
       nodejs \
       npm \
       python3 \
+      ripgrep \
       sqlite3-devel \
       tar \
       tree \
@@ -42,6 +43,7 @@ RUN cla_install_claude_code.sh
 # RUN cla_install_codex.sh
 # RUN cla_install_copilot_cli.sh
 # RUN cla_install_flutter.sh
+# RUN cla_install_grok.sh
 # RUN cla_install_opencode.sh
 # RUN cla_install_pi.sh
 RUN cla_install_pnpm.sh

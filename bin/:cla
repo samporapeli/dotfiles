@@ -1,16 +1,20 @@
 #!/bin/bash
 set -eo pipefail
 
-VERSION="1.3.0"
+VERSION="1.4.0"
 IMAGE_PREFIX="cla"
 CONFIG_DIR="${HOME}/.config/cla"
 TEMPLATES_DIR="${CONFIG_DIR}/_templates"
 DOCKERFILE_TEMPLATE="${TEMPLATES_DIR}/Dockerfile"
-CLAUDEJSON_TEMPLATE="${TEMPLATES_DIR}/claude.json"
-OPENCODEJSON_TEMPLATE="${TEMPLATES_DIR}/opencode.jsonc"
+DOCKERIGNORE_TEMPLATE="${TEMPLATES_DIR}/.dockerignore"
+CLAUDE_TEMPLATE_DIR="${TEMPLATES_DIR}/claude"
+CLAUDEJSON_TEMPLATE="${CLAUDE_TEMPLATE_DIR}/claude.json"
+OPENCODE_TEMPLATE_DIR="${TEMPLATES_DIR}/opencode"
+ANTIGRAVITY_TEMPLATE_DIR="${TEMPLATES_DIR}/antigravity"
+PI_TEMPLATE_DIR="${TEMPLATES_DIR}/pi"
+CODEX_TEMPLATE_DIR="${TEMPLATES_DIR}/codex"
+GROK_TEMPLATE_DIR="${TEMPLATES_DIR}/grok"
 AGENTS_TEMPLATE="${TEMPLATES_DIR}/AGENTS.md"
-ANTIGR_TEMPLATE="${TEMPLATES_DIR}/antigravity.json"
-COPILOT_TEMPLATE="${TEMPLATES_DIR}/copilot-instructions.md"
 INSTALL_SCRIPTS_SRC="${CONFIG_DIR}/_install_scripts"
 
 show_usage() {
@@ -23,6 +27,7 @@ Options:
     --build               Force rebuild of Docker image
     --reset-dockerfile    Reset Dockerfile from template
     --reconfigure         Reset Dockerfile and open in editor
+    --delete, --remove    Delete profile (config dir and Docker image)
     --version             Show version
     -h, --help            Show this help message
 
@@ -31,6 +36,7 @@ Examples:
     :cla work --build                    # Force rebuild and launch
     :cla work --reset-dockerfile         # Reset 'work' Dockerfile to default
     :cla work --reconfigure              # Reset Dockerfile and open in editor
+    :cla work --delete                   # Delete the 'work' profile
 EOF
 }
 
@@ -39,6 +45,7 @@ PROFILE_NAME=""
 BUILD_IMAGE=false
 RESET_DOCKERFILE=false
 RECONFIGURE=false
+DELETE_PROFILE=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -60,6 +67,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --reconfigure)
             RECONFIGURE=true
+            shift
+            ;;
+        --delete|--remove)
+            DELETE_PROFILE=true
             shift
             ;;
         --shell)
@@ -90,131 +101,187 @@ if [ -z "$PROFILE_NAME" ]; then
     exit 1
 fi
 
-if [[ "$PROFILE_NAME" == _* ]]; then
-    echo "Error: Invalid profile name (name must not start with an underscore)"
+# Blocks path traversal (e.g. "../..") and invalid Docker tags.
+# LC_ALL=C keeps the character class ASCII-only.
+if ! ( LC_ALL=C; [[ "$PROFILE_NAME" =~ ^[a-z0-9][a-z0-9-]*$ ]] ); then
+    echo "Error: Invalid profile name (allowed: lowercase letters, digits, '-')"
     exit 1
 fi
 
 IMAGE_NAME="${IMAGE_PREFIX}-${PROFILE_NAME}"
 PROFILE_CONFIG_DIR="${CONFIG_DIR}/${PROFILE_NAME}"
-CLAUDE_DIR="${PROFILE_CONFIG_DIR}/_claude/.claude"
-CLAUDEJSON_PATH="${PROFILE_CONFIG_DIR}/_claude/claude.json"
-CODEX_DIR="${PROFILE_CONFIG_DIR}/_codex/.codex"
-CODEX_AGENTS_PATH="${CODEX_DIR}/AGENTS.md"
-PI_DIR="${PROFILE_CONFIG_DIR}/_pi/.pi"
+
+# Profile wrappers (mirror _templates/<tool> 1:1)
+CLAUDE_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_claude"
+OPENCODE_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_opencode"
+ANTIGRAVITY_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_antigravity"
+PI_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_pi"
+CODEX_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_codex"
+GROK_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_grok"
+COPILOT_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_copilot"
+
+# Container mount sources
+CLAUDE_DIR="${CLAUDE_PROFILE_DIR}/.claude"
+CLAUDEJSON_PATH="${CLAUDE_PROFILE_DIR}/claude.json"
+CLAUDE_MD_PATH="${CLAUDE_DIR}/CLAUDE.md"
+OPENCODE_CONFIG_DIR="${OPENCODE_PROFILE_DIR}/config"
+OPENCODE_SHARE_DIR="${OPENCODE_PROFILE_DIR}/share"
+OPENCODE_STATE_DIR="${OPENCODE_PROFILE_DIR}/state"
+OPENCODE_AGENTS_PATH="${OPENCODE_CONFIG_DIR}/AGENTS.md"
+ANTIGR_GEMINI_DIR="${ANTIGRAVITY_PROFILE_DIR}/.gemini"
+GEMINI_PATH="${ANTIGR_GEMINI_DIR}/GEMINI.md"
+PI_DIR="${PI_PROFILE_DIR}/.pi"
 PI_AGENTS_PATH="${PI_DIR}/agent/AGENTS.md"
-OPENCODE_JSON_PATH="${PROFILE_CONFIG_DIR}/_opencode/opencode/opencode.jsonc"
-AGENTS_PATH="${PROFILE_CONFIG_DIR}/_opencode/opencode/AGENTS.md"
-ANTIGR_GEMINI_DIR="${PROFILE_CONFIG_DIR}/_antigravity/.gemini"
-ANTIGR_SETTINGS_PATH="${ANTIGR_GEMINI_DIR}/antigravity-cli/settings.json"
-COPILOT_HOME_DIR="${PROFILE_CONFIG_DIR}/_copilot/.copilot"
-COPILOT_INSTRUCTIONS_PATH="${COPILOT_HOME_DIR}/copilot-instructions.md"
+CODEX_DIR="${CODEX_PROFILE_DIR}/.codex"
+CODEX_AGENTS_PATH="${CODEX_DIR}/AGENTS.md"
+GROK_DIR="${GROK_PROFILE_DIR}/.grok"
+COPILOT_HOME_DIR="${COPILOT_PROFILE_DIR}/.copilot"
+COPILOT_AGENTS_PATH="${COPILOT_HOME_DIR}/AGENTS.md"
 PROFILE_DOCKERFILE="${PROFILE_CONFIG_DIR}/Dockerfile"
 
-# --- Migration logic ---
-if [ -d "${PROFILE_CONFIG_DIR}" ]; then
-    if [ ! -d "${PROFILE_CONFIG_DIR}/_claude" ]; then
-        echo "Profile '${PROFILE_NAME}' uses old directory structure."
-        echo "Files will be moved into _claude/ subdirectory."
-        read -r -p "Migrate? [y/N] " MIGRATE || MIGRATE="n"
-        if [[ "$MIGRATE" =~ ^[Yy]$ ]]; then
-            mkdir -p "${PROFILE_CONFIG_DIR}/_claude"
-
-            if [ -f "${PROFILE_CONFIG_DIR}/claude.json" ]; then
-                mv "${PROFILE_CONFIG_DIR}/claude.json" "${PROFILE_CONFIG_DIR}/_claude/claude.json"
-            fi
-            if [ -d "${PROFILE_CONFIG_DIR}/.claude" ]; then
-                mv "${PROFILE_CONFIG_DIR}/.claude" "${PROFILE_CONFIG_DIR}/_claude/.claude"
-            fi
-
-            echo "  ✓ Migrated to new directory structure"
-        else
-            echo "  ⚠ Skipping migration (proceeding with old structure)"
-        fi
+# Handle --delete/--remove
+if [ "${DELETE_PROFILE}" = true ]; then
+    if [ ! -d "${PROFILE_CONFIG_DIR}" ]; then
+        echo "Error: Profile '${PROFILE_NAME}' does not exist (${PROFILE_CONFIG_DIR})"
+        exit 1
     fi
+
+    # Refuse to delete anything outside ${CONFIG_DIR}.
+    case "${PROFILE_CONFIG_DIR}" in
+        "${CONFIG_DIR}"/*) ;;
+        *)
+            echo "Error: Refusing to delete unexpected path: ${PROFILE_CONFIG_DIR}"
+            exit 1
+            ;;
+    esac
+
+    echo "Deleting profile '${PROFILE_NAME}':"
+    echo "  - config directory: ${PROFILE_CONFIG_DIR}"
+    echo "  - Docker image:     ${IMAGE_NAME}"
+    read -r -p "Continue? [y/N] " CONFIRM || CONFIRM="n"
+    if [[ "${CONFIRM}" =~ ^[Yy]$ ]]; then
+        rm -rf "${PROFILE_CONFIG_DIR}"
+        echo "  ✓ Config directory deleted"
+
+        # Image cleanup is best-effort; the profile is already gone.
+        if docker image inspect "${IMAGE_NAME}" > /dev/null 2>&1; then
+            if docker rmi -f "${IMAGE_NAME}" > /dev/null; then
+                echo "  ✓ Docker image deleted"
+            else
+                echo "  ⚠ Could not remove Docker image: ${IMAGE_NAME}"
+            fi
+        fi
+
+        echo "Profile '${PROFILE_NAME}' removed."
+    else
+        echo "Aborted."
+        exit 1
+    fi
+    exit 0
 fi
 
 # --- Create directory structure ---
-mkdir -p "${PROFILE_CONFIG_DIR}/_claude"
+if [ ! -d "${PROFILE_CONFIG_DIR}" ]; then
+    if [ "${RESET_DOCKERFILE}" = true ] || [ "${RECONFIGURE}" = true ]; then
+        echo "Error: Profile '${PROFILE_NAME}' does not exist (${PROFILE_CONFIG_DIR})"
+        echo "Run \`:cla ${PROFILE_NAME}\` first to create it."
+        exit 1
+    fi
+
+    echo "Profile '${PROFILE_NAME}' does not exist (${PROFILE_CONFIG_DIR})."
+    read -r -p "Create it? [Y/n] " CONFIRM_CREATE || CONFIRM_CREATE="y"
+    case "${CONFIRM_CREATE}" in
+        ""|[Yy]*) ;;
+        *)
+            echo "Aborted."
+            exit 1
+            ;;
+    esac
+fi
+
+mkdir -p "${PROFILE_CONFIG_DIR}"
+
+seed_dir() {
+    local source_dir="$1"
+    local target_dir="$2"
+
+    # Existing profile data wins; templates are only needed for new targets.
+    if [ -d "${target_dir}" ]; then
+        return 0
+    fi
+
+    if [ ! -d "${source_dir}" ]; then
+        echo "Error: Missing tool template directory: ${source_dir}"
+        exit 1
+    fi
+
+    mkdir -p "$(dirname "${target_dir}")"
+    cp -r "${source_dir}" "${target_dir}"
+}
+
+# Seed a file only if absent. Targets live in container-writable dirs, so
+# refuse symlinks to avoid writing to host paths chosen by the sandbox.
+seed_file() {
+    local source_file="$1"
+    local target_file="$2"
+
+    if [ -L "${target_file}" ] || [ -L "$(dirname "${target_file}")" ]; then
+        echo "Error: Refusing to seed through symlink: ${target_file}"
+        exit 1
+    fi
+
+    [ -e "${target_file}" ] || cp "${source_file}" "${target_file}"
+}
+
+# Seed complete tool configuration trees only when their profile targets are new.
+# Each template root mirrors its profile wrapper 1:1.
+seed_dir "${CLAUDE_TEMPLATE_DIR}" "${CLAUDE_PROFILE_DIR}"
+seed_dir "${OPENCODE_TEMPLATE_DIR}" "${OPENCODE_PROFILE_DIR}"
+seed_dir "${ANTIGRAVITY_TEMPLATE_DIR}" "${ANTIGRAVITY_PROFILE_DIR}"
+seed_dir "${PI_TEMPLATE_DIR}" "${PI_PROFILE_DIR}"
+seed_dir "${CODEX_TEMPLATE_DIR}" "${CODEX_PROFILE_DIR}"
+seed_dir "${GROK_TEMPLATE_DIR}" "${GROK_PROFILE_DIR}"
+
+# Runtime/state directories are intentionally separate from seed templates.
 mkdir -p "${CLAUDE_DIR}"
-mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/share"
-mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/state"
-mkdir -p "${PROFILE_CONFIG_DIR}/_opencode/opencode"
-mkdir -p "${PI_DIR}"
+mkdir -p "${OPENCODE_SHARE_DIR}"
+mkdir -p "${OPENCODE_STATE_DIR}"
+mkdir -p "${OPENCODE_CONFIG_DIR}"
+mkdir -p "${ANTIGR_GEMINI_DIR}"
 mkdir -p "${PI_DIR}/agent"
-mkdir -p "${ANTIGR_GEMINI_DIR}/antigravity-cli"
-mkdir -p "${COPILOT_HOME_DIR}"
 mkdir -p "${CODEX_DIR}"
+mkdir -p "${COPILOT_HOME_DIR}"
 
 # --- Copy templates ---
 if [ ! -f "${DOCKERFILE_TEMPLATE}" ]; then
     echo "Error: Could not find Dockerfile template at $DOCKERFILE_TEMPLATE"
     exit 1
 fi
-if [ ! -f "${CLAUDEJSON_TEMPLATE}" ]; then
-    echo "Error: Could not find claude.json template at $CLAUDEJSON_TEMPLATE"
-    exit 1
-fi
-if [ ! -f "${OPENCODEJSON_TEMPLATE}" ]; then
-    echo "Error: Could not find opencode.jsonc template at $OPENCODEJSON_TEMPLATE"
-    exit 1
-fi
 if [ ! -f "${AGENTS_TEMPLATE}" ]; then
     echo "Error: Could not find AGENTS.md template at $AGENTS_TEMPLATE"
     exit 1
 fi
-
-# Copy Dockerfile from template if it doesn't exist
-if [ ! -f "${PROFILE_DOCKERFILE}" ]; then
-    cp "${DOCKERFILE_TEMPLATE}" "${PROFILE_DOCKERFILE}"
+if [ ! -f "${CLAUDEJSON_TEMPLATE}" ]; then
+    echo "Error: Could not find claude.json template at $CLAUDEJSON_TEMPLATE"
+    exit 1
 fi
 
-# Copy claude.json from template if it doesn't exist
-if [ ! -f "${CLAUDEJSON_PATH}" ]; then
-    cp "${CLAUDEJSON_TEMPLATE}" "${CLAUDEJSON_PATH}"
+# Copy Dockerfile and .dockerignore from template if they don't exist
+seed_file "${DOCKERFILE_TEMPLATE}" "${PROFILE_DOCKERFILE}"
+if [ -f "${DOCKERIGNORE_TEMPLATE}" ]; then
+    seed_file "${DOCKERIGNORE_TEMPLATE}" "${PROFILE_CONFIG_DIR}/.dockerignore"
 fi
 
-# Copy opencode.jsonc from template if it doesn't exist
-if [ ! -f "${OPENCODE_JSON_PATH}" ]; then
-    cp "${OPENCODEJSON_TEMPLATE}" "${OPENCODE_JSON_PATH}"
-fi
+# Re-seed if deleted; otherwise Docker would create a directory in its place.
+seed_file "${CLAUDEJSON_TEMPLATE}" "${CLAUDEJSON_PATH}"
 
-# Copy AGENTS.md from template if it doesn't exist
-if [ ! -f "${AGENTS_PATH}" ]; then
-    cp "${AGENTS_TEMPLATE}" "${AGENTS_PATH}"
-fi
-
-# Copy AGENTS.md to GEMINI.md for Antigravity CLI (if AGENTS.md exists and GEMINI.md doesn't)
-GEMINI_PATH="${ANTIGR_GEMINI_DIR}/GEMINI.md"
-if [ -f "${AGENTS_PATH}" ] && [ ! -f "${GEMINI_PATH}" ]; then
-    cp "${AGENTS_PATH}" "${GEMINI_PATH}"
-fi
-
-# Copy AGENTS.md to CLAUDE.md for Claude Code (if AGENTS.md exists and CLAUDE.md doesn't)
-CLAUDE_MD_PATH="${PROFILE_CONFIG_DIR}/_claude/CLAUDE.md"
-if [ -f "${AGENTS_PATH}" ] && [ ! -f "${CLAUDE_MD_PATH}" ]; then
-    cp "${AGENTS_PATH}" "${CLAUDE_MD_PATH}"
-fi
-
-# Copy AGENTS.md to PI global instructions (if AGENTS.md exists and PI's AGENTS.md doesn't)
-if [ -f "${AGENTS_PATH}" ] && [ ! -f "${PI_AGENTS_PATH}" ]; then
-    cp "${AGENTS_PATH}" "${PI_AGENTS_PATH}"
-fi
-
-# Copy antigravity settings if they don't exist
-if [ -f "${ANTIGR_TEMPLATE}" ] && [ ! -f "${ANTIGR_SETTINGS_PATH}" ]; then
-    cp "${ANTIGR_TEMPLATE}" "${ANTIGR_SETTINGS_PATH}"
-fi
-
-# Copy AGENTS.md to copilot-instructions.md for Copilot CLI (if AGENTS.md exists and copilot-instructions.md doesn't)
-if [ -f "${AGENTS_PATH}" ] && [ ! -f "${COPILOT_INSTRUCTIONS_PATH}" ]; then
-    cp "${AGENTS_PATH}" "${COPILOT_INSTRUCTIONS_PATH}"
-fi
-
-# Copy AGENTS.md to Codex AGENTS.md (if AGENTS.md exists and Codex's doesn't)
-if [ -f "${AGENTS_PATH}" ] && [ ! -f "${CODEX_AGENTS_PATH}" ]; then
-    cp "${AGENTS_PATH}" "${CODEX_AGENTS_PATH}"
-fi
+# Propagate the shared AGENTS.md template to each tool's instruction file.
+seed_file "${AGENTS_TEMPLATE}" "${OPENCODE_AGENTS_PATH}"
+seed_file "${AGENTS_TEMPLATE}" "${GEMINI_PATH}"
+seed_file "${AGENTS_TEMPLATE}" "${CLAUDE_MD_PATH}"
+seed_file "${AGENTS_TEMPLATE}" "${PI_AGENTS_PATH}"
+seed_file "${AGENTS_TEMPLATE}" "${COPILOT_AGENTS_PATH}"
+seed_file "${AGENTS_TEMPLATE}" "${CODEX_AGENTS_PATH}"
 
 # Handle --reset-dockerfile
 if [ "${RESET_DOCKERFILE}" = true ]; then
@@ -230,11 +297,37 @@ if [ "${RECONFIGURE}" = true ]; then
     echo "Resetting Dockerfile for profile '${PROFILE_NAME}'..."
     cp "${DOCKERFILE_TEMPLATE}" "${PROFILE_DOCKERFILE}"
     echo "  ✓ Dockerfile reset from template"
-    EDITOR="${VISUAL:-${EDITOR:-nano}}"
+    EDITOR="${VISUAL:-${EDITOR:-vi}}"
     echo "Opening Dockerfile in ${EDITOR}..."
     "${EDITOR}" "${PROFILE_DOCKERFILE}"
     echo "Reconfigure complete."
     exit 0
+fi
+
+# --- Directory guard ---
+# Ask before mounting a directory this profile hasn't used. Exact-path match.
+ALLOWED_DIRS_FILE="${PROFILE_CONFIG_DIR}/.allowed_dirs"
+CANONICAL_PWD="$(pwd -P)"
+
+dir_is_allowed() {
+    [ -f "${ALLOWED_DIRS_FILE}" ] && grep -Fxq -- "${CANONICAL_PWD}" "${ALLOWED_DIRS_FILE}"
+}
+
+if ! dir_is_allowed; then
+    echo "Profile '${PROFILE_NAME}' has not been used in this directory before:"
+    echo "  ${CANONICAL_PWD}"
+    read -r -p "Mount it into the sandbox? [y]es and remember / [o]nce / [N]o " DIR_CONFIRM || DIR_CONFIRM="n"
+    case "${DIR_CONFIRM}" in
+        y|Y)
+            printf '%s\n' "${CANONICAL_PWD}" >> "${ALLOWED_DIRS_FILE}"
+            ;;
+        o|O)
+            ;;
+        *)
+            echo "Aborted."
+            exit 1
+            ;;
+    esac
 fi
 
 # Build the Docker image if it doesn't exist or the --build flag is used
@@ -252,16 +345,17 @@ DOCKER_RUN=(
     docker run
     --rm
     -it
-    -v "${PWD}:/workspace/${PWD}"
+    -v "${CANONICAL_PWD}:/workspace/${CANONICAL_PWD}"
     -v "${CLAUDE_DIR}:/home/cla/.claude"
     -v "${CLAUDEJSON_PATH}:/home/cla/.claude.json"
     -v "${PI_DIR}:/home/cla/.pi"
-    -v "${PROFILE_CONFIG_DIR}/_opencode/share:/home/cla/.local/share/opencode"
-    -v "${PROFILE_CONFIG_DIR}/_opencode/state:/home/cla/.local/state/opencode"
-    -v "${PROFILE_CONFIG_DIR}/_opencode/opencode:/home/cla/.config/opencode"
+    -v "${OPENCODE_SHARE_DIR}:/home/cla/.local/share/opencode"
+    -v "${OPENCODE_STATE_DIR}:/home/cla/.local/state/opencode"
+    -v "${OPENCODE_CONFIG_DIR}:/home/cla/.config/opencode"
     -v "${ANTIGR_GEMINI_DIR}:/home/cla/.gemini"
     -v "${COPILOT_HOME_DIR}:/home/cla/.copilot"
     -v "${CODEX_DIR}:/home/cla/.codex"
+    -v "${GROK_DIR}:/home/cla/.grok"
     -v /etc/localtime:/etc/localtime:ro
     -e TERM=xterm-256color
     -e SAMPORAPELI_ZSH_ENVIRONMENT="${IMAGE_NAME}"
@@ -270,7 +364,7 @@ DOCKER_RUN=(
     --memory=4g
     --cpus=2
     --pids-limit=100
-    -w "/workspace/${PWD}"
+    -w "/workspace/${CANONICAL_PWD}"
     "${IMAGE_NAME}"
     /bin/zsh
 )

@@ -1,0 +1,4 @@
+# Codex runs inside the :cla container, which is already sandboxed
+# (cap-drop=ALL, no-new-privileges). Disable Codex's own sandbox to
+# avoid double-sandboxing.
+sandbox_mode = "danger-full-access"
