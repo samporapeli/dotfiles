@@ -1,10 +1,11 @@
 #!/bin/bash
 set -eo pipefail
 
-VERSION="1.4.0"
+VERSION="1.5.0"
 IMAGE_PREFIX="cla"
 CONFIG_DIR="${HOME}/.config/cla"
 TEMPLATES_DIR="${CONFIG_DIR}/_templates"
+SKILLS_TEMPLATE_DIR="${TEMPLATES_DIR}/skills"
 DOCKERFILE_TEMPLATE="${TEMPLATES_DIR}/Dockerfile"
 DOCKERIGNORE_TEMPLATE="${TEMPLATES_DIR}/.dockerignore"
 CLAUDE_TEMPLATE_DIR="${TEMPLATES_DIR}/claude"
@@ -18,13 +19,203 @@ GROK_TEMPLATE_DIR="${TEMPLATES_DIR}/grok"
 AGENTS_TEMPLATE="${TEMPLATES_DIR}/AGENTS.md"
 INSTALL_SCRIPTS_SRC="${CONFIG_DIR}/_install_scripts"
 
+list_skills() {
+    local profile="$1"
+    local skill_names=()
+    mapfile -t skill_names < <(
+        {
+            [ -n "${profile}" ] && [ -d "${SKILLS_DIR}" ] && find "${SKILLS_DIR}" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;
+            [ -d "${SKILLS_TEMPLATE_DIR}" ] && find "${SKILLS_TEMPLATE_DIR}" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;
+        } | sort -u
+    )
+
+    if [ ${#skill_names[@]} -eq 0 ]; then
+        if [ -n "${profile}" ]; then
+            echo "No skills found in profile '${profile}' or templates."
+        else
+            echo "No skills found in shared templates (${SKILLS_TEMPLATE_DIR})."
+        fi
+        return 0
+    fi
+
+    printf "%-10s  %s\n" "STATUS" "SKILL"
+    printf "%-10s  %s\n" "------" "-----"
+
+    for skill in "${skill_names[@]}"; do
+        [ -n "${skill}" ] || continue
+        local p_dir="${SKILLS_DIR}/${skill}"
+        local t_dir="${SKILLS_TEMPLATE_DIR}/${skill}"
+        local in_profile=false
+        local in_templates=false
+        local marker=""
+        local note=""
+
+        [ -n "${profile}" ] && [ -d "${p_dir}" ] && in_profile=true
+        [ -d "${t_dir}" ] && in_templates=true
+
+        if [ "${in_profile}" = true ] && [ "${in_templates}" = true ]; then
+            if diff -rq "${p_dir}" "${t_dir}" >/dev/null 2>&1; then
+                marker="shared"
+            else
+                marker="modified"
+            fi
+            if [ ! -f "${p_dir}/SKILL.md" ] && [ ! -f "${t_dir}/SKILL.md" ]; then
+                note=" (missing SKILL.md)"
+            fi
+        elif [ "${in_profile}" = true ]; then
+            marker="local"
+            if [ ! -f "${p_dir}/SKILL.md" ]; then
+                note=" (missing SKILL.md)"
+            fi
+        else
+            marker="available"
+            if [ ! -f "${t_dir}/SKILL.md" ]; then
+                note=" (missing SKILL.md)"
+            fi
+        fi
+
+        printf "%-10s  %s%s\n" "${marker}" "${skill}" "${note}"
+    done
+}
+
+push_skills() {
+    local skills=("$@")
+    for s in "${skills[@]}"; do
+        if [[ ! "${s}" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+            echo "Error: Invalid skill name '${s}' (allowed: letters, digits, '-', '_')"
+            exit 1
+        fi
+        if [ ! -d "${SKILLS_DIR}/${s}" ]; then
+            echo "Error: Skill '${s}' does not exist in profile '${PROFILE_NAME}' (${SKILLS_DIR})"
+            exit 1
+        fi
+        if [ ! -f "${SKILLS_DIR}/${s}/SKILL.md" ]; then
+            echo "Warning: '${s}' does not contain SKILL.md"
+        fi
+    done
+
+    local to_add=()
+    local to_overwrite=()
+    local identical=()
+
+    for s in "${skills[@]}"; do
+        local t_dir="${SKILLS_TEMPLATE_DIR}/${s}"
+        local p_dir="${SKILLS_DIR}/${s}"
+        if [ ! -e "${t_dir}" ]; then
+            to_add+=("${s}")
+        elif diff -rq "${p_dir}" "${t_dir}" >/dev/null 2>&1; then
+            identical+=("${s}")
+        else
+            to_overwrite+=("${s}")
+        fi
+    done
+
+    if [ ${#to_overwrite[@]} -gt 0 ] && [ "${FORCE}" = false ]; then
+        echo "The following skill(s) already exist in templates and will be overwritten:"
+        for s in "${to_overwrite[@]}"; do
+            echo "  - ${s}"
+        done
+        read -r -p "Overwrite ${#to_overwrite[@]} existing skill(s)? [y/N] " CONFIRM || CONFIRM="n"
+        if [[ ! "${CONFIRM}" =~ ^[Yy]$ ]]; then
+            echo "Aborted."
+            exit 1
+        fi
+    fi
+
+    mkdir -p "${SKILLS_TEMPLATE_DIR}"
+
+    for s in "${to_add[@]}"; do
+        cp -r "${SKILLS_DIR}/${s}" "${SKILLS_TEMPLATE_DIR}/${s}"
+        echo "  ✓ Pushed '${s}'"
+    done
+
+    for s in "${to_overwrite[@]}"; do
+        rm -rf "${SKILLS_TEMPLATE_DIR:?}/${s:?}"
+        cp -r "${SKILLS_DIR}/${s}" "${SKILLS_TEMPLATE_DIR}/${s}"
+        echo "  ✓ Overwrote '${s}'"
+    done
+
+    for s in "${identical[@]}"; do
+        echo "  - '${s}' is already identical in templates"
+    done
+
+    echo "Push complete."
+}
+
+pull_skills() {
+    local template_skills=()
+    mapfile -t template_skills < <( [ -d "${SKILLS_TEMPLATE_DIR}" ] && find "${SKILLS_TEMPLATE_DIR}" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort )
+    if [ ${#template_skills[@]} -eq 0 ]; then
+        echo "No skills found in templates (${SKILLS_TEMPLATE_DIR})."
+        return 0
+    fi
+
+    local to_add=()
+    local to_overwrite=()
+    local identical=()
+
+    for s in "${template_skills[@]}"; do
+        [ -n "${s}" ] || continue
+        local t_dir="${SKILLS_TEMPLATE_DIR}/${s}"
+        local p_dir="${SKILLS_DIR}/${s}"
+        if [ ! -e "${p_dir}" ]; then
+            to_add+=("${s}")
+        elif diff -rq "${t_dir}" "${p_dir}" >/dev/null 2>&1; then
+            identical+=("${s}")
+        else
+            to_overwrite+=("${s}")
+        fi
+    done
+
+    if [ ${#to_add[@]} -eq 0 ] && [ ${#to_overwrite[@]} -eq 0 ]; then
+        echo "All skills in profile '${PROFILE_NAME}' are up to date."
+        return 0
+    fi
+
+    if [ ${#to_overwrite[@]} -gt 0 ] && [ "${FORCE}" = false ]; then
+        echo "The following skill(s) differ in profile '${PROFILE_NAME}' and will be overwritten:"
+        for s in "${to_overwrite[@]}"; do
+            echo "  - ${s}"
+        done
+        read -r -p "Overwrite ${#to_overwrite[@]} conflicting skill(s)? [y/N] " CONFIRM || CONFIRM="n"
+        if [[ ! "${CONFIRM}" =~ ^[Yy]$ ]]; then
+            echo "Aborted."
+            exit 1
+        fi
+    fi
+
+    mkdir -p "${SKILLS_DIR}"
+
+    for s in "${to_add[@]}"; do
+        cp -r "${SKILLS_TEMPLATE_DIR}/${s}" "${SKILLS_DIR}/${s}"
+        echo "  ✓ Added '${s}'"
+    done
+
+    for s in "${to_overwrite[@]}"; do
+        rm -rf "${SKILLS_DIR:?}/${s:?}"
+        cp -r "${SKILLS_TEMPLATE_DIR}/${s}" "${SKILLS_DIR}/${s}"
+        echo "  ✓ Updated '${s}'"
+    done
+
+    for s in "${identical[@]}"; do
+        echo "  - '${s}' is already identical"
+    done
+
+    echo "Pull complete."
+}
+
 show_usage() {
     cat << EOF
 :cla v${VERSION} - isolated AI coding environments
 
 Usage: :cla <profile-name> [OPTIONS]
+       :cla [OPTIONS]
 
 Options:
+    --list-skills         List skills and sync status
+    --push-skill <name>.. Push skill(s) from profile to shared templates
+    --pull-skills         Pull skills from shared templates to profile
+    --force, -f           Force overwrite on skill push/pull without prompting
     --build               Force rebuild of Docker image
     --reset-dockerfile    Reset Dockerfile from template
     --reconfigure         Reset Dockerfile and open in editor
@@ -34,6 +225,10 @@ Options:
 
 Examples:
     :cla work                            # Launch shell with 'work' profile
+    :cla work --list-skills              # List skills and sync status for 'work'
+    :cla --list-skills                   # List skills in shared templates
+    :cla work --push-skill my-skill      # Push skill from 'work' to templates
+    :cla work --pull-skills              # Pull template skills into 'work'
     :cla work --build                    # Force rebuild and launch
     :cla work --reset-dockerfile         # Reset 'work' Dockerfile to default
     :cla work --reconfigure              # Reset Dockerfile and open in editor
@@ -47,6 +242,11 @@ BUILD_IMAGE=false
 RESET_DOCKERFILE=false
 RECONFIGURE=false
 DELETE_PROFILE=false
+LIST_SKILLS=false
+PUSH_SKILL=false
+PULL_SKILLS=false
+FORCE=false
+PUSH_SKILL_NAMES=()
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -57,6 +257,26 @@ while [[ $# -gt 0 ]]; do
         --version)
             echo "v${VERSION}"
             exit 0
+            ;;
+        --list-skills)
+            LIST_SKILLS=true
+            shift
+            ;;
+        --push-skill)
+            PUSH_SKILL=true
+            shift
+            while [[ $# -gt 0 ]] && [[ ! "$1" =~ ^- ]]; do
+                PUSH_SKILL_NAMES+=("$1")
+                shift
+            done
+            ;;
+        --pull-skills)
+            PULL_SKILLS=true
+            shift
+            ;;
+        --force|-f)
+            FORCE=true
+            shift
             ;;
         --build)
             BUILD_IMAGE=true
@@ -95,7 +315,18 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+if [ "${PUSH_SKILL}" = true ] && [ ${#PUSH_SKILL_NAMES[@]} -eq 0 ]; then
+    echo "Error: --push-skill requires at least one skill name"
+    echo ""
+    show_usage
+    exit 1
+fi
+
 if [ -z "$PROFILE_NAME" ]; then
+    if [ "${LIST_SKILLS}" = true ]; then
+        list_skills ""
+        exit 0
+    fi
     echo "Error: Profile name required"
     echo ""
     show_usage
@@ -140,6 +371,7 @@ GROK_DIR="${GROK_PROFILE_DIR}/.grok"
 COPILOT_HOME_DIR="${COPILOT_PROFILE_DIR}/.copilot"
 COPILOT_AGENTS_PATH="${COPILOT_HOME_DIR}/AGENTS.md"
 PROFILE_DOCKERFILE="${PROFILE_CONFIG_DIR}/Dockerfile"
+SKILLS_DIR="${PROFILE_CONFIG_DIR}/_skills"
 
 # Handle --delete/--remove
 if [ "${DELETE_PROFILE}" = true ]; then
@@ -179,6 +411,36 @@ if [ "${DELETE_PROFILE}" = true ]; then
         echo "Aborted."
         exit 1
     fi
+    exit 0
+fi
+
+# Handle --list-skills
+if [ "${LIST_SKILLS}" = true ]; then
+    if [ ! -d "${PROFILE_CONFIG_DIR}" ]; then
+        echo "Error: Profile '${PROFILE_NAME}' does not exist (${PROFILE_CONFIG_DIR})"
+        exit 1
+    fi
+    list_skills "${PROFILE_NAME}"
+    exit 0
+fi
+
+# Handle --push-skill
+if [ "${PUSH_SKILL}" = true ]; then
+    if [ ! -d "${PROFILE_CONFIG_DIR}" ]; then
+        echo "Error: Profile '${PROFILE_NAME}' does not exist (${PROFILE_CONFIG_DIR})"
+        exit 1
+    fi
+    push_skills "${PUSH_SKILL_NAMES[@]}"
+    exit 0
+fi
+
+# Handle --pull-skills
+if [ "${PULL_SKILLS}" = true ]; then
+    if [ ! -d "${PROFILE_CONFIG_DIR}" ]; then
+        echo "Error: Profile '${PROFILE_NAME}' does not exist (${PROFILE_CONFIG_DIR})"
+        exit 1
+    fi
+    pull_skills
     exit 0
 fi
 
@@ -244,15 +506,31 @@ seed_dir "${PI_TEMPLATE_DIR}" "${PI_PROFILE_DIR}"
 seed_dir "${CODEX_TEMPLATE_DIR}" "${CODEX_PROFILE_DIR}"
 seed_dir "${GROK_TEMPLATE_DIR}" "${GROK_PROFILE_DIR}"
 
+seed_skills() {
+    if [ -d "${SKILLS_DIR}" ]; then
+        return 0
+    fi
+    mkdir -p "${SKILLS_DIR}"
+    if [ -d "${SKILLS_TEMPLATE_DIR}" ]; then
+        for s in "${SKILLS_TEMPLATE_DIR}"/*; do
+            [ -d "${s}" ] || continue
+            cp -r "${s}" "${SKILLS_DIR}/"
+        done
+    fi
+}
+seed_skills
+
 # Runtime/state directories are intentionally separate from seed templates.
 mkdir -p "${CLAUDE_DIR}"
 mkdir -p "${OPENCODE_SHARE_DIR}"
 mkdir -p "${OPENCODE_STATE_DIR}"
 mkdir -p "${OPENCODE_CONFIG_DIR}"
-mkdir -p "${ANTIGR_GEMINI_DIR}"
+mkdir -p "${ANTIGR_GEMINI_DIR}/config"
 mkdir -p "${PI_DIR}/agent"
 mkdir -p "${CODEX_DIR}"
 mkdir -p "${COPILOT_HOME_DIR}"
+mkdir -p "${GROK_DIR}"
+mkdir -p "${SKILLS_DIR}"
 
 # --- Copy templates ---
 if [ ! -f "${DOCKERFILE_TEMPLATE}" ]; then
@@ -365,6 +643,11 @@ DOCKER_RUN=(
     -v "${COPILOT_HOME_DIR}:/home/cla/.copilot"
     -v "${CODEX_DIR}:/home/cla/.codex"
     -v "${GROK_DIR}:/home/cla/.grok"
+    -v "${SKILLS_DIR}:/home/cla/.agents/skills"
+    -v "${SKILLS_DIR}:/home/cla/.claude/skills"
+    -v "${SKILLS_DIR}:/home/cla/.config/opencode/skills"
+    -v "${SKILLS_DIR}:/home/cla/.gemini/config/skills"
+    -v "${SKILLS_DIR}:/home/cla/.grok/skills"
     -v /etc/localtime:/etc/localtime:ro
     -e TERM=xterm-256color
     -e TZ="${TZ:-${HOST_TZ:-Europe/Helsinki}}"
