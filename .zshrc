@@ -49,6 +49,10 @@ bindkey -M vicmd 'j' down-line-or-beginning-search
 
 bindkey '^R' history-incremental-search-backward
 
+autoload edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
+
 # Custom binaries and scripts
 export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
 . "$HOME/.shell_scripts"
