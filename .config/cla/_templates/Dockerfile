@@ -31,8 +31,10 @@ RUN zypper refresh && \
       tar \
       tree \
       tree-sitter \
+      unzip \
       which \
       yq \
+      zip \
       zsh \
     && zypper clean -a
 
@@ -45,6 +47,7 @@ RUN cla_install_claude_code.sh
 # RUN cla_install_copilot_cli.sh
 # RUN cla_install_flutter.sh
 # RUN cla_install_grok.sh
+# RUN cla_install_junie.sh
 # RUN cla_install_opencode.sh
 # RUN cla_install_pi.sh
 RUN cla_install_pnpm.sh
@@ -52,6 +55,7 @@ RUN cla_install_samporapeli_dotfiles.sh
 
 ENV DO_NOT_TRACK=1
 ENV PI_OFFLINE=1
+ENV JUNIE_SHARE_ANONYMOUS_STATISTICS=false
 
 ENV PATH="/home/cla/.local/bin:$PATH"
 ENV PATH="/home/cla/.opencode/bin:$PATH"
