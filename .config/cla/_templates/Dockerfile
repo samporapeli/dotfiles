@@ -11,6 +11,7 @@ RUN zypper refresh && \
       ShellCheck \
       awk \
       bash \
+      bun \
       deno \
       diffutils \
       envsubst \
