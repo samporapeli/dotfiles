@@ -7,15 +7,19 @@
 CURL_ENDPOINT='https://samporapeli.fi/yhteydenotto/'
 
 if [ -z "$1" ]; then
+    # No arguments: read message from STDIN.
     TEXT_MESSAGE="$(cat)"
-    FILE_PATH=""
+    FILES=()
 else
     TEXT_MESSAGE="Sent from upload tool"
-    FILE_PATH="$1"
+    FILES=("$@")
 fi
 
-if [ -z "$FILE_PATH" ]; then
-    curl --form "Viesti=\"$TEXT_MESSAGE\"" "$CURL_ENDPOINT"
-else
-    curl --form "Viesti=\"$TEXT_MESSAGE\"" --form "Tiedosto=@\"$FILE_PATH\"" "$CURL_ENDPOINT"
-fi
+FORM_ARGS=()
+FORM_ARGS+=(--form "Viesti=\"$TEXT_MESSAGE\"")
+
+for f in "${FILES[@]}"; do
+    FORM_ARGS+=(--form "Tiedosto[]=@\"$f\"")
+done
+
+curl "${FORM_ARGS[@]}" "$CURL_ENDPOINT"
