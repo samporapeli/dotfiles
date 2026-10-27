@@ -26,6 +26,7 @@ RUN zypper refresh && \
       neovim \
       nodejs \
       npm \
+      opentofu \
       python3 \
       ripgrep \
       sqlite3 \
