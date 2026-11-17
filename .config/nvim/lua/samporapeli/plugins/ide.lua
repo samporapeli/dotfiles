@@ -37,7 +37,12 @@ local plugin_list = {
 					{ name = "vsnip" },
 					{ name = "path" },
 				}, {
-					{ name = "buffer" },
+					{
+						name = "buffer",
+						option = {
+							keyword_pattern = [[\k\+]],
+						},
+					},
 				}),
 				snippet = {
 					expand = function(args)
@@ -57,6 +62,7 @@ local plugin_list = {
 		end,
 	},
 	{ "hrsh7th/cmp-nvim-lsp" },
+	{ "hrsh7th/cmp-buffer" },
 	{ "hrsh7th/cmp-path" },
 	{ "hrsh7th/cmp-vsnip" },
 	{ "hrsh7th/vim-vsnip" },
