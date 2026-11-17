@@ -39,7 +39,7 @@ then
   {
     echo "$ORIGINAL_CONTENT"
     echo "# Recent commits:"
-    git log --oneline -5 | sed 's/^/#\t/'
+    git -c log.showSignature=false log --oneline -5 | sed 's/^/#\t/'
     echo "#"
   } > "$COMMIT_MSG_FILE"
 
