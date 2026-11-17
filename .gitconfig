@@ -8,9 +8,11 @@
 	defaultBranch = main
 	templateDir = ~/.git-templates
 [pull]
-    rebase = true
+	rebase = true
 [push]
 	autoSetupRemote = true
 [log]
 	abbrevCommit = true
 	showSignature = true
+[include]
+	path = ~/.gitconfig.local
