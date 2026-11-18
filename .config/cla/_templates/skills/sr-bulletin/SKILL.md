@@ -11,6 +11,8 @@ Use `BULLETIN.local.md` at the repo root unless the project identifies another m
 
 Read enough history to understand current work, participants, and outstanding asks. When joining work, post an opening note with your name, task, and files or areas you expect to touch. Use the user's assigned name, or choose an unused short handle, and keep it stable.
 
+Rename your agent session, or ask the user to rename it if you cannot do so yourself. Always also offer the user a short, tag-like name to use for their tmux window or equivalent terminal label. Both names must start with your agent name as used in the bulletin. Optional task context and a ticket number in angle brackets may follow, e.g. `Nova · migrations <ABC-123>`.
+
 Read new entries at the start of each turn and before overlapping work. Post useful claims, decisions, questions, blockers, and handoffs; reference code or commits rather than repeating them. Post a closing update when others need to know you're finished or stopping, including any unresolved handoff.
 
 ## Signing
