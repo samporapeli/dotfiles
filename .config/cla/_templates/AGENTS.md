@@ -62,6 +62,8 @@ between the two, Rules wins; this list should stay non-overlapping with it.
 - **Data & Config**: jq, yq, sqlite3
 - **Development**: git, gcc, neovim, ShellCheck, tree, tree-sitter
 - **Utilities**: tar, file, which, diffutils, findutils, luajit-lpeg
+- **Browser** (profiles with `cla_install_browser_test_kit.sh`): Chromium plus system libraries and fonts for headless tools (Playwright, Puppeteer, `chromium --headless`). Playwright's own browser is downloaded per container start: `npx playwright install chromium-headless-shell`.
+- If browser access is needed but `chromium` is not found, ask the user to enable the browser test kit for the profile; don't work around it.
 
 ### Adding Missing Tools
 
@@ -98,6 +100,7 @@ If a tool isn't installed:
 - Wrap body at 72 characters
 - Explain *what* and *why*, not *how*
 - Short, accurate, terse — no narrative fluff
+- No test counts or routine check results ("329 tests pass", "build passes"); they go stale and add nothing
 
 **If the project uses Conventional Commits** (check `git log` for a `type(scope): subject` pattern):
 - Add a type prefix: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`

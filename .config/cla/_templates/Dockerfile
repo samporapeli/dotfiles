@@ -7,6 +7,7 @@ COPY --from=install_scripts . /usr/local/bin/
 
 # Install dependencies
 RUN zypper refresh && \
+    { zypper --non-interactive dup || [ $? -eq 107 ]; } && \
     zypper install -y \
       ShellCheck \
       awk \
@@ -44,6 +45,7 @@ RUN useradd cla -m -s /bin/zsh
 
 # Comment/uncomment below
 # RUN cla_install_antigravity.sh
+RUN cla_install_browser_test_kit.sh
 RUN cla_install_claude_code.sh
 # RUN cla_install_codex.sh
 # RUN cla_install_copilot_cli.sh
