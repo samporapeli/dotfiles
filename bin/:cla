@@ -666,6 +666,7 @@ DOCKER_RUN=(
     --cpus=2
     --pids-limit=100
     -w "/workspace/${CANONICAL_PWD}"
+    --add-host=host.docker.internal:host-gateway
     "${IMAGE_NAME}"
     /bin/zsh
 )

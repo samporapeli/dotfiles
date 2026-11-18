@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+"""Ping with a short message; clear the returned ID when unblocked. No retries."""
+import argparse
+from contextlib import closing
+from datetime import datetime
+from http.client import HTTPConnection, HTTPException
+import json
+import sys
+
+ADDRESS = ("host.docker.internal", 10111)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    commands = parser.add_subparsers(dest="command", required=True)
+    ping = commands.add_parser("ping", help="desktop message: 1–5 words, max 120 characters")
+    ping.add_argument("message", nargs="?", default="Agent needs attention.")
+    ping.add_argument("--sender", required=True, help="bulletin identity: Name (model / harness)")
+    ping.add_argument("--mobile", action="store_true")
+    ping.add_argument("--ttl", type=int, default=-1, help="desktop seconds; 0=persistent; -1=default")
+    commands.add_parser("clear", help="dismiss a desktop notification").add_argument("id", type=int)
+    args = parser.parse_args()
+    if args.command == "ping":
+        now = datetime.now().astimezone()
+        zone = now.strftime("%z")
+        data = {"sender": f"{args.sender}, {now:%Y-%m-%d %H:%M:%S} {zone[:3]}:{zone[3:]}",
+                "message": args.message, "mobile": args.mobile, "ttl": args.ttl}
+    else:
+        data = {"id": args.id}
+    try:
+        with closing(HTTPConnection(*ADDRESS, timeout=15)) as connection:
+            connection.request("POST", "/" + args.command, json.dumps(data),
+                               {"Content-Type": "application/json"})
+            response = connection.getresponse()
+            print(response.read(4096).decode())
+            return 0 if response.status == 200 else 1
+    except (OSError, ValueError, HTTPException):
+        print("Relay request failed; no retry was made.", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
