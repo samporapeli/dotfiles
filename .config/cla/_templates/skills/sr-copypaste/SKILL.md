@@ -37,6 +37,11 @@ Apply these only to the named tool, not by analogy to others.
 - Prefer one statement per check. Combine related checks with `UNION ALL` into a compact key/value result when helpful.
 - Break long SQL only at valid syntax boundaries, preferably keywords.
 
+### curl
+
+- When the line is long, break with `\` before and after a long URL so it stands on its own line. A short URL (`http://localhost/api/v1/me`) can stay inline.
+- Consider `-w "%{http_code}\n"` so the status shows, especially when the expected body is empty.
+
 ## Pacing and recovery
 
 - If a later step depends on an earlier result, give only the first pass and wait for the output.
