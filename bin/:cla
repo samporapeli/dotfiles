@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eo pipefail
 
-VERSION="1.5.0"
+VERSION="1.6.0"
 IMAGE_PREFIX="cla"
 CONFIG_DIR="${HOME}/.config/cla"
 TEMPLATES_DIR="${CONFIG_DIR}/_templates"
@@ -17,6 +17,7 @@ PI_TEMPLATE_DIR="${TEMPLATES_DIR}/pi"
 CODEX_TEMPLATE_DIR="${TEMPLATES_DIR}/codex"
 GROK_TEMPLATE_DIR="${TEMPLATES_DIR}/grok"
 JUNIE_TEMPLATE_DIR="${TEMPLATES_DIR}/junie"
+HERMES_TEMPLATE_DIR="${TEMPLATES_DIR}/hermes"
 AGENTS_TEMPLATE="${TEMPLATES_DIR}/AGENTS.md"
 INSTALL_SCRIPTS_SRC="${CONFIG_DIR}/_install_scripts"
 
@@ -353,6 +354,7 @@ CODEX_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_codex"
 GROK_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_grok"
 COPILOT_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_copilot"
 JUNIE_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_junie"
+HERMES_PROFILE_DIR="${PROFILE_CONFIG_DIR}/_hermes"
 
 # Container mount sources
 CLAUDE_DIR="${CLAUDE_PROFILE_DIR}/.claude"
@@ -374,6 +376,11 @@ COPILOT_HOME_DIR="${COPILOT_PROFILE_DIR}/.copilot"
 COPILOT_AGENTS_PATH="${COPILOT_HOME_DIR}/AGENTS.md"
 JUNIE_DIR="${JUNIE_PROFILE_DIR}/.junie"
 JUNIE_AGENTS_PATH="${JUNIE_DIR}/AGENTS.md"
+HERMES_DIR="${HERMES_PROFILE_DIR}/.hermes"
+# Hermes is installed in the image at ~/.hermes (program, tools, installs).
+# Profile data is mounted as a single fixed Hermes profile so it reuses the
+# image's dependency environment instead of building its own.
+HERMES_CONTAINER_HOME="/home/cla/.hermes/profiles/cla"
 PROFILE_DOCKERFILE="${PROFILE_CONFIG_DIR}/Dockerfile"
 SKILLS_DIR="${PROFILE_CONFIG_DIR}/_skills"
 
@@ -510,6 +517,7 @@ seed_dir "${PI_TEMPLATE_DIR}" "${PI_PROFILE_DIR}"
 seed_dir "${CODEX_TEMPLATE_DIR}" "${CODEX_PROFILE_DIR}"
 seed_dir "${GROK_TEMPLATE_DIR}" "${GROK_PROFILE_DIR}"
 seed_dir "${JUNIE_TEMPLATE_DIR}" "${JUNIE_PROFILE_DIR}"
+seed_dir "${HERMES_TEMPLATE_DIR}" "${HERMES_PROFILE_DIR}"
 
 seed_skills() {
     if [ -d "${SKILLS_DIR}" ]; then
@@ -536,6 +544,7 @@ mkdir -p "${CODEX_DIR}"
 mkdir -p "${COPILOT_HOME_DIR}"
 mkdir -p "${GROK_DIR}"
 mkdir -p "${JUNIE_DIR}"
+mkdir -p "${HERMES_DIR}"
 mkdir -p "${SKILLS_DIR}"
 
 # --- Copy templates ---
@@ -574,6 +583,7 @@ seed_file "${AGENTS_TEMPLATE}" "${PI_AGENTS_PATH}"
 seed_file "${AGENTS_TEMPLATE}" "${COPILOT_AGENTS_PATH}"
 seed_file "${AGENTS_TEMPLATE}" "${CODEX_AGENTS_PATH}"
 seed_file "${AGENTS_TEMPLATE}" "${JUNIE_AGENTS_PATH}"
+# Hermes is skipped: using its default SOUL.md instead of our AGENTS.md
 
 # Handle --reset-dockerfile
 if [ "${RESET_DOCKERFILE}" = true ]; then
@@ -651,6 +661,7 @@ DOCKER_RUN=(
     -v "${CODEX_DIR}:/home/cla/.codex"
     -v "${GROK_DIR}:/home/cla/.grok"
     -v "${JUNIE_DIR}:/home/cla/.junie"
+    -v "${HERMES_DIR}:${HERMES_CONTAINER_HOME}"
     -v "${SKILLS_DIR}:/home/cla/.agents/skills"
     -v "${SKILLS_DIR}:/home/cla/.claude/skills"
     -v "${SKILLS_DIR}:/home/cla/.config/opencode/skills"
@@ -658,6 +669,7 @@ DOCKER_RUN=(
     -v "${SKILLS_DIR}:/home/cla/.grok/skills"
     -v /etc/localtime:/etc/localtime:ro
     -e TERM=xterm-256color
+    -e HERMES_HOME="${HERMES_CONTAINER_HOME}"
     -e TZ="${TZ:-${HOST_TZ:-Europe/Helsinki}}"
     -e SAMPORAPELI_ZSH_ENVIRONMENT="${IMAGE_NAME}"
     --cap-drop=ALL

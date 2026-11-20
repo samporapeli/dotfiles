@@ -13,6 +13,7 @@ RUN zypper refresh && \
       awk \
       bash \
       bun \
+      ca-certificates \
       deno \
       diffutils \
       envsubst \
@@ -22,6 +23,7 @@ RUN zypper refresh && \
       gcc gcc-c++ \
       git \
       jq \
+      libatomic1 \
       luajit-lpeg \
       make \
       neovim \
@@ -36,6 +38,7 @@ RUN zypper refresh && \
       tree-sitter \
       unzip \
       which \
+      xz \
       yq \
       zip \
       zsh \
@@ -51,6 +54,7 @@ RUN cla_install_claude_code.sh
 # RUN cla_install_copilot_cli.sh
 # RUN cla_install_flutter.sh
 # RUN cla_install_grok.sh
+# RUN cla_install_hermes.sh
 # RUN cla_install_junie.sh
 # RUN cla_install_opencode.sh
 # RUN cla_install_pi.sh
