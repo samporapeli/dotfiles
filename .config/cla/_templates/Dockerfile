@@ -60,6 +60,7 @@ RUN cla_install_claude_code.sh
 # RUN cla_install_pi.sh
 RUN cla_install_pnpm.sh
 RUN cla_install_samporapeli_dotfiles.sh
+# RUN cla_install_vibe.sh
 
 ENV DO_NOT_TRACK=1
 ENV PI_OFFLINE=1
